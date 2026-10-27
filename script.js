@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     elMenuScreen.style.display = 'none';
     elGameContainer.style.display = 'flex';
-    setMessage('いつでも左上の「メニュー」ボタンでセーブして戻れます。');
+    setMessage('古びた書斎に閉じ込められているようだ。周囲を探索して脱出しよう。');
   }
 
   // --- 基本操作 ---
