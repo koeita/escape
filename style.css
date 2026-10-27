@@ -1217,6 +1217,20 @@ h1 {
   font-size: 0.85rem;
   color: #dfba73;
   letter-spacing: 0.5px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.item-picker-empty {
+  margin: 2px 0 0 0;
+  font-size: clamp(0.78rem, 2.2vw, 0.85rem);
+  color: #bfa892;
+  line-height: 1.5;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 8px;
 }
 
 .item-picker-list {

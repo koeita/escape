@@ -595,7 +595,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
         <div class="item-picker-container">
           <span class="item-picker-title">${actionTitle}</span>
-          <p style="font-size:0.8rem; color:#a8947d;">（所持アイテムはありません。部屋を探索してみよう）</p>
+          <div class="item-picker-empty">
+            <span class="phrase">所持アイテムはありません。</span>
+            <span class="phrase">部屋を探索してみよう</span>
+          </div>
         </div>
       `;
     }
