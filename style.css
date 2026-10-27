@@ -7,8 +7,34 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent !important;
-  word-break: auto-phrase; /* 日本語の文節単位で自然に改行 */
-  overflow-wrap: break-word;
+}
+
+/* タイポグラフィ & 日本語自然改行ルール */
+body, button, input, select, textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "Georgia", "Yu Mincho", "Hiragino Mincho ProN", serif;
+  word-break: auto-phrase;
+  overflow-wrap: anywhere;
+}
+
+/* 見出し・タイトル用：美しく均等にバランス折り返し */
+h1, h2, h3, h4, .menu-title, .stage-name, .stage-select-heading, .zoom-view-header h3 {
+  word-break: auto-phrase;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+/* 長文・説明文用：行末の1文字孤立（泣き別れ）を自動防止 */
+p, .stage-desc, #item-detail-desc, .diary-page, .settings-help-box, #message-bar, .modal-instruction {
+  word-break: auto-phrase;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+  line-height: 1.6;
+}
+
+/* 意味のまとまりごとに改行させるインラインブロッククラス */
+.phrase {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 :root {
@@ -249,6 +275,46 @@ body {
   cursor: pointer;
   transition: all 0.15s;
   touch-action: manipulation;
+}
+
+/* ボタン類：1行で収め文字サイズを画面幅に合わせて自動調整 */
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-stage-action,
+.btn-setting-toggle,
+.clock-control-btns button {
+  white-space: nowrap !important;
+  font-size: clamp(0.78rem, 2.5vw, 1rem);
+  text-wrap: nowrap;
+}
+
+.item-picker-btn span {
+  white-space: nowrap !important;
+  font-size: clamp(0.72rem, 2.2vw, 0.85rem);
+}
+
+/* バッジ・ステータス・数値＋単位：絶対に改行させない保護ルール */
+.room-direction,
+.stage-card-badge,
+.stage-meta,
+.lock-label,
+.settings-label,
+#door-lock-status-led,
+.safe-code-label {
+  white-space: nowrap !important;
+  text-wrap: nowrap;
+  font-size: clamp(0.72rem, 2vw, 0.85rem);
+}
+
+.clear-time {
+  white-space: nowrap !important;
+  font-size: clamp(1rem, 3.5vw, 1.25rem);
+}
+
+.safe-code-box {
+  white-space: nowrap !important;
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
 }
 
 .btn-secondary:hover:not(:disabled) {

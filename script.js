@@ -12,61 +12,61 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'screwdriver',
       name: '精密ドライバー',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="18" y="4" width="4" height="18" fill="#c0392b" rx="2"/><line x1="20" y1="22" x2="20" y2="34" stroke="#bdc3c7" stroke-width="3" stroke-linecap="round"/><line x1="18" y1="34" x2="22" y2="34" stroke="#7f8c8d" stroke-width="2"/></svg>`,
-      desc: '絨毯の隅に隠されていた細身のマイナスドライバー。小さなネジを外すのに使えそうだ。'
+      desc: '<span class="phrase">絨毯の隅に隠されていた</span><span class="phrase">細身のマイナスドライバー。</span><span class="phrase">小さなネジを外すのに</span><span class="phrase">使えそうだ。</span>'
     },
     music_box: {
       id: 'music_box',
       name: '真鍮の小箱',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="8" y="10" width="24" height="20" fill="#b78727" stroke="#684a0d" stroke-width="2" rx="3"/><circle cx="20" cy="20" r="4" fill="#684a0d"/><circle cx="12" cy="14" r="1.5" fill="#333"/><circle cx="28" cy="14" r="1.5" fill="#333"/><circle cx="12" cy="26" r="1.5" fill="#333"/><circle cx="28" cy="26" r="1.5" fill="#333"/></svg>`,
-      desc: 'ソファの隙間に挟まっていた頑丈な金属小箱。裏蓋が4隅のネジで留められている。【調べる】で工具を使って開けられそうだ。'
+      desc: '<span class="phrase">ソファの隙間に挟まっていた</span><span class="phrase">頑丈な金属小箱。</span><span class="phrase">裏蓋が4隅のネジで</span><span class="phrase">留められている。</span><span class="phrase">【調べる】で工具を使って</span><span class="phrase">開けられそうだ。</span>'
     },
     silver_key: {
       id: 'silver_key',
       name: '小さな銀の鍵',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="15" cy="15" r="7" fill="none" stroke="#bdc3c7" stroke-width="3"/><line x1="20" y1="20" x2="30" y2="30" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/><line x1="26" y1="26" x2="29" y2="23" stroke="#bdc3c7" stroke-width="3"/></svg>`,
-      desc: '小箱の中から出てきた銀色の鍵。机の引き出しに合いそうだ。'
+      desc: '<span class="phrase">小箱の中から出てきた</span><span class="phrase">銀色の鍵。</span><span class="phrase">机の引き出しに合いそうだ。</span>'
     },
     star_disc: {
       id: 'star_disc',
       name: '星座の円盤',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="20" cy="20" r="13" fill="#1b2631" stroke="#f1c40f" stroke-width="2.5"/><polygon points="20,11 22,17 28,17 23,21 25,27 20,23 15,27 17,21 12,17 18,17" fill="#f1c40f"/><circle cx="20" cy="20" r="2.5" fill="#1b2631"/></svg>`,
-      desc: '小箱の中から見つかった青銅と真鍮の円盤。中央に星の紋様が刻まれ、何かの台座にはめる突起がある。'
+      desc: '<span class="phrase">小箱の中から見つかった</span><span class="phrase">青銅と真鍮の円盤。</span><span class="phrase">中央に星の紋様が刻まれ、</span><span class="phrase">何かの台座にはめる突起がある。</span>'
     },
     armillary_pin: {
       id: 'armillary_pin',
       name: '星型の真鍮ピン',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><polygon points="20,6 23,15 32,15 25,20 27,29 20,24 13,29 15,20 8,15 17,15" fill="#f1c40f" stroke="#b78727" stroke-width="1.5"/><line x1="20" y1="24" x2="20" y2="34" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/></svg>`,
-      desc: '壁金庫の中に暗号メモと共に納められていた小さな真鍮ピン。天球儀のロック穴にぴったり合いそうだ。'
+      desc: '<span class="phrase">壁金庫の中に納められていた</span><span class="phrase">小さな真鍮ピン。</span><span class="phrase">天球儀のロック穴に</span><span class="phrase">ぴったり合いそうだ。</span>'
     },
     switch_key: {
       id: 'switch_key',
       name: '端子盤の鍵',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="14" cy="14" r="6" fill="none" stroke="#e67e22" stroke-width="3"/><line x1="18" y1="18" x2="28" y2="28" stroke="#e67e22" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="24" x2="27" y2="21" stroke="#e67e22" stroke-width="2.5"/></svg>`,
-      desc: '机の引き出しに入っていた小さな真鍮鍵。扉の横の照明盤カバーを開けられそうだ。'
+      desc: '<span class="phrase">机の引き出しに入っていた</span><span class="phrase">小さな真鍮鍵。</span><span class="phrase">扉の横の照明盤カバーを</span><span class="phrase">開けられそうだ。</span>'
     },
     poker: {
       id: 'poker',
       name: '真鍮の火かき棒',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><line x1="10" y1="30" x2="28" y2="12" stroke="#7f8c8d" stroke-width="3" stroke-linecap="round"/><path d="M 28,12 Q 32,8 30,6" stroke="#7f8c8d" stroke-width="2.5" fill="none"/><line x1="10" y1="30" x2="14" y2="33" stroke="#7f8c8d" stroke-width="2.5"/></svg>`,
-      desc: '机の脇に立てかけてあった長い金属の棒。先端がフック状になっており、重い物を引っ掛けて動かせる。'
+      desc: '<span class="phrase">天球儀の中から見つかった</span><span class="phrase">真鍮の棒。</span><span class="phrase">先端がフック状になっており、</span><span class="phrase">重い物を引っ掛けて動かせる。</span>'
     },
     emblem: {
       id: 'emblem',
       name: '賢者の青玉紋章',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="20" cy="20" r="12" fill="#b78727" stroke="#684a0d" stroke-width="2"/><circle cx="20" cy="20" r="6" fill="#3498db" stroke="#1b4f72" stroke-width="1.5"/></svg>`,
-      desc: '暖炉の灰の中から引き上げた重厚なメダル。中央に神秘的な青い宝玉が嵌め込まれている。何かの鍵の頭部だろうか。'
+      desc: '<span class="phrase">暖炉の灰の中から引き上げた</span><span class="phrase">重厚なメダル。</span><span class="phrase">中央に神秘的な青い宝玉が</span><span class="phrase">嵌め込まれている。</span>'
     },
     broken_key: {
       id: 'broken_key',
       name: '不完全な鍵身',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><line x1="14" y1="26" x2="28" y2="12" stroke="#f1c40f" stroke-width="4" stroke-linecap="round"/><line x1="24" y1="16" x2="27" y2="13" stroke="#f1c40f" stroke-width="3"/><circle cx="12" cy="28" r="4" fill="none" stroke="#f1c40f" stroke-width="2" stroke-dasharray="2,2"/></svg>`,
-      desc: '古時計のからくりから落ちてきた真鍮の鍵軸。持ち手（頭部）が欠損しており回すことができない。【調べる】で別のパーツを結合できそうだ。'
+      desc: '<span class="phrase">古時計から落ちてきた</span><span class="phrase">真鍮の鍵軸。</span><span class="phrase">持ち手が欠損しており</span><span class="phrase">回すことができない。</span><span class="phrase">【調べる】で別のパーツを</span><span class="phrase">結合できそうだ。</span>'
     },
     brass_key: {
       id: 'brass_key',
       name: '賢者の真鍮鍵',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="15" cy="15" r="8" fill="#3498db" stroke="#f1c40f" stroke-width="3.5"/><line x1="21" y1="21" x2="33" y2="33" stroke="#f1c40f" stroke-width="4.5" stroke-linecap="round"/><line x1="29" y1="29" x2="33" y2="25" stroke="#f1c40f" stroke-width="3"/><line x1="25" y1="25" x2="29" y2="21" stroke="#f1c40f" stroke-width="3"/></svg>`,
-      desc: '欠損していた鍵身に賢者の青玉紋章を結合して完成した、荘厳な真鍮の大鍵。大扉の頑丈な鍵穴に適合する！'
+      desc: '<span class="phrase">鍵身に青玉紋章を結合して</span><span class="phrase">完成した真鍮の大鍵。</span><span class="phrase">大扉の頑丈な鍵穴に適合する！</span>'
     }
   };
 
@@ -632,7 +632,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!state.switchCoverUnlocked) {
       content += `
-        <p style="color:#d5cac0; font-size:0.9rem;">堅牢な真鍮カバーで施錠されている。</p>
+        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
+          <span class="phrase">堅牢な真鍮カバーで</span><span class="phrase">施錠されている。</span>
+        </p>
         <div style="width:70px; height:90px; background:#8c6a3e; border:3px solid #4a3422; border-radius:6px; display:flex; align-items:center; justify-content:center; margin:10px 0;">
           <div id="modal-switch-keyhole" class="drawer-keyhole"></div>
         </div>
@@ -640,7 +642,9 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else {
       content += `
-        <p style="color:#d5cac0; font-size:0.9rem;">部屋全体のブラケットランプを制御するスイッチだ。</p>
+        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
+          <span class="phrase">部屋全体のブラケットランプを</span><span class="phrase">制御するスイッチだ。</span>
+        </p>
         <div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin:16px 0;">
           <div style="font-family:monospace; font-size:1.4rem; color:${state.isLightOn ? '#2ecc71' : '#e74c3c'};">
             ● ${state.isLightOn ? 'LIGHT: ON (点灯中)' : 'LIGHT: OFF (消灯中)'}
@@ -649,7 +653,9 @@ document.addEventListener('DOMContentLoaded', () => {
             ${state.isLightOn ? '明かりを消す (OFF)' : '明かりをつける (ON)'}
           </button>
         </div>
-        <p style="font-size:0.85rem; color:#a8947d;">暗闇にすることで、普段見えないものが見えるかもしれない…</p>
+        <p style="font-size:0.85rem; color:#a8947d; text-align:center;">
+          <span class="phrase">暗闇にすることで、</span><span class="phrase">普段見えないものが</span><span class="phrase">見えるかもしれない…</span>
+        </p>
       `;
     }
 
@@ -772,8 +778,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!state.armillaryPinInserted) {
       content += `
-        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
-          細密な真鍮リングで構成された天球儀だ。軸の根元が「星型の穴」でピン留めされロックされている。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          <span class="phrase">細密な真鍮リングで</span><span class="phrase">構成された天球儀だ。</span><span class="phrase">軸の根元が</span><span class="phrase">「星型の穴」で</span><span class="phrase">ピン留めされロックされている。</span>
         </p>
         <div class="armillary-stage">
           <svg class="armillary-sphere-svg" viewBox="0 0 100 100">
@@ -789,8 +795,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else if (!state.armillaryOpened) {
       content += `
-        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
-          星型ピンでロックが解除された！リングをタップして回転させ、天頂（0度）に合わせよう。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          <span class="phrase">星型ピンで</span><span class="phrase">ロックが解除された！</span><span class="phrase">リングをタップして回転させ、</span><span class="phrase">天頂（0度）に合わせよう。</span>
         </p>
         <div class="armillary-stage">
           <svg class="armillary-sphere-svg" id="btn-rotate-armillary" viewBox="0 0 100 100" style="cursor:pointer; transform: rotate(${state.armillaryAngle}deg); transition: transform 0.25s ease;">
@@ -998,11 +1004,11 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="zoom-body">
         <div class="diary-page">
           <h4>星辰の記録と刻を司る針</h4>
-          <p>『かつて賢者は、古時計の二つの針を大いなる天体の運行になぞらえた。』</p>
+          <p><span class="phrase">『かつて賢者は、</span><span class="phrase">古時計の二つの針を</span><span class="phrase">大いなる天体の運行に</span><span class="phrase">なぞらえた。』</span></p>
           <div class="diary-poem">
-            重厚なる短針は、黄昏の陽が沈みゆく【西】の地平へ。<br>
-            軽やかなる長針は、黎明の光が生まれ出ずる【東】の空へ。<br>
-            二つの針が正しく天の運行を指し示し時、古時計は賢者への捧げ物を落とすであろう。
+            <span class="phrase">重厚なる短針は、</span><span class="phrase">黄昏の陽が沈みゆく</span><span class="phrase">【西】の地平へ。</span><br>
+            <span class="phrase">軽やかなる長針は、</span><span class="phrase">黎明の光が生まれ出ずる</span><span class="phrase">【東】の空へ。</span><br>
+            <span class="phrase">二つの針が正しく</span><span class="phrase">天の運行を指し示し時、</span><span class="phrase">古時計は賢者への捧げ物を</span><span class="phrase">落とすであろう。</span>
           </div>
         </div>
       </div>
@@ -1025,11 +1031,13 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="zoom-body">
         <div class="bookshelf-puzzle-container">
-          <p style="color:#d5cac0; font-size:0.85rem; text-align:center; line-height:1.5; margin-bottom:2px;">
-            背表紙に天体シンボルが刻印された7冊の書物が並んでいる。
+          <p style="color:#d5cac0; font-size:0.85rem; text-align:center; margin-bottom:2px;">
+            <span class="phrase">背表紙に天体シンボルが</span><span class="phrase">刻印された</span><span class="phrase">7冊の書物が並んでいる。</span>
           </p>
-          <p style="font-size:0.82rem; text-align:center; line-height:1.5; color:${!state.isLightOn ? '#5dade2' : '#a8947d'}; font-weight:${!state.isLightOn ? 'bold' : 'normal'};">
-            ${!state.isLightOn ? '★ 暗闇の中でシンボルが青白く発光している！' : '（部屋の明かりを消すと、夜空の絵画と共鳴するかもしれない）'}
+          <p style="font-size:0.82rem; text-align:center; color:${!state.isLightOn ? '#5dade2' : '#a8947d'}; font-weight:${!state.isLightOn ? 'bold' : 'normal'};">
+            ${!state.isLightOn
+              ? '<span class="phrase">★ 暗闇の中で</span><span class="phrase">シンボルが青白く発光している！</span>'
+              : '<span class="phrase">（部屋の明かりを消すと、</span><span class="phrase">夜空の絵画と共鳴するかもしれない）</span>'}
           </p>
     `;
 
@@ -1188,8 +1196,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!state.safeDiscInserted) {
       content += `
-        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
-          金庫の中央に円形の窪みがある。何か丸いプレートを嵌め込めそうだ。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          <span class="phrase">金庫の中央に円形の窪みがある。</span><span class="phrase">何か丸いプレートを</span><span class="phrase">嵌め込めそうだ。</span>
         </p>
         <div class="safe-disc-box">
           <div class="safe-slot-empty">円盤スロット</div>
@@ -1198,8 +1206,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else if (!state.safeUnlocked) {
       content += `
-        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
-          円盤がはまった。タップして回転させ、星の向きを真上に合わせよう。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          <span class="phrase">円盤がはまった。</span><span class="phrase">タップして回転させ、</span><span class="phrase">星の向きを真上に合わせよう。</span>
         </p>
         <div class="safe-disc-box">
           <svg class="safe-disc-slotted" id="btn-rotate-safe-disc" viewBox="0 0 40 40" style="transform: rotate(${state.safeAngle}deg);">
@@ -1360,10 +1368,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     content += `
           </svg>
-          <p style="font-size:0.88rem; text-align:center; line-height:1.6; color:${!state.isLightOn ? '#5dade2' : '#d5cac0'};">
+          <p style="font-size:0.88rem; text-align:center; color:${!state.isLightOn ? '#5dade2' : '#d5cac0'};">
             ${!state.isLightOn
-              ? '暗闇の中で4つの星辰が青白く発光した！左から右へと結ばれる光の軌跡が現れている。'
-              : '月夜の古塔が描かれた油絵《星辰の夜》だ。（暗闇の中で何かが浮かび上がるかもしれない…）'}
+              ? '<span class="phrase">暗闇の中で4つの星辰が</span><span class="phrase">青白く発光した！</span><span class="phrase">左から右へと結ばれる</span><span class="phrase">光の軌跡が現れている。</span>'
+              : '<span class="phrase">月夜の古塔が描かれた</span><span class="phrase">油絵《星辰の夜》だ。</span><span class="phrase">（暗闇の中で何かが</span><span class="phrase">浮かび上がるかもしれない…）</span>'}
           </p>
         </div>
       </div>
@@ -1390,8 +1398,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!state.fireplaceGrilleRemoved) {
       content += `
-        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
-          火室の手前に頑丈な鉄格子がはまっており奥に手が届かない。フックのついた道具があれば外せそうだ。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          <span class="phrase">火室の手前に頑丈な鉄格子が</span><span class="phrase">はまっており奥に手が届かない。</span><span class="phrase">フックのついた道具があれば</span><span class="phrase">外せそうだ。</span>
         </p>
         <div style="width:200px; height:120px; background:#1b1c1e; border:4px solid #34495e; border-radius:6px; display:flex; align-items:center; justify-content:center;">
           <div style="width:100%; height:100%; background:repeating-linear-gradient(90deg, transparent, transparent 20px, #34495e 20px, #34495e 26px);"></div>
@@ -1587,8 +1595,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="zoom-body">
         <div class="door-puzzle-container">
-          <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
-            頑丈な二重施錠が施されている。【完成した賢者の鍵】と【金庫の暗号コード】が必要だ。
+          <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+            <span class="phrase">頑丈な二重施錠が施されている。</span><span class="phrase">【完成した賢者の鍵】と</span><span class="phrase">【金庫の暗号コード】が必要だ。</span>
           </p>
 
           <div class="door-locks-status">
