@@ -426,7 +426,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 基本操作 ---
   function setMessage(msg) {
-    elMessageBar.textContent = msg;
+    // 「、」「。」「！」「？」やスペースの区切りごとに「言葉の塊（inline-block）」へ自動分割する
+    const formatted = msg
+      .split(/(?<=[、。！？!?\s])/g)
+      .map(part => `<span style="display:inline-block;">${part}</span>`)
+      .join('');
+
+    elMessageBar.innerHTML = formatted;
     elMessageBar.style.opacity = '0';
     setTimeout(() => {
       elMessageBar.style.opacity = '1';
