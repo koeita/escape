@@ -304,43 +304,48 @@
             <rect x="0" y="380" width="800" height="120" class="floor-bg" fill="#1d1712"/>
             <rect x="0" y="370" width="800" height="10" fill="#4a3b2c"/>
 
-            <!-- 壁の絵画 (上部中央) -->
+            <!-- 壁の絵画 (上部中央・ズーム画面と100%同一の構図比率) -->
             <g id="obj-painting" class="interactive" tabindex="0">
               <rect x="300" y="40" width="200" height="150" fill="#b78727" stroke="#684a0d" stroke-width="5" rx="3"/>
-              <rect x="312" y="52" width="176" height="126" fill="#181310"/>
-              <!-- 絵画の内容 (月夜の古塔風景) -->
-              <path d="M 312,178 L 360,110 L 420,150 L 488,90 L 488,178 Z" fill="#2e4053"/>
-              <circle cx="430" cy="90" r="22" fill="#f9e79f" opacity="0.9"/>
-              <!-- 尖塔の丸窓（針の直接ヒントを廃止し、星辰の丸窓に） -->
-              <circle cx="430" cy="90" r="14" fill="#212f3d" stroke="#7f8c8d" stroke-width="1.5"/>
-              <circle cx="430" cy="90" r="4" fill="#f4d03f"/>
-              <text x="400" y="165" font-size="11" fill="#ecf0f1" font-family="serif" text-anchor="middle" opacity="0.8">『星辰の夜』</text>
+              <!-- 絵画キャンバス (200x150, アスペクト比4:3) -->
+              <svg x="306" y="46" width="188" height="138" viewBox="0 0 280 210">
+                <!-- 空の背景 -->
+                <rect x="0" y="0" width="280" height="210" fill="#152238"/>
+                <!-- 山並み -->
+                <polygon points="0,210 60,130 130,170 220,105 280,140 280,210" fill="#2c3e50"/>
+                <!-- 満月と尖塔 (右寄り) -->
+                <circle cx="200" cy="75" r="34" fill="#f9e79f" opacity="0.95"/>
+                <path d="M 185,210 L 185,120 L 200,45 L 215,120 L 215,210 Z" fill="#0b0e14"/>
+                <circle cx="200" cy="100" r="14" fill="#212f3d" stroke="#7f8c8d" stroke-width="1.5"/>
+                <circle cx="200" cy="100" r="4" fill="#f4d03f"/>
+                <text x="140" y="195" font-size="16" fill="#ecf0f1" font-family="serif" text-anchor="middle" opacity="0.8">『星辰の夜』</text>
 
-              <!-- 暗闇モード時の蓄光星座ライン（4つの星辰の軌跡: ♈ ➔ ♌ ➔ ♏ ➔ ♐） -->
-              <g id="painting-glow-layer" style="display: none;">
-                <!-- 1. 白羊 -->
-                <circle cx="335" cy="80" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
-                <path d="M 329,72 Q 329,67 335,70 Q 341,67 341,72 M 335,70 L 335,78" stroke="#5dade2" stroke-width="1.8" fill="none"/>
+                <!-- 暗闇モード時の蓄光星座ライン (白羊 ➔ 獅子 ➔ 天蠍 ➔ 射手) -->
+                <g id="painting-glow-layer" style="display: none;">
+                  <!-- 軌跡ライン -->
+                  <line x1="45" y1="95" x2="95" y2="60" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+                  <line x1="95" y1="60" x2="145" y2="85" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+                  <line x1="145" y1="85" x2="245" y2="50" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
 
-                <!-- 2. 獅子 -->
-                <circle cx="375" cy="115" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
-                <circle cx="371" cy="107" r="2.5" stroke="#5dade2" stroke-width="1.5" fill="none"/>
-                <path d="M 373.5,107 Q 377,100 379,105 Q 381,114 375,112" stroke="#5dade2" stroke-width="1.5" fill="none"/>
+                  <!-- 1. 白羊 -->
+                  <circle cx="45" cy="95" r="6" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
+                  <path d="M 38,84 Q 38,77 45,80 Q 52,77 52,84 M 45,80 L 45,91" stroke="#5dade2" stroke-width="2" fill="none"/>
 
-                <!-- 3. 天蠍 -->
-                <circle cx="425" cy="118" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
-                <path d="M 420,112 L 420,105 Q 423,102 425,105 L 425,112 Q 428,102 430,105 L 430,114" stroke="#5dade2" stroke-width="1.5" fill="none"/>
+                  <!-- 2. 獅子 -->
+                  <circle cx="95" cy="60" r="6" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
+                  <circle cx="91" cy="49" r="3" stroke="#5dade2" stroke-width="1.8" fill="none"/>
+                  <path d="M 94,49 Q 98,40 101,46 Q 103,57 97,54" stroke="#5dade2" stroke-width="1.8" fill="none"/>
 
-                <!-- 4. 射手 -->
-                <circle cx="470" cy="72" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
-                <line x1="463" y1="69" x2="477" y2="55" stroke="#5dade2" stroke-width="1.8"/>
-                <path d="M 469,55 L 477,55 L 477,63" stroke="#5dade2" stroke-width="1.8" fill="none"/>
+                  <!-- 3. 天蠍 -->
+                  <circle cx="145" cy="85" r="6" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
+                  <path d="M 139,76 L 139,67 Q 142,63 145,67 L 145,76 Q 148,63 151,67 L 151,78" stroke="#5dade2" stroke-width="1.8" fill="none"/>
 
-                <!-- 光る星座ライン -->
-                <line x1="335" y1="80" x2="375" y2="115" stroke="#5dade2" stroke-width="2" stroke-dasharray="3,3"/>
-                <line x1="375" y1="115" x2="425" y2="118" stroke="#5dade2" stroke-width="2" stroke-dasharray="3,3"/>
-                <line x1="425" y1="118" x2="470" y2="72" stroke="#5dade2" stroke-width="2" stroke-dasharray="3,3"/>
-              </g>
+                  <!-- 4. 射手 -->
+                  <circle cx="245" cy="50" r="6" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
+                  <line x1="237" y1="46" x2="253" y2="30" stroke="#5dade2" stroke-width="2.2"/>
+                  <path d="M 244,30 L 253,30 L 253,39" stroke="#5dade2" stroke-width="2.2" fill="none"/>
+                </g>
+              </svg>
             </g>
 
             <!-- 暖炉 (中央下部) -->

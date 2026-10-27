@@ -869,9 +869,6 @@ document.addEventListener('DOMContentLoaded', () => {
             軽やかなる長針は、黎明の光が生まれ出ずる【東】の空へ。<br>
             二つの針が正しく天の運行を指し示し時、古時計は賢者への捧げ物を落とすであろう。
           </div>
-          <p style="margin-top:12px; font-size:0.85rem; color:#7f5539;">
-            ※文字盤の頂点（12）を北とするならば、針が指すべき方角はおのずと定まる。
-          </p>
         </div>
       </div>
     `;
@@ -1009,28 +1006,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handleBookPress(sym) {
+    if (state.booksSequence.length >= 4) return; // 4冊まで
+
     state.booksSequence.push(sym);
-    // 正解順: 白羊 ➔ 獅子 ➔ 天蠍 ➔ 射手 (暗闇の油絵の星辰ライン)
-    const correct = ['aries', 'leo', 'scorpio', 'sagittarius'];
-    const curIdx = state.booksSequence.length - 1;
+    openBookshelfModal();
 
-    if (state.booksSequence[curIdx] !== correct[curIdx]) {
-      soundManager.playClick();
-      setMessage('ガタッ…何かが引っかかり、本が押し戻されてしまった。');
-      state.booksSequence = [];
-      setTimeout(openBookshelfModal, 300);
-      return;
-    }
+    // 4冊押し終わった時点で初めて正誤判定（途中でリセットしないことで総当たりを完全防止）
+    if (state.booksSequence.length === 4) {
+      const correct = ['aries', 'leo', 'scorpio', 'sagittarius'];
+      const isMatch = state.booksSequence.every((val, idx) => val === correct[idx]);
 
-    if (state.booksSequence.length === correct.length) {
-      soundManager.playSolved();
-      state.booksPuzzleSolved = true;
-      saveGame();
-      updateRoomDomState();
-      setMessage('ゴゴゴ…！ 本棚が横にスライドし、壁から真鍮の金庫が現れた！');
-      setTimeout(openBookshelfModal, 400);
-    } else {
-      openBookshelfModal();
+      if (isMatch) {
+        soundManager.playSolved();
+        state.booksPuzzleSolved = true;
+        saveGame();
+        updateRoomDomState();
+        setMessage('ゴゴゴ…！ 本棚が横にスライドし、壁から真鍮の金庫が現れた！');
+        setTimeout(openBookshelfModal, 400);
+      } else {
+        soundManager.playClick();
+        setMessage('カチャ…何も反応しない。押した順序が違うようだ。');
+        setTimeout(() => {
+          state.booksSequence = [];
+          openBookshelfModal();
+        }, 800);
+      }
     }
   }
 
@@ -1145,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 5. 南側：絵画『星辰の夜』 (本棚の唯一の手がかり・4つの星辰)
+  // 5. 南側：絵画『星辰の夜』 (通常画面と100%同一の配置構図)
   const elPainting = document.getElementById('obj-painting');
   if (elPainting) {
     elPainting.addEventListener('click', () => {
@@ -1161,39 +1161,43 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="zoom-body">
         <div class="painting-zoom-container">
           <svg class="painting-zoom-svg" viewBox="0 0 280 210">
+            <!-- 空の背景 -->
             <rect x="0" y="0" width="280" height="210" fill="${state.isLightOn ? '#152238' : '#080d17'}"/>
-            <polygon points="0,210 60,130 140,170 240,110 280,180 280,210" fill="#2c3e50"/>
-            <circle cx="140" cy="85" r="45" fill="${state.isLightOn ? '#f9e79f' : '#85929e'}" opacity="0.95"/>
-            <path d="M 125,210 L 125,115 L 140,40 L 155,115 L 155,210 Z" fill="#0b0e14"/>
-            <circle cx="140" cy="115" r="16" fill="#212f3d" stroke="#7f8c8d" stroke-width="1.5"/>
-            <circle cx="140" cy="115" r="4" fill="#f4d03f"/>
+            <!-- 山並み -->
+            <polygon points="0,210 60,130 130,170 220,105 280,140 280,210" fill="#2c3e50"/>
+            <!-- 満月と尖塔 (通常画面と完全一致する配置) -->
+            <circle cx="200" cy="75" r="34" fill="${state.isLightOn ? '#f9e79f' : '#85929e'}" opacity="0.95"/>
+            <path d="M 185,210 L 185,120 L 200,45 L 215,120 L 215,210 Z" fill="#0b0e14"/>
+            <circle cx="200" cy="100" r="14" fill="#212f3d" stroke="#7f8c8d" stroke-width="1.5"/>
+            <circle cx="200" cy="100" r="4" fill="#f4d03f"/>
+            <text x="140" y="195" font-size="16" fill="#ecf0f1" font-family="serif" text-anchor="middle" opacity="0.8">『星辰の夜』</text>
     `;
 
     if (!state.isLightOn) {
-      // 暗闇時の蓄光星辰ライン (白羊 ➔ 獅子 ➔ 天蠍 ➔ 射手)
+      // 暗闇時の蓄光星辰ライン (白羊 ➔ 獅子 ➔ 天蠍 ➔ 射手・通常画面と完全一致の座標)
       content += `
         <!-- 軌跡ライン -->
-        <line x1="50" y1="65" x2="110" y2="45" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
-        <line x1="110" y1="45" x2="175" y2="52" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
-        <line x1="175" y1="52" x2="230" y2="75" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+        <line x1="45" y1="95" x2="95" y2="60" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+        <line x1="95" y1="60" x2="145" y2="85" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+        <line x1="145" y1="85" x2="245" y2="50" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
 
         <!-- 1. 白羊 -->
-        <circle cx="50" cy="65" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 5px #3498db)"/>
-        <path d="M 44,56 Q 44,50 50,53 Q 56,50 56,56 M 50,53 L 50,62" stroke="#aed6f1" stroke-width="1.8" fill="none"/>
+        <circle cx="45" cy="95" r="6" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
+        <path d="M 38,84 Q 38,77 45,80 Q 52,77 52,84 M 45,80 L 45,91" stroke="#aed6f1" stroke-width="2" fill="none"/>
 
         <!-- 2. 獅子 -->
-        <circle cx="110" cy="45" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 5px #3498db)"/>
-        <circle cx="106" cy="36" r="2.5" stroke="#aed6f1" stroke-width="1.5" fill="none"/>
-        <path d="M 108.5,36 Q 112,28 114,33 Q 116,42 110,40" stroke="#aed6f1" stroke-width="1.5" fill="none"/>
+        <circle cx="95" cy="60" r="6" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
+        <circle cx="91" cy="49" r="3" stroke="#aed6f1" stroke-width="1.8" fill="none"/>
+        <path d="M 94,49 Q 98,40 101,46 Q 103,57 97,54" stroke="#aed6f1" stroke-width="1.8" fill="none"/>
 
         <!-- 3. 天蠍 -->
-        <circle cx="175" cy="52" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 5px #3498db)"/>
-        <path d="M 170,44 L 170,36 Q 173,32 175,36 L 175,44 Q 178,32 180,36 L 180,46" stroke="#aed6f1" stroke-width="1.5" fill="none"/>
+        <circle cx="145" cy="85" r="6" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
+        <path d="M 139,76 L 139,67 Q 142,63 145,67 L 145,76 Q 148,63 151,67 L 151,78" stroke="#aed6f1" stroke-width="1.8" fill="none"/>
 
         <!-- 4. 射手 -->
-        <circle cx="230" cy="75" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 5px #3498db)"/>
-        <line x1="223" y1="72" x2="237" y2="58" stroke="#aed6f1" stroke-width="1.8"/>
-        <path d="M 229,58 L 237,58 L 237,66" stroke="#aed6f1" stroke-width="1.8" fill="none"/>
+        <circle cx="245" cy="50" r="6" fill="#eaf2f8" filter="drop-shadow(0 0 6px #5dade2)"/>
+        <line x1="237" y1="46" x2="253" y2="30" stroke="#aed6f1" stroke-width="2.2"/>
+        <path d="M 244,30 L 253,30 L 253,39" stroke="#aed6f1" stroke-width="2.2" fill="none"/>
       `;
     }
 

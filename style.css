@@ -663,12 +663,12 @@ h1 {
   transform: scale(0.97);
 }
 
-/* 本棚パズル用UI (7冊のアンティーク装丁スタイル) */
+/* 本棚パズル用UI (7冊すべてが画面内に美しく収まるスクロールレス設計) */
 .bookshelf-puzzle-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
 }
 
@@ -676,33 +676,32 @@ h1 {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   background: #150f0b;
-  padding: 24px 8px 0 8px;
+  padding: 20px 6px 0 6px;
   border-bottom: 14px solid #4a2e1b;
   border-radius: 6px;
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden; /* スクロールさせず1画面に収める */
 }
 
 .puzzle-book {
-  width: 44px;
-  min-width: 40px;
-  height: 135px;
+  flex: 1 1 0;
+  max-width: 48px;
+  min-width: 34px;
+  height: 130px;
   border-radius: 4px 4px 0 0;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 2px;
+  padding: 8px 1px;
   color: #f7ede2;
   transition: transform 0.15s, filter 0.15s;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.6);
   border: 1px solid rgba(212, 175, 55, 0.35);
   touch-action: manipulation;
-  flex-shrink: 0;
 }
 
 .puzzle-book:active {
@@ -710,15 +709,21 @@ h1 {
   filter: brightness(1.25);
 }
 
+.puzzle-book.selected-book {
+  border-color: #f1c40f;
+  box-shadow: 0 0 8px rgba(241, 196, 15, 0.6);
+  transform: translateY(-4px);
+}
+
 .book-sigil-svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   filter: drop-shadow(0 0 2px rgba(241, 196, 15, 0.4));
 }
 
 .book-title-spine {
-  font-size: 0.7rem;
-  letter-spacing: 1.5px;
+  font-size: 0.68rem;
+  letter-spacing: 1px;
   writing-mode: vertical-rl;
   text-orientation: upright;
   font-family: serif;
