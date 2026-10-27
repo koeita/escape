@@ -523,7 +523,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     elItemDetailIcon.innerHTML = item.icon;
     elItemDetailName.textContent = item.name;
-    elItemDetailDesc.innerText = item.desc;
+    if (item.desc.includes('<')) {
+      elItemDetailDesc.innerHTML = item.desc;
+    } else {
+      const formatted = item.desc
+        .split(/[\/\n]/g)
+        .map(part => `<span class="phrase">${part}</span>`)
+        .join('');
+      elItemDetailDesc.innerHTML = formatted;
+    }
 
     // アクションボタンの表示制御
     if (itemId === 'music_box') {
