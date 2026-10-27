@@ -7,6 +7,8 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent !important;
+  word-break: auto-phrase; /* 日本語の文節単位で自然に改行 */
+  overflow-wrap: break-word;
 }
 
 :root {
@@ -460,23 +462,24 @@ h1 {
   left: 50%;
   transform: translateX(-50%);
   width: 92%;
-  background: rgba(18, 14, 11, 0.92);
+  background: rgba(18, 14, 11, 0.94);
   border: 1px solid #735436;
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 8px 14px;
   color: #f7ede2;
   font-size: 0.88rem;
-  line-height: 1.35;
+  line-height: 1.5;
   text-align: center;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7);
   pointer-events: none;
   letter-spacing: 0.3px;
-  min-height: 38px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: opacity 0.25s;
   z-index: 15;
+  word-break: auto-phrase;
 }
 
 /* アイテムインベントリ */

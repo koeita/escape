@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'broken_key',
       name: '不完全な鍵身',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><line x1="14" y1="26" x2="28" y2="12" stroke="#f1c40f" stroke-width="4" stroke-linecap="round"/><line x1="24" y1="16" x2="27" y2="13" stroke="#f1c40f" stroke-width="3"/><circle cx="12" cy="28" r="4" fill="none" stroke="#f1c40f" stroke-width="2" stroke-dasharray="2,2"/></svg>`,
-      desc: '古時計のからくりから落ちてきた真鍮の鍵軸。持ち手（頭部）が欠損しており、このままでは回すことができない。\n【調べる】で別のパーツを結合できそうだ。'
+      desc: '古時計のからくりから落ちてきた真鍮の鍵軸。持ち手（頭部）が欠損しており回すことができない。【調べる】で別のパーツを結合できそうだ。'
     },
     brass_key: {
       id: 'brass_key',
@@ -772,9 +772,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!state.armillaryPinInserted) {
       content += `
-        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
-          細密な真鍮リングで構成された天球儀だ。<br>
-          軸の根元に「星型の穴」があり、ピンでロックされていて回らない。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
+          細密な真鍮リングで構成された天球儀だ。軸の根元が「星型の穴」でピン留めされロックされている。
         </p>
         <div class="armillary-stage">
           <svg class="armillary-sphere-svg" viewBox="0 0 100 100">
@@ -790,9 +789,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else if (!state.armillaryOpened) {
       content += `
-        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
-          星型ピンでロックが解除された！<br>
-          リングをタップして回転させ、天頂（真上/0度）に合わせよう。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
+          星型ピンでロックが解除された！リングをタップして回転させ、天頂（0度）に合わせよう。
         </p>
         <div class="armillary-stage">
           <svg class="armillary-sphere-svg" id="btn-rotate-armillary" viewBox="0 0 100 100" style="cursor:pointer; transform: rotate(${state.armillaryAngle}deg); transition: transform 0.25s ease;">
@@ -1027,11 +1025,11 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="zoom-body">
         <div class="bookshelf-puzzle-container">
-          <p style="color:#d5cac0; font-size:0.85rem; text-align:center;">
-            背表紙に天体シンボルが刻印された7冊の書物が並んでいる。<br>
-            ${!state.isLightOn
-              ? '<span style="color:#5dade2; font-weight:bold;">★ 暗闇の中でシンボルが青白く発光している！</span>'
-              : '（部屋の明かりを消すと、夜空の絵画と共鳴するかもしれない）'}
+          <p style="color:#d5cac0; font-size:0.85rem; text-align:center; line-height:1.5; margin-bottom:2px;">
+            背表紙に天体シンボルが刻印された7冊の書物が並んでいる。
+          </p>
+          <p style="font-size:0.82rem; text-align:center; line-height:1.5; color:${!state.isLightOn ? '#5dade2' : '#a8947d'}; font-weight:${!state.isLightOn ? 'bold' : 'normal'};">
+            ${!state.isLightOn ? '★ 暗闇の中でシンボルが青白く発光している！' : '（部屋の明かりを消すと、夜空の絵画と共鳴するかもしれない）'}
           </p>
     `;
 
@@ -1190,8 +1188,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!state.safeDiscInserted) {
       content += `
-        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
-          金庫の中央に円形の窪みがある。<br>何か丸いプレートを嵌め込めそうだ。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
+          金庫の中央に円形の窪みがある。何か丸いプレートを嵌め込めそうだ。
         </p>
         <div class="safe-disc-box">
           <div class="safe-slot-empty">円盤スロット</div>
@@ -1200,7 +1198,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else if (!state.safeUnlocked) {
       content += `
-        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
           円盤がはまった。タップして回転させ、星の向きを真上に合わせよう。
         </p>
         <div class="safe-disc-box">
@@ -1362,10 +1360,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     content += `
           </svg>
-          <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          <p style="font-size:0.88rem; text-align:center; line-height:1.6; color:${!state.isLightOn ? '#5dade2' : '#d5cac0'};">
             ${!state.isLightOn
-              ? '<strong style="color:#5dade2;">暗闇の中で4つの星辰が青白く発光した！<br>左から右へと結ばれる光の軌跡が現れている。</strong>'
-              : '月夜の古塔が描かれた油絵《星辰の夜》だ。<br>（暗闇の中で何かが浮かび上がるかもしれない…）'}
+              ? '暗闇の中で4つの星辰が青白く発光した！左から右へと結ばれる光の軌跡が現れている。'
+              : '月夜の古塔が描かれた油絵《星辰の夜》だ。（暗闇の中で何かが浮かび上がるかもしれない…）'}
           </p>
         </div>
       </div>
@@ -1392,9 +1390,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!state.fireplaceGrilleRemoved) {
       content += `
-        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
-          火室の手前に頑丈な鉄格子がはまっており、奥に手が届かない。<br>
-          フックのついた道具があれば引っ掛けて外せそうだ。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
+          火室の手前に頑丈な鉄格子がはまっており奥に手が届かない。フックのついた道具があれば外せそうだ。
         </p>
         <div style="width:200px; height:120px; background:#1b1c1e; border:4px solid #34495e; border-radius:6px; display:flex; align-items:center; justify-content:center;">
           <div style="width:100%; height:100%; background:repeating-linear-gradient(90deg, transparent, transparent 20px, #34495e 20px, #34495e 26px);"></div>
@@ -1590,9 +1587,8 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="zoom-body">
         <div class="door-puzzle-container">
-          <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
-            頑丈な二重施錠が施されている。<br>
-            【完成した賢者の鍵】と【金庫の暗号コード】が必要だ。
+          <p style="color:#d5cac0; font-size:0.88rem; text-align:center; line-height:1.6;">
+            頑丈な二重施錠が施されている。【完成した賢者の鍵】と【金庫の暗号コード】が必要だ。
           </p>
 
           <div class="door-locks-status">
