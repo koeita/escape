@@ -663,7 +663,7 @@ h1 {
   transform: scale(0.97);
 }
 
-/* 本棚パズル用UI */
+/* 本棚パズル用UI (アンティーク装丁スタイル) */
 .bookshelf-puzzle-container {
   display: flex;
   flex-direction: column;
@@ -676,44 +676,85 @@ h1 {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   background: #150f0b;
-  padding: 20px 12px 0 12px;
-  border-bottom: 12px solid #4a2e1b;
+  padding: 24px 14px 0 14px;
+  border-bottom: 14px solid #4a2e1b;
   border-radius: 6px;
   width: 100%;
 }
 
 .puzzle-book {
-  width: 50px;
-  min-width: 46px;
-  height: 130px;
+  width: 52px;
+  min-width: 48px;
+  height: 140px;
   border-radius: 4px 4px 0 0;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-weight: bold;
-  font-size: 0.95rem;
-  transition: transform 0.15s;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  letter-spacing: 3px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  justify-content: space-around;
+  padding: 8px 4px;
+  color: #f7ede2;
+  transition: transform 0.15s, filter 0.15s;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+  border: 1px solid rgba(212, 175, 55, 0.3);
   touch-action: manipulation;
 }
 
 .puzzle-book:active {
   transform: translateY(6px);
-  filter: brightness(1.25);
+  filter: brightness(1.2);
 }
 
-.book-red { background: #962d22; }
-.book-blue { background: #1f618d; }
-.book-yellow { background: #b7950b; color: #222; }
-.book-green { background: #1e8449; }
+.book-sigil-svg {
+  width: 26px;
+  height: 26px;
+  filter: drop-shadow(0 0 2px rgba(241, 196, 15, 0.4));
+}
+
+.book-title-spine {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-family: serif;
+  color: #dfba73;
+}
+
+/* 金庫パズルモーダル & コード表示 */
+.safe-code-card {
+  background: #151b22;
+  border: 2px solid #58d68d;
+  border-radius: 8px;
+  padding: 18px 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.safe-code-label {
+  font-size: 0.88rem;
+  color: #aed6f1;
+  letter-spacing: 1px;
+}
+
+.safe-code-box {
+  background: #fbf7ee;
+  color: #1a1209;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 6px;
+  display: inline-block;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
 
 /* 机の引き出しUI */
 .drawer-container {

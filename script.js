@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'music_box',
       name: '真鍮の小箱',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="8" y="10" width="24" height="20" fill="#b78727" stroke="#684a0d" stroke-width="2" rx="3"/><circle cx="20" cy="20" r="4" fill="#684a0d"/><circle cx="12" cy="14" r="1.5" fill="#333"/><circle cx="28" cy="14" r="1.5" fill="#333"/><circle cx="12" cy="26" r="1.5" fill="#333"/><circle cx="28" cy="26" r="1.5" fill="#333"/></svg>`,
-      desc: 'ソファの隙間に挟まっていた頑丈な金属小箱。裏蓋が4隅の小さなネジで固く留められている。\n【調べる】で工具を使って開けられそうだ。'
+      desc: 'ソファの隙間に挟まっていた頑丈な金属小箱。裏蓋が4隅のネジで留められている。【調べる】で工具を使って開けられそうだ。'
     },
     silver_key: {
       id: 'silver_key',
@@ -302,13 +302,13 @@ document.addEventListener('DOMContentLoaded', () => {
       objPoker.style.display = state.hasPoker ? 'none' : 'block';
     }
 
-    // 本棚スライドと壁金庫
+    // 本棚スライドと壁金庫 (広々と露出させてタップしやすく)
     const objSafe = document.getElementById('obj-wall-safe');
     const objBookshelf = document.getElementById('obj-bookshelf');
     if (objSafe && objBookshelf) {
       if (state.booksPuzzleSolved) {
         objSafe.style.display = 'block';
-        objBookshelf.setAttribute('transform', 'translate(70, 0)');
+        objBookshelf.setAttribute('transform', 'translate(140, 0)');
       } else {
         objSafe.style.display = 'none';
         objBookshelf.removeAttribute('transform');
@@ -854,7 +854,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 天体日誌モーダル
+  // 天体日誌モーダル (二重ヒントを解消し、絵画の謎と結びつける)
   function openDiaryModal() {
     const content = `
       <div class="zoom-view-header">
@@ -865,14 +865,13 @@ document.addEventListener('DOMContentLoaded', () => {
           <h4>星辰の記録と隠された理</h4>
           <p>『夜空を統べる天球の星々は、光が失われし暗闇においてのみ、その真の巡りを示す。』</p>
           <div class="diary-poem">
-            星の旅路は三つの門を通る。<br>
-            初めに、角ある春の火（牡羊 ♈）。<br>
-            次に、百獣を統べる真夏の陽（獅子 ♌）。<br>
-            最後に、天を射貫く秋の狩人（射手 ♐）。<br>
-            この順を過たず本を収めし時、隠されし金庫は扉を開かん。
+            部屋の灯火を消し、南の壁画《星辰の刻》を仰げ。<br>
+            暗闇の夜空に青白く浮かび上がる星辰の光――<br>
+            光が巡る軌跡の通りに、書斎の蔵書を押し込めよ。<br>
+            三つの星が正しく並びし時、壁の奥の金庫は扉を開かん。
           </div>
           <p style="margin-top:10px; font-size:0.85rem; color:#7f5539;">
-            追記：壁画に描かれし『星辰の刻』、すなわち短針が西（9）、長針が東（3）を指す刻限に、大時計は賢者への捧げ物を落とす。
+            追記：壁画に描かれし塔の時計――その短針と長針が指す刻限を、大時計に刻み込め。
           </p>
         </div>
       </div>
@@ -895,24 +894,54 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="zoom-body">
         <div class="bookshelf-puzzle-container">
-          <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
-            背表紙に天体シンボルが刻まれた古い書物が並んでいる。<br>
-            ${!state.isLightOn ? '<span style="color:#5dade2;">★ 暗闇の中でシンボルが青白く発光している！</span>' : '（部屋が明るい時は何の変哲もない古書に見える）'}
+          <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+            背表紙に天体シンボルが金箔押しされた重厚な書物が並んでいる。<br>
+            ${!state.isLightOn ? '<span style="color:#5dade2; font-weight:bold;">★ 暗闇の中でシンボルが青白く発光している！</span>' : '（壁画の星辰の軌跡に従って本を押し込もう）'}
           </p>
     `;
 
     if (!state.booksPuzzleSolved) {
       content += `
         <div class="shelf-row">
-          <button class="puzzle-book" data-symbol="♈" style="background:#5d3027; color:#f5b7b1;">♈<br><small>牡羊</small></button>
-          <button class="puzzle-book" data-symbol="♌" style="background:#1b3d54; color:#aed6f1;">♌<br><small>獅子</small></button>
-          <button class="puzzle-book" data-symbol="♐" style="background:#5c4d16; color:#f9e79f;">♐<br><small>射手</small></button>
-          <button class="puzzle-book" data-symbol="♏" style="background:#194d2e; color:#abebc6;">♏<br><small>蠍</small></button>
+          <!-- 牡羊 -->
+          <button class="puzzle-book" data-symbol="aries" style="background: linear-gradient(180deg, #5c261e 0%, #3a150f 100%);">
+            <svg class="book-sigil-svg" viewBox="0 0 24 24">
+              <path d="M 6,10 Q 6,4 12,8 Q 18,4 18,10 M 12,8 L 12,20" stroke="#f1c40f" stroke-width="2" fill="none"/>
+            </svg>
+            <span class="book-title-spine">白羊の書</span>
+          </button>
+
+          <!-- 獅子 -->
+          <button class="puzzle-book" data-symbol="leo" style="background: linear-gradient(180deg, #1b3d54 0%, #0c202e 100%);">
+            <svg class="book-sigil-svg" viewBox="0 0 24 24">
+              <circle cx="8" cy="14" r="3" stroke="#f1c40f" stroke-width="2" fill="none"/>
+              <path d="M 11,14 Q 15,6 17,11 Q 19,20 13,18" stroke="#f1c40f" stroke-width="2" fill="none"/>
+            </svg>
+            <span class="book-title-spine">獅子の書</span>
+          </button>
+
+          <!-- 射手 -->
+          <button class="puzzle-book" data-symbol="sagittarius" style="background: linear-gradient(180deg, #5e4912 0%, #362908 100%);">
+            <svg class="book-sigil-svg" viewBox="0 0 24 24">
+              <line x1="6" y1="18" x2="18" y2="6" stroke="#f1c40f" stroke-width="2.2"/>
+              <path d="M 11,6 L 18,6 L 18,13" stroke="#f1c40f" stroke-width="2" fill="none"/>
+              <line x1="10" y1="14" x2="16" y2="8" stroke="#f1c40f" stroke-width="1.8"/>
+            </svg>
+            <span class="book-title-spine">射手の書</span>
+          </button>
+
+          <!-- 蠍 -->
+          <button class="puzzle-book" data-symbol="scorpio" style="background: linear-gradient(180deg, #194d2e 0%, #0d2b19 100%);">
+            <svg class="book-sigil-svg" viewBox="0 0 24 24">
+              <path d="M 5,16 L 5,8 Q 8,4 10,8 L 10,16 Q 13,4 15,8 L 15,18 L 19,15" stroke="#f1c40f" stroke-width="1.8" fill="none"/>
+            </svg>
+            <span class="book-title-spine">天蠍の書</span>
+          </button>
         </div>
         <div style="font-size:0.85rem; color:#ecc57e; height:20px;">
-          押した順: ${state.booksSequence.join(' → ')}
+          押した順: ${state.booksSequence.map(s => ({ aries: '白羊', leo: '獅子', sagittarius: '射手', scorpio: '天蠍' }[s])).join(' → ')}
         </div>
-        <button id="btn-reset-books" class="clock-control-btns" style="padding:4px 10px; font-size:0.8rem; background:#332215; color:#ccc; border:1px solid #664b31; border-radius:4px; cursor:pointer;">並び順をやり直す</button>
+        <button id="btn-reset-books" class="clock-control-btns" style="padding:6px 14px; font-size:0.82rem; background:#332215; color:#ccc; border:1px solid #664b31; border-radius:4px; cursor:pointer;">並び順をやり直す</button>
       `;
     } else {
       content += `
@@ -949,8 +978,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleBookPress(sym) {
     state.booksSequence.push(sym);
-    // 正解順: ♈ → ♌ → ♐ (日誌＆絵画の軌跡)
-    const correct = ['♈', '♌', '♐'];
+    // 正解順: 白羊(aries) → 獅子(leo) → 射手(sagittarius)
+    const correct = ['aries', 'leo', 'sagittarius'];
     const curIdx = state.booksSequence.length - 1;
 
     if (state.booksSequence[curIdx] !== correct[curIdx]) {
@@ -1017,12 +1046,11 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else {
       content += `
-        <div style="background:#151b22; border:2px solid #58d68d; border-radius:8px; padding:20px; text-align:center;">
-          <p style="color:#58d68d; font-weight:bold; font-size:1.1rem; margin-bottom:10px;">★ 金庫が解錠された！ ★</p>
-          <div style="background:#fef9e7; color:#1e1e1e; padding:12px; border-radius:6px; font-family:monospace; font-size:1.15rem; font-weight:bold; letter-spacing:3px;">
-            大扉の解除コード：【 3928 】
-          </div>
-          <p style="color:#a8947d; font-size:0.85rem; margin-top:8px;">金庫の奥に羊皮紙のメモが保管されていた。</p>
+        <div class="safe-code-card">
+          <p style="color:#58d68d; font-weight:bold; font-size:1.05rem; margin-bottom:4px;">★ 金庫が解錠された！ ★</p>
+          <span class="safe-code-label">大扉の解除暗号コード</span>
+          <div class="safe-code-box">3928</div>
+          <p style="color:#a8947d; font-size:0.8rem; margin-top:6px;">金庫の奥に羊皮紙の暗号書が保管されていた。</p>
         </div>
       `;
     }
@@ -1131,8 +1159,8 @@ document.addEventListener('DOMContentLoaded', () => {
           </svg>
           <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
             ${!state.isLightOn
-              ? '<strong style="color:#5dade2;">暗闇の中で蓄光の星が浮かび上がった！<br>【♈ 牡羊 → ♌ 獅子 → ♐ 射手】の光の軌跡が見える。</strong>'
-              : '月明かりに浮かぶ古塔の絵画だ。<br>時計台の針は<strong style="color:#ecc57e;">『短針が9、長針が3』</strong>を指している。'}
+              ? '<strong style="color:#5dade2;">暗闇の中で蓄光の星が浮かび上がった！<br>星辰が線で結ばれ、光の軌跡を示している。</strong>'
+              : '月明かりに浮かぶ古塔の絵画《星辰の刻》だ。<br>中央の尖塔には古びた大時計が描かれている。'}
           </p>
         </div>
       </div>
