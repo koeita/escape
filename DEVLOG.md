@@ -76,6 +76,7 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 - **[.gitignore](file:///c:/Users/xcang/Desktop/Antigravity/escape/.gitignore) の策定**: Windows / macOS / VS Code / Node等の一時ファイルが混入しないよう除外ルールを整備。
 - **[DEVLOG.md](file:///c:/Users/xcang/Desktop/Antigravity/escape/DEVLOG.md) の作成**: プロジェクト全体の技術仕様、パズル全体の解法フローチャート、日付別開発記録、今後のリファクタリング計画を明文化。
 - **[README.md](file:///c:/Users/xcang/Desktop/Antigravity/escape/README.md) の作成**: オンラインプレイリンク、ストーリー、各ギミックの特徴、操作マニュアル、技術構成をまとめた公式プレイガイドを整備。
+- **GitHubリポジトリ設定 (About)**: リポジトリの概要説明文（Description: `『古びた書斎と賢者の鍵』- 本格ポイント＆クリック謎解き脱出Webゲーム`）および公開URL（Homepage: `https://escape.xcangcheng.workers.dev/`）を設定。
 
 ---
 
