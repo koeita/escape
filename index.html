@@ -281,15 +281,6 @@
                 <line x1="510" y1="281" x2="540" y2="278" stroke="#795548" stroke-width="1"/>
                 <line x1="512" y1="286" x2="542" y2="283" stroke="#795548" stroke-width="1"/>
               </g>
-
-              <!-- 机の脇に立てかけられた火かき棒（タップしやすい広大な透明ヒットエリア） -->
-              <g id="obj-poker" class="interactive" tabindex="0">
-                <!-- 透明ヒットボックス (指で押しやすい幅広エリア) -->
-                <rect x="330" y="240" width="55" height="200" fill="transparent"/>
-                <line x1="375" y1="260" x2="350" y2="430" stroke="#95a5a6" stroke-width="4" stroke-linecap="round"/>
-                <path d="M 375,260 Q 382,248 370,246" stroke="#95a5a6" stroke-width="3.5" fill="none"/>
-                <path d="M 350,430 L 358,422" stroke="#95a5a6" stroke-width="3.5"/>
-              </g>
             </g>
 
             <!-- 暗闇オーバーレイ (東) -->
@@ -408,6 +399,27 @@
               <rect x="545" y="260" width="45" height="100" rx="12" fill="#58231a" stroke="#2b0e0a" stroke-width="2"/>
               <rect x="240" y="370" width="15" height="20" fill="#23130c"/>
               <rect x="545" y="370" width="15" height="20" fill="#23130c"/>
+            </g>
+
+            <!-- ソファ横のサイドテーブル & 真鍮の天球儀 (西側の新ギミック) -->
+            <g id="obj-armillary" class="interactive" tabindex="0">
+              <!-- 広めの透明ヒットエリア -->
+              <rect x="590" y="220" width="110" height="180" fill="transparent"/>
+              <!-- サイドテーブル天板と脚 -->
+              <ellipse cx="645" cy="320" rx="45" ry="14" fill="#5c381e" stroke="#2c1708" stroke-width="2"/>
+              <rect x="640" y="325" width="10" height="90" fill="#3d2311"/>
+              <polygon points="630,415 660,415 650,400 640,400" fill="#241407"/>
+
+              <!-- 天球儀の台座と支柱 -->
+              <ellipse cx="645" cy="305" rx="16" ry="5" fill="#8c6a3e" stroke="#4a3418" stroke-width="1.5"/>
+              <rect x="643" y="280" width="4" height="25" fill="#d4af37"/>
+              <path d="M 645,280 Q 665,280 665,255 Q 665,230 645,230 Q 625,230 625,255 Q 625,280 645,280" fill="none" stroke="#b78727" stroke-width="2.5"/>
+
+              <!-- 天球儀の球体リング (真鍮の同心円リング) -->
+              <circle cx="645" cy="255" r="18" fill="none" stroke="#f1c40f" stroke-width="1.5"/>
+              <ellipse cx="645" cy="255" rx="18" ry="7" fill="none" stroke="#f39c12" stroke-width="1.2" transform="rotate(-25 645 255)"/>
+              <ellipse cx="645" cy="255" rx="7" ry="18" fill="none" stroke="#e67e22" stroke-width="1.2"/>
+              <circle cx="645" cy="255" r="4" fill="#3498db" id="armillary-core-mini"/>
             </g>
 
             <!-- 床のペルシャ風絨毯 (手前) -->

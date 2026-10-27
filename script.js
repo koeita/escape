@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="20" cy="20" r="13" fill="#1b2631" stroke="#f1c40f" stroke-width="2.5"/><polygon points="20,11 22,17 28,17 23,21 25,27 20,23 15,27 17,21 12,17 18,17" fill="#f1c40f"/><circle cx="20" cy="20" r="2.5" fill="#1b2631"/></svg>`,
       desc: '小箱の中から見つかった青銅と真鍮の円盤。中央に星の紋様が刻まれ、何かの台座にはめる突起がある。'
     },
+    armillary_pin: {
+      id: 'armillary_pin',
+      name: '星型の真鍮ピン',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><polygon points="20,6 23,15 32,15 25,20 27,29 20,24 13,29 15,20 8,15 17,15" fill="#f1c40f" stroke="#b78727" stroke-width="1.5"/><line x1="20" y1="24" x2="20" y2="34" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/></svg>`,
+      desc: '壁金庫の中に暗号メモと共に納められていた小さな真鍮ピン。天球儀のロック穴にぴったり合いそうだ。'
+    },
     switch_key: {
       id: 'switch_key',
       name: '端子盤の鍵',
@@ -94,6 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
       safeDiscInserted: false,
       safeAngle: 0,
       safeUnlocked: false,
+      hasArmillaryPin: false,
+      armillaryPinInserted: false,
+      armillaryAngle: 90,
+      armillaryOpened: false,
       clockHour: 12,
       clockMinute: 0,
       clockPuzzleSolved: false,
@@ -171,6 +181,10 @@ document.addEventListener('DOMContentLoaded', () => {
           safeDiscInserted: state.safeDiscInserted,
           safeAngle: state.safeAngle,
           safeUnlocked: state.safeUnlocked,
+          hasArmillaryPin: state.hasArmillaryPin,
+          armillaryPinInserted: state.armillaryPinInserted,
+          armillaryAngle: state.armillaryAngle,
+          armillaryOpened: state.armillaryOpened,
           clockHour: state.clockHour,
           clockMinute: state.clockMinute,
           clockPuzzleSolved: state.clockPuzzleSolved,
@@ -222,6 +236,10 @@ document.addEventListener('DOMContentLoaded', () => {
     state.safeDiscInserted = !!s.safeDiscInserted;
     state.safeAngle = s.safeAngle || 0;
     state.safeUnlocked = !!s.safeUnlocked;
+    state.hasArmillaryPin = !!s.hasArmillaryPin;
+    state.armillaryPinInserted = !!s.armillaryPinInserted;
+    state.armillaryAngle = s.armillaryAngle !== undefined ? s.armillaryAngle : 90;
+    state.armillaryOpened = !!s.armillaryOpened;
     state.clockHour = s.clockHour || 12;
     state.clockMinute = s.clockMinute || 0;
     state.clockPuzzleSolved = !!s.clockPuzzleSolved;
@@ -686,7 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 2. 西側：絨毯（ドライバー）とソファ（真鍮小箱）
+  // 2. 西側：絨毯（ドライバー）、ソファ（真鍮小箱）、天球儀（火かき棒）
   const elCarpet = document.getElementById('obj-carpet');
   if (elCarpet) {
     elCarpet.addEventListener('click', () => {
@@ -725,6 +743,131 @@ document.addEventListener('DOMContentLoaded', () => {
         setMessage('座り心地のよい革張りソファだ。もう隙間には何もない。');
       }
     });
+  }
+
+  // 天球儀（西側サイドテーブルの新ギミック）
+  const elArmillary = document.getElementById('obj-armillary');
+  if (elArmillary) {
+    elArmillary.addEventListener('click', () => {
+      openArmillaryModal();
+    });
+  }
+
+  function openArmillaryModal() {
+    let content = `
+      <div class="zoom-view-header">
+        <h3>真鍮の天球儀</h3>
+      </div>
+      <div class="zoom-body">
+        <div class="armillary-puzzle-container">
+    `;
+
+    if (!state.armillaryPinInserted) {
+      content += `
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          細密な真鍮リングで構成された天球儀だ。<br>
+          軸の根元に「星型の穴」があり、ピンでロックされていて回らない。
+        </p>
+        <div class="armillary-stage">
+          <svg class="armillary-sphere-svg" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#b78727" stroke-width="3"/>
+            <ellipse cx="50" cy="50" rx="42" ry="16" fill="none" stroke="#f1c40f" stroke-width="2.5" transform="rotate(-30 50 50)"/>
+            <ellipse cx="50" cy="50" rx="16" ry="42" fill="none" stroke="#e67e22" stroke-width="2.5"/>
+            <!-- 中央ロック穴 -->
+            <circle cx="50" cy="50" r="8" fill="#1b120c" stroke="#d4af37" stroke-width="2"/>
+            <polygon points="50,45 51.5,48 55,48 52,50 53,54 50,52 47,54 48,50 45,48 48.5,48" fill="#f1c40f"/>
+          </svg>
+        </div>
+        ${getItemPickerHtml('ロック穴に使うアイテムを選んでください')}
+      `;
+    } else if (!state.armillaryOpened) {
+      content += `
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          星型ピンでロックが解除された！<br>
+          リングをタップして回転させ、天頂（真上/0度）に合わせよう。
+        </p>
+        <div class="armillary-stage">
+          <svg class="armillary-sphere-svg" id="btn-rotate-armillary" viewBox="0 0 100 100" style="cursor:pointer; transform: rotate(${state.armillaryAngle}deg); transition: transform 0.25s ease;">
+            <circle cx="50" cy="50" r="42" fill="none" stroke="#b78727" stroke-width="3"/>
+            <ellipse cx="50" cy="50" rx="42" ry="16" fill="none" stroke="#f1c40f" stroke-width="3"/>
+            <ellipse cx="50" cy="50" rx="16" ry="42" fill="none" stroke="#e67e22" stroke-width="3"/>
+            <!-- 天頂ポインタ -->
+            <polygon points="50,6 45,14 55,14" fill="#3498db" stroke="#2980b9" stroke-width="1"/>
+            <circle cx="50" cy="50" r="6" fill="#f39c12"/>
+          </svg>
+        </div>
+        <p style="font-size:0.8rem; color:#f39c12;">現在角度: ${state.armillaryAngle}度（0度で真上）</p>
+        <button id="btn-open-armillary" class="btn-primary" style="margin-top:4px;">天球儀を開く</button>
+      `;
+    } else {
+      content += `
+        <div style="background:#151b22; border:2px solid #58d68d; border-radius:8px; padding:18px; text-align:center;">
+          <p style="color:#58d68d; font-weight:bold; font-size:1.05rem; margin-bottom:8px;">★ 天球儀の仕掛けが解放された ★</p>
+          <div style="width:120px; height:80px; margin:10px auto; display:flex; align-items:center; justify-content:center;">
+            <span style="font-size:44px;">🌐✨</span>
+          </div>
+          <p style="color:#f7ede2; font-size:0.9rem;">内部の空洞から「真鍮の火かき棒」を取り出した。</p>
+        </div>
+      `;
+    }
+
+    content += `</div></div>`;
+    openModal(content);
+
+    if (!state.armillaryPinInserted) {
+      const tryInsertPin = (itemId) => {
+        if (itemId === 'armillary_pin') {
+          soundManager.playUnlock();
+          state.armillaryPinInserted = true;
+          removeItem('armillary_pin');
+          saveGame();
+          setMessage('カチリ！ 星型の真鍮ピンが吸い込まれるように嵌り、ロックが解除された！');
+          openArmillaryModal();
+        } else {
+          soundManager.playClick();
+          setMessage('このアイテムはロック穴に合わない。');
+        }
+      };
+
+      const itemBtns = elModalContent.querySelectorAll('.btn-use-item');
+      itemBtns.forEach(btn => {
+        btn.onclick = () => {
+          const itemId = btn.getAttribute('data-item-id');
+          state.selectedItem = itemId;
+          renderInventory();
+          tryInsertPin(itemId);
+        };
+      });
+    } else if (!state.armillaryOpened) {
+      const sphereBtn = document.getElementById('btn-rotate-armillary');
+      if (sphereBtn) {
+        sphereBtn.onclick = () => {
+          soundManager.playTick();
+          state.armillaryAngle = (state.armillaryAngle + 45) % 360;
+          openArmillaryModal();
+        };
+      }
+
+      const btnOpen = document.getElementById('btn-open-armillary');
+      if (btnOpen) {
+        btnOpen.onclick = () => {
+          // 0度(真上)で成功
+          if (state.armillaryAngle === 0) {
+            soundManager.playSolved();
+            state.armillaryOpened = true;
+            saveGame();
+            setMessage('ガシャリ！ 天球儀の球体が左右に開き、中から「真鍮の火かき棒」が現れた！');
+            setTimeout(() => {
+              addItem('poker');
+              openArmillaryModal();
+            }, 400);
+          } else {
+            soundManager.playClick();
+            setMessage('カチャ…まだ球体が固定されている。天頂の角度（0度）に合わせよう。');
+          }
+        };
+      }
+    }
   }
 
   // 3. 東側：机と引き出し
@@ -838,20 +981,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       }
     }
-  }
-
-  // 机の脇の火かき棒
-  const elPoker = document.getElementById('obj-poker');
-  if (elPoker) {
-    elPoker.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (!state.hasPoker) {
-        state.hasPoker = true;
-        saveGame();
-        updateRoomDomState();
-        addItem('poker');
-      }
-    });
   }
 
   // 天体日誌モーダル (時計の謎専用・東西の方位から推測させる)
@@ -1083,8 +1212,20 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="safe-code-label">大扉の解除暗号コード</span>
           <div class="safe-code-box">3928</div>
           <p style="color:#a8947d; font-size:0.8rem; margin-top:6px;">金庫の奥に羊皮紙の暗号書が保管されていた。</p>
-        </div>
       `;
+
+      if (!state.hasArmillaryPin) {
+        content += `
+          <div style="margin-top:12px; border-top:1px dashed #543c26; padding-top:10px; width:100%;">
+            <p style="font-size:0.85rem; color:#f39c12; margin-bottom:8px;">暗号書の脇に小さな真鍮ピンが落ちている！</p>
+            <button id="btn-take-armillary-pin" class="btn-primary" style="font-size:0.88rem; padding:8px 16px;">
+              星型の真鍮ピンを取る
+            </button>
+          </div>
+        `;
+      }
+
+      content += `</div>`;
     }
 
     content += `</div></div>`;
@@ -1140,6 +1281,16 @@ document.addEventListener('DOMContentLoaded', () => {
             soundManager.playClick();
             setMessage('レバーが重くて動かない。星の角度が合っていないようだ。');
           }
+        };
+      }
+    } else {
+      const btnTakePin = document.getElementById('btn-take-armillary-pin');
+      if (btnTakePin) {
+        btnTakePin.onclick = () => {
+          state.hasArmillaryPin = true;
+          saveGame();
+          addItem('armillary_pin');
+          openSafeModal();
         };
       }
     }
