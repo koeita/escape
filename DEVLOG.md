@@ -28,6 +28,7 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 ├── style.css        # アンティーク調UIデザイン、レスポンシブ組版、アニメーション
 ├── se.js            # Web Audio API シンセ効果音マネージャー
 ├── DEVLOG.md        # 本開発日記・技術ドキュメント（日付別運用）
+├── README.md        # プロジェクト概要・プレイガイド
 └── .gitignore       # OS一時ファイル・エディタ設定等のGit除外設定
 ```
 
@@ -74,6 +75,7 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 #### 4. 環境整備 & ドキュメンテーション (16:50〜17:35)
 - **[.gitignore](file:///c:/Users/xcang/Desktop/Antigravity/escape/.gitignore) の策定**: Windows / macOS / VS Code / Node等の一時ファイルが混入しないよう除外ルールを整備。
 - **[DEVLOG.md](file:///c:/Users/xcang/Desktop/Antigravity/escape/DEVLOG.md) の作成**: プロジェクト全体の技術仕様、パズル全体の解法フローチャート、日付別開発記録、今後のリファクタリング計画を明文化。
+- **[README.md](file:///c:/Users/xcang/Desktop/Antigravity/escape/README.md) の作成**: オンラインプレイリンク、ストーリー、各ギミックの特徴、操作マニュアル、技術構成をまとめた公式プレイガイドを整備。
 
 ---
 
