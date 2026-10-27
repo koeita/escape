@@ -171,6 +171,31 @@ document.addEventListener('DOMContentLoaded', () => {
     elItemDetailModal.classList.remove('modal-hidden');
   }
 
+  // --- アイテム選択UI生成ヘルパー ---
+  function getItemPickerHtml(actionTitle) {
+    if (state.inventory.length === 0) {
+      return `
+        <div class="item-picker-container">
+          <span class="item-picker-title">${actionTitle}</span>
+          <p style="font-size:0.8rem; color:#a8947d;">（所持アイテムはありません。部屋を探索してみよう）</p>
+        </div>
+      `;
+    }
+    return `
+      <div class="item-picker-container">
+        <span class="item-picker-title">${actionTitle}</span>
+        <div class="item-picker-list">
+          ${state.inventory.map(item => `
+            <button type="button" class="item-picker-btn btn-use-item" data-item-id="${item.id}">
+              ${item.icon}
+              <span>${item.name}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
   // --- モーダル制御 ---
   function openModal(contentHtml) {
     elModalContent.innerHTML = contentHtml;
@@ -235,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="drawer-box">
             <div id="modal-drawer-keyhole" class="drawer-keyhole" title="鍵穴"></div>
           </div>
-          <p style="font-size:0.8rem; color:#a8947d;">アイテムを選んで鍵穴を調べよう</p>
+          ${getItemPickerHtml('鍵穴に使うアイテムを選んでください')}
       `;
     } else {
       innerHtml += `
@@ -275,21 +300,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // イベントリスナー設定
     if (!state.drawerUnlocked) {
+      const tryUnlockWithItem = (itemId) => {
+        if (itemId === 'silver_key') {
+          soundManager.playUnlock();
+          state.drawerUnlocked = true;
+          removeItem('silver_key');
+          setMessage('銀の鍵がカチリと回った！ 引き出しが開いた。');
+          openDeskDrawerModal();
+        } else {
+          soundManager.playClick();
+          setMessage('このアイテムでは鍵穴に合わないようだ。');
+        }
+      };
+
       const keyhole = document.getElementById('modal-drawer-keyhole');
       if (keyhole) {
         keyhole.onclick = () => {
-          if (state.selectedItem === 'silver_key') {
-            soundManager.playUnlock();
-            state.drawerUnlocked = true;
-            removeItem('silver_key');
-            setMessage('銀の鍵がカチリと回った！ 引き出しが開いた。');
-            openDeskDrawerModal();
+          if (state.selectedItem) {
+            tryUnlockWithItem(state.selectedItem);
           } else {
             soundManager.playClick();
-            setMessage('鍵穴がある。銀の鍵が必要なようだ。');
+            setMessage('鍵穴がある。使うアイテムを選んでください。');
           }
         };
       }
+
+      // アイテム選択ピッカーのボタンクリック
+      const itemBtns = elModalContent.querySelectorAll('.btn-use-item');
+      itemBtns.forEach(btn => {
+        btn.onclick = () => {
+          const itemId = btn.getAttribute('data-item-id');
+          state.selectedItem = itemId;
+          renderInventory();
+          tryUnlockWithItem(itemId);
+        };
+      });
     } else {
       const btnBrush = document.getElementById('btn-take-brush');
       if (btnBrush) {
@@ -441,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </svg>
           <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
             月明かりに浮かぶ古塔の絵画だ。<br>
-            中央の時計台の針は<strong style="color:#ecc57e;">『短針が9、長針が3（15分）』</strong>を指している。
+            中央の時計台の針は<strong style="color:#ecc57e;">『短針が9、長針が3』</strong>を指している。
           </p>
         </div>
       </div>
@@ -473,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
               灰が分厚く積もっている
             </div>
           </div>
-          <p style="color:#d5cac0; font-size:0.85rem;">灰で奥が覆われていて見えない。ブラシがあれば払えそうだ。</p>
+          ${getItemPickerHtml('灰を払うアイテムを選んでください')}
       `;
     } else {
       content += `
@@ -493,21 +538,40 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal(content);
 
     if (!state.fireplaceCleaned) {
+      const tryCleanWithItem = (itemId) => {
+        if (itemId === 'brush') {
+          soundManager.playBrush();
+          state.fireplaceCleaned = true;
+          document.getElementById('fireplace-plate-hint').style.opacity = '1';
+          setMessage('ブラシで灰を払い落とした！ 奥から金属プレートが現れた。');
+          openFireplaceModal();
+        } else {
+          soundManager.playClick();
+          setMessage('この道具では灰をうまく払えないようだ。');
+        }
+      };
+
       const ashArea = document.getElementById('ash-click-area');
       if (ashArea) {
         ashArea.onclick = () => {
-          if (state.selectedItem === 'brush') {
-            soundManager.playBrush();
-            state.fireplaceCleaned = true;
-            document.getElementById('fireplace-plate-hint').style.opacity = '1';
-            setMessage('ブラシで灰を払い落とした！ 奥から金属プレートが現れた。');
-            openFireplaceModal();
+          if (state.selectedItem) {
+            tryCleanWithItem(state.selectedItem);
           } else {
             soundManager.playClick();
-            setMessage('素手で触ると煤だらけになりそうだ。掃除する道具が必要だ。');
+            setMessage('灰が積もっている。払うためのアイテムを選んでください。');
           }
         };
       }
+
+      const itemBtns = elModalContent.querySelectorAll('.btn-use-item');
+      itemBtns.forEach(btn => {
+        btn.onclick = () => {
+          const itemId = btn.getAttribute('data-item-id');
+          state.selectedItem = itemId;
+          renderInventory();
+          tryCleanWithItem(itemId);
+        };
+      });
     }
   }
 
@@ -520,11 +584,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function openClockModal() {
-    // 角度計算
-    // 短針: 1時間あたり30度 + 1分あたり0.5度
+    // 角度計算 (12時が上)
     const hourAngle = (state.clockHour % 12) * 30 + (state.clockMinute / 60) * 30;
-    // 長針: 1分あたり6度
     const minuteAngle = state.clockMinute * 6;
+
+    // 三角関数で正確な座標を直接算出 (CSS/SVGのtransformバグによる針消失を防止)
+    const cx = 110;
+    const cy = 110;
+    const hourRad = (hourAngle - 90) * Math.PI / 180;
+    const minRad = (minuteAngle - 90) * Math.PI / 180;
+
+    const hx2 = (cx + 42 * Math.cos(hourRad)).toFixed(1);
+    const hy2 = (cy + 42 * Math.sin(hourRad)).toFixed(1);
+    const mx2 = (cx + 66 * Math.cos(minRad)).toFixed(1);
+    const my2 = (cy + 66 * Math.sin(minRad)).toFixed(1);
 
     let content = `
       <div class="zoom-view-header">
@@ -542,12 +615,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <text x="110" y="186" font-size="18" font-family="serif" text-anchor="middle" fill="#333" font-weight="bold">6</text>
             <text x="40" y="116" font-size="18" font-family="serif" text-anchor="middle" fill="#333" font-weight="bold">9</text>
 
-            <!-- 短針 -->
-            <line x1="110" y1="110" x2="110" y2="65" stroke="#2c3e50" stroke-width="6" stroke-linecap="round"
-                  transform="rotate(${hourAngle} 110 110)" class="clock-hand"/>
-            <!-- 長針 -->
-            <line x1="110" y1="110" x2="110" y2="45" stroke="#b03a2e" stroke-width="4" stroke-linecap="round"
-                  transform="rotate(${minuteAngle} 110 110)" class="clock-hand"/>
+            <!-- 短針 (計算座標) -->
+            <line x1="110" y1="110" x2="${hx2}" y2="${hy2}" stroke="#2c3e50" stroke-width="6" stroke-linecap="round"/>
+            <!-- 長針 (計算座標) -->
+            <line x1="110" y1="110" x2="${mx2}" y2="${my2}" stroke="#b03a2e" stroke-width="4" stroke-linecap="round"/>
             <!-- 中心ピン -->
             <circle cx="110" cy="110" r="6" fill="#8c6a3e"/>
           </svg>
@@ -687,6 +758,8 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
+          ${!state.doorKeyUnlocked ? getItemPickerHtml('真鍮鍵穴に使うアイテムを選んでください') : ''}
+
           <button id="btn-escape-door" class="btn-primary" style="margin-top:10px;">
             扉を開ける
           </button>
@@ -720,24 +793,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 鍵穴操作
     const keyholeBtn = document.getElementById('btn-door-keyhole');
+    const tryUnlockDoorWithItem = (itemId) => {
+      if (state.doorKeyUnlocked) {
+        setMessage('鍵はすでに解除されている。');
+        return;
+      }
+      if (itemId === 'brass_key') {
+        soundManager.playUnlock();
+        state.doorKeyUnlocked = true;
+        removeItem('brass_key');
+        setMessage('真鍮の鍵がぴったりと合致し、重いシリンダーが解錠された！');
+        openDoorModal();
+      } else {
+        soundManager.playClick();
+        setMessage('このアイテムは真鍮鍵穴に合わないようだ。');
+      }
+    };
+
     if (keyholeBtn) {
       keyholeBtn.onclick = () => {
         if (state.doorKeyUnlocked) {
           setMessage('鍵はすでに解除されている。');
           return;
         }
-        if (state.selectedItem === 'brass_key') {
-          soundManager.playUnlock();
-          state.doorKeyUnlocked = true;
-          removeItem('brass_key');
-          setMessage('真鍮の鍵がぴったりと合致し、重いシリンダーが解錠された！');
-          openDoorModal();
+        if (state.selectedItem) {
+          tryUnlockDoorWithItem(state.selectedItem);
         } else {
           soundManager.playClick();
-          setMessage('重厚な鍵穴がある。ぴったりの鍵が必要だ。');
+          setMessage('重厚な鍵穴がある。使うアイテムを選んでください。');
         }
       };
     }
+
+    // 大扉モーダル内のアイテムピッカーボタン
+    const doorItemBtns = elModalContent.querySelectorAll('.btn-use-item');
+    doorItemBtns.forEach(btn => {
+      btn.onclick = () => {
+        const itemId = btn.getAttribute('data-item-id');
+        state.selectedItem = itemId;
+        renderInventory();
+        tryUnlockDoorWithItem(itemId);
+      };
+    });
 
     // ドアを開けるボタン
     const btnEscape = document.getElementById('btn-escape-door');

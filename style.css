@@ -6,7 +6,7 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent !important;
 }
 
 :root {
@@ -284,9 +284,25 @@ h1 {
   pointer-events: none;
 }
 
-/* モーダル共通 (スマホの縦長画面でもはみ出さない設計) */
+/* モーダル共通 (背景を黒く塗りつぶさず、部屋が見える半透明に) */
 #modal-overlay,
-#item-detail-modal,
+#item-detail-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 8, 6, 0.45); /* 部屋の背景が透けて見える自然な暗さ */
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease;
+}
+
 #game-clear-modal {
   position: absolute;
   top: 0;
@@ -808,6 +824,62 @@ h1 {
 @keyframes popIn {
   from { opacity: 0; transform: scale(0.85); }
   to { opacity: 1; transform: scale(1); }
+}
+
+/* アイテム選択ピッカーUI */
+.item-picker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  background: rgba(18, 14, 11, 0.9);
+  border: 1px solid #735436;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+  margin-top: 10px;
+  animation: fadeIn 0.2s ease;
+}
+
+.item-picker-title {
+  font-size: 0.85rem;
+  color: #dfba73;
+  letter-spacing: 0.5px;
+}
+
+.item-picker-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.item-picker-btn {
+  background: #2b1f16;
+  border: 1.5px solid #6b4d2e;
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #e5ded5;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  touch-action: manipulation;
+}
+
+.item-picker-btn:hover,
+.item-picker-btn:active {
+  background: #473220;
+  border-color: #f39c12;
+  color: #fff;
+  transform: scale(0.97);
+}
+
+.item-picker-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 /* スマホ縦持ち専用レイアウト (iPhone 15 / 16: 幅390〜430px程度) */
