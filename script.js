@@ -836,7 +836,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="width:120px; height:80px; margin:10px auto; display:flex; align-items:center; justify-content:center;">
             <span style="font-size:44px;">🌐✨</span>
           </div>
-          <p style="color:#f7ede2; font-size:0.9rem;">内部の空洞から「真鍮の火かき棒」を取り出した。</p>
+          <p style="color:#f7ede2; font-size:0.88rem; text-align:center;">
+            <span class="phrase">内部の空洞から</span><span class="phrase">「真鍮の火かき棒」を取り出した。</span>
+          </p>
         </div>
       `;
     }
@@ -919,7 +921,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!state.drawerUnlocked) {
       content += `
-        <p style="color:#d5cac0; font-size:0.9rem;">上段の引き出しには銀色の小さな鍵穴がついている。</p>
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          <span class="phrase">上段の引き出しには</span><span class="phrase">銀色の小さな鍵穴がついている。</span>
+        </p>
         <div class="drawer-box">
           <div id="modal-drawer-keyhole" class="drawer-keyhole"></div>
         </div>
@@ -937,12 +941,12 @@ document.addEventListener('DOMContentLoaded', () => {
           </button>
         `;
       } else {
-        content += `<p style="color:#888; font-size:0.85rem;">引き出しの中はもう空だ。</p>`;
+        content += `<p style="color:#888; font-size:0.85rem; text-align:center;"><span class="phrase">引き出しの中は</span><span class="phrase">もう空だ。</span></p>`;
       }
       content += `
           </div>
         </div>
-        <p style="color:#ecc57e; font-size:0.9rem;">引き出しが開いている。</p>
+        <p style="color:#ecc57e; font-size:0.88rem; text-align:center;"><span class="phrase">引き出しが開いている。</span></p>
       `;
     }
 
@@ -1243,13 +1247,17 @@ document.addEventListener('DOMContentLoaded', () => {
           <p style="color:#58d68d; font-weight:bold; font-size:1.05rem; margin-bottom:4px;">★ 金庫が解錠された！ ★</p>
           <span class="safe-code-label">大扉の解除暗号コード</span>
           <div class="safe-code-box">3928</div>
-          <p style="color:#a8947d; font-size:0.8rem; margin-top:6px;">金庫の奥に羊皮紙の暗号書が保管されていた。</p>
+          <p style="color:#a8947d; font-size:0.8rem; margin-top:6px; text-align:center;">
+            <span class="phrase">金庫の奥に</span><span class="phrase">羊皮紙の暗号書が保管されていた。</span>
+          </p>
       `;
 
       if (!state.hasArmillaryPin) {
         content += `
           <div style="margin-top:12px; border-top:1px dashed #543c26; padding-top:10px; width:100%;">
-            <p style="font-size:0.85rem; color:#f39c12; margin-bottom:8px;">暗号書の脇に小さな真鍮ピンが落ちている！</p>
+            <p style="font-size:0.85rem; color:#f39c12; margin-bottom:8px; text-align:center;">
+              <span class="phrase">暗号書の脇に</span><span class="phrase">小さな真鍮ピンが落ちている！</span>
+            </p>
             <button id="btn-take-armillary-pin" class="btn-primary" style="font-size:0.88rem; padding:8px 16px;">
               星型の真鍮ピンを取る
             </button>
@@ -1426,8 +1434,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else if (!state.hasEmblem) {
       content += `
-        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
-          鉄格子が外れた！ 灰の中に何か光る金属が埋もれている。
+        <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
+          <span class="phrase">鉄格子が外れた！</span><span class="phrase">灰の中に何か光る金属が</span><span class="phrase">埋もれている。</span>
         </p>
         <button id="btn-take-emblem" class="btn-primary" style="margin:16px 0;">
           灰の中から光るメダルを拾い上げる
@@ -1435,8 +1443,8 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else {
       content += `
-        <p style="color:#a8947d; font-size:0.9rem; text-align:center;">
-          灰の中はもう探り尽くした。
+        <p style="color:#a8947d; font-size:0.88rem; text-align:center;">
+          <span class="phrase">灰の中は</span><span class="phrase">もう探り尽くした。</span>
         </p>
       `;
     }
@@ -1533,7 +1541,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <button id="btn-clock-hour">+1 時間</button>
           <button id="btn-clock-min">+15 分</button>
         </div>
-        <p style="color:#d5cac0; font-size:0.85rem; text-align:center;">天体日誌に記された【西】と【東】の方位にならい、針を合わせよう。</p>
+        <p style="color:#d5cac0; font-size:0.85rem; text-align:center;">
+          <span class="phrase">天体日誌に記された</span><span class="phrase">【西】と【東】の方位にならい、</span><span class="phrase">針を合わせよう。</span>
+        </p>
       `;
     } else {
       content += `
@@ -1542,13 +1552,15 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       if (!state.hasBrokenKey) {
         content += `
-          <p style="color:#f7f9f9; font-size:0.9rem; margin-bottom:12px;">振り子室の底から真鍮の鍵身が落ちてきた！</p>
+          <p style="color:#f7f9f9; font-size:0.9rem; margin-bottom:12px;">
+            <span class="phrase">振り子室の底から</span><span class="phrase">真鍮の鍵身が落ちてきた！</span>
+          </p>
           <button id="btn-take-broken-key" class="btn-primary" style="font-size:0.9rem;">
             鍵身を拾い上げる
           </button>
         `;
       } else {
-        content += `<p style="color:#a8947d; font-size:0.85rem;">パーツは回収済みだ。</p>`;
+        content += `<p style="color:#a8947d; font-size:0.85rem;"><span class="phrase">パーツは</span><span class="phrase">回収済みだ。</span></p>`;
       }
       content += `</div>`;
     }
