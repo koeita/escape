@@ -854,7 +854,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 天体日誌モーダル (二重ヒントを解消し、絵画の謎と結びつける)
+  // 天体日誌モーダル (時計の謎専用・東西の方位から推測させる)
   function openDiaryModal() {
     const content = `
       <div class="zoom-view-header">
@@ -862,16 +862,15 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="zoom-body">
         <div class="diary-page">
-          <h4>星辰の記録と隠された理</h4>
-          <p>『夜空を統べる天球の星々は、光が失われし暗闇においてのみ、その真の巡りを示す。』</p>
+          <h4>星辰の記録と刻を司る針</h4>
+          <p>『かつて賢者は、古時計の二つの針を大いなる天体の運行になぞらえた。』</p>
           <div class="diary-poem">
-            部屋の灯火を消し、南の壁画《星辰の刻》を仰げ。<br>
-            暗闇の夜空に青白く浮かび上がる星辰の光――<br>
-            光が巡る軌跡の通りに、書斎の蔵書を押し込めよ。<br>
-            三つの星が正しく並びし時、壁の奥の金庫は扉を開かん。
+            重厚なる短針は、黄昏の陽が沈みゆく【西】の地平へ。<br>
+            軽やかなる長針は、黎明の光が生まれ出ずる【東】の空へ。<br>
+            二つの針が正しく天の運行を指し示し時、古時計は賢者への捧げ物を落とすであろう。
           </div>
-          <p style="margin-top:10px; font-size:0.85rem; color:#7f5539;">
-            追記：壁画に描かれし塔の時計――その短針と長針が指す刻限を、大時計に刻み込め。
+          <p style="margin-top:12px; font-size:0.85rem; color:#7f5539;">
+            ※文字盤の頂点（12）を北とするならば、針が指すべき方角はおのずと定まる。
           </p>
         </div>
       </div>
@@ -894,52 +893,85 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="zoom-body">
         <div class="bookshelf-puzzle-container">
-          <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
-            背表紙に天体シンボルが金箔押しされた重厚な書物が並んでいる。<br>
-            ${!state.isLightOn ? '<span style="color:#5dade2; font-weight:bold;">★ 暗闇の中でシンボルが青白く発光している！</span>' : '（壁画の星辰の軌跡に従って本を押し込もう）'}
+          <p style="color:#d5cac0; font-size:0.85rem; text-align:center;">
+            背表紙に天体シンボルが刻印された7冊の書物が並んでいる。<br>
+            ${!state.isLightOn
+              ? '<span style="color:#5dade2; font-weight:bold;">★ 暗闇の中でシンボルが青白く発光している！</span>'
+              : '（部屋の明かりを消すと、夜空の絵画と共鳴するかもしれない）'}
           </p>
     `;
 
     if (!state.booksPuzzleSolved) {
       content += `
         <div class="shelf-row">
-          <!-- 牡羊 -->
+          <!-- 1. 白羊 -->
           <button class="puzzle-book" data-symbol="aries" style="background: linear-gradient(180deg, #5c261e 0%, #3a150f 100%);">
             <svg class="book-sigil-svg" viewBox="0 0 24 24">
               <path d="M 6,10 Q 6,4 12,8 Q 18,4 18,10 M 12,8 L 12,20" stroke="#f1c40f" stroke-width="2" fill="none"/>
             </svg>
-            <span class="book-title-spine">白羊の書</span>
+            <span class="book-title-spine">白羊</span>
           </button>
 
-          <!-- 獅子 -->
+          <!-- 2. 金牛 -->
+          <button class="puzzle-book" data-symbol="taurus" style="background: linear-gradient(180deg, #2d4030 0%, #152418 100%);">
+            <svg class="book-sigil-svg" viewBox="0 0 24 24">
+              <circle cx="12" cy="14" r="4" stroke="#f1c40f" stroke-width="2" fill="none"/>
+              <path d="M 6,7 Q 12,12 18,7" stroke="#f1c40f" stroke-width="2" fill="none"/>
+            </svg>
+            <span class="book-title-spine">金牛</span>
+          </button>
+
+          <!-- 3. 双子 -->
+          <button class="puzzle-book" data-symbol="gemini" style="background: linear-gradient(180deg, #4a3b2c 0%, #2a2016 100%);">
+            <svg class="book-sigil-svg" viewBox="0 0 24 24">
+              <line x1="6" y1="6" x2="18" y2="6" stroke="#f1c40f" stroke-width="2"/>
+              <line x1="6" y1="18" x2="18" y2="18" stroke="#f1c40f" stroke-width="2"/>
+              <line x1="9" y1="6" x2="9" y2="18" stroke="#f1c40f" stroke-width="2"/>
+              <line x1="15" y1="6" x2="15" y2="18" stroke="#f1c40f" stroke-width="2"/>
+            </svg>
+            <span class="book-title-spine">双子</span>
+          </button>
+
+          <!-- 4. 巨蟹 -->
+          <button class="puzzle-book" data-symbol="cancer" style="background: linear-gradient(180deg, #512e5f 0%, #2e1738 100%);">
+            <svg class="book-sigil-svg" viewBox="0 0 24 24">
+              <circle cx="8" cy="10" r="3" stroke="#f1c40f" stroke-width="2" fill="none"/>
+              <circle cx="16" cy="14" r="3" stroke="#f1c40f" stroke-width="2" fill="none"/>
+            </svg>
+            <span class="book-title-spine">巨蟹</span>
+          </button>
+
+          <!-- 5. 獅子 -->
           <button class="puzzle-book" data-symbol="leo" style="background: linear-gradient(180deg, #1b3d54 0%, #0c202e 100%);">
             <svg class="book-sigil-svg" viewBox="0 0 24 24">
               <circle cx="8" cy="14" r="3" stroke="#f1c40f" stroke-width="2" fill="none"/>
               <path d="M 11,14 Q 15,6 17,11 Q 19,20 13,18" stroke="#f1c40f" stroke-width="2" fill="none"/>
             </svg>
-            <span class="book-title-spine">獅子の書</span>
+            <span class="book-title-spine">獅子</span>
           </button>
 
-          <!-- 射手 -->
-          <button class="puzzle-book" data-symbol="sagittarius" style="background: linear-gradient(180deg, #5e4912 0%, #362908 100%);">
-            <svg class="book-sigil-svg" viewBox="0 0 24 24">
-              <line x1="6" y1="18" x2="18" y2="6" stroke="#f1c40f" stroke-width="2.2"/>
-              <path d="M 11,6 L 18,6 L 18,13" stroke="#f1c40f" stroke-width="2" fill="none"/>
-              <line x1="10" y1="14" x2="16" y2="8" stroke="#f1c40f" stroke-width="1.8"/>
-            </svg>
-            <span class="book-title-spine">射手の書</span>
-          </button>
-
-          <!-- 蠍 -->
+          <!-- 6. 天蠍 -->
           <button class="puzzle-book" data-symbol="scorpio" style="background: linear-gradient(180deg, #194d2e 0%, #0d2b19 100%);">
             <svg class="book-sigil-svg" viewBox="0 0 24 24">
               <path d="M 5,16 L 5,8 Q 8,4 10,8 L 10,16 Q 13,4 15,8 L 15,18 L 19,15" stroke="#f1c40f" stroke-width="1.8" fill="none"/>
             </svg>
-            <span class="book-title-spine">天蠍の書</span>
+            <span class="book-title-spine">天蠍</span>
+          </button>
+
+          <!-- 7. 射手 -->
+          <button class="puzzle-book" data-symbol="sagittarius" style="background: linear-gradient(180deg, #5e4912 0%, #362908 100%);">
+            <svg class="book-sigil-svg" viewBox="0 0 24 24">
+              <line x1="6" y1="18" x2="18" y2="6" stroke="#f1c40f" stroke-width="2.2"/>
+              <path d="M 11,6 L 18,6 L 18,13" stroke="#f1c40f" stroke-width="2" fill="none"/>
+            </svg>
+            <span class="book-title-spine">射手</span>
           </button>
         </div>
         <div style="font-size:0.85rem; color:#ecc57e; height:20px;">
-          押した順: ${state.booksSequence.map(s => ({ aries: '白羊', leo: '獅子', sagittarius: '射手', scorpio: '天蠍' }[s])).join(' → ')}
+          押した順: ${state.booksSequence.map(s => ({
+            aries: '白羊', taurus: '金牛', gemini: '双子', cancer: '巨蟹',
+            leo: '獅子', scorpio: '天蠍', sagittarius: '射手'
+          }[s])).join(' → ')}
         </div>
         <button id="btn-reset-books" class="clock-control-btns" style="padding:6px 14px; font-size:0.82rem; background:#332215; color:#ccc; border:1px solid #664b31; border-radius:4px; cursor:pointer;">並び順をやり直す</button>
       `;
@@ -978,8 +1010,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleBookPress(sym) {
     state.booksSequence.push(sym);
-    // 正解順: 白羊(aries) → 獅子(leo) → 射手(sagittarius)
-    const correct = ['aries', 'leo', 'sagittarius'];
+    // 正解順: 白羊 ➔ 獅子 ➔ 天蠍 ➔ 射手 (暗闇の油絵の星辰ライン)
+    const correct = ['aries', 'leo', 'scorpio', 'sagittarius'];
     const curIdx = state.booksSequence.length - 1;
 
     if (state.booksSequence[curIdx] !== correct[curIdx]) {
@@ -1113,7 +1145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 5. 南側：絵画『星辰の刻』
+  // 5. 南側：絵画『星辰の夜』 (本棚の唯一の手がかり・4つの星辰)
   const elPainting = document.getElementById('obj-painting');
   if (elPainting) {
     elPainting.addEventListener('click', () => {
@@ -1124,7 +1156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function openPaintingModal() {
     let content = `
       <div class="zoom-view-header">
-        <h3>油絵『星辰の刻』</h3>
+        <h3>油絵『星辰の夜』</h3>
       </div>
       <div class="zoom-body">
         <div class="painting-zoom-container">
@@ -1133,34 +1165,44 @@ document.addEventListener('DOMContentLoaded', () => {
             <polygon points="0,210 60,130 140,170 240,110 280,180 280,210" fill="#2c3e50"/>
             <circle cx="140" cy="85" r="45" fill="${state.isLightOn ? '#f9e79f' : '#85929e'}" opacity="0.95"/>
             <path d="M 125,210 L 125,115 L 140,40 L 155,115 L 155,210 Z" fill="#0b0e14"/>
-            <circle cx="140" cy="115" r="18" fill="#fdfefe" stroke="#2c3e50" stroke-width="2"/>
-            <line x1="140" y1="115" x2="128" y2="115" stroke="#922b21" stroke-width="3" stroke-linecap="round"/>
-            <line x1="140" y1="115" x2="154" y2="115" stroke="#922b21" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="140" cy="115" r="16" fill="#212f3d" stroke="#7f8c8d" stroke-width="1.5"/>
+            <circle cx="140" cy="115" r="4" fill="#f4d03f"/>
     `;
 
     if (!state.isLightOn) {
-      // 暗闇時の蓄光星と星座ライン
+      // 暗闇時の蓄光星辰ライン (白羊 ➔ 獅子 ➔ 天蠍 ➔ 射手)
       content += `
-        <line x1="60" y1="65" x2="140" y2="40" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
-        <line x1="140" y1="40" x2="220" y2="70" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+        <!-- 軌跡ライン -->
+        <line x1="50" y1="65" x2="110" y2="45" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+        <line x1="110" y1="45" x2="175" y2="52" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+        <line x1="175" y1="52" x2="230" y2="75" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
 
-        <circle cx="60" cy="65" r="5" fill="#aed6f1" filter="drop-shadow(0 0 5px #3498db)"/>
-        <text x="60" y="55" font-size="12" fill="#aed6f1" text-anchor="middle" font-weight="bold">♈</text>
+        <!-- 1. 白羊 -->
+        <circle cx="50" cy="65" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 5px #3498db)"/>
+        <path d="M 44,56 Q 44,50 50,53 Q 56,50 56,56 M 50,53 L 50,62" stroke="#aed6f1" stroke-width="1.8" fill="none"/>
 
-        <circle cx="140" cy="40" r="5" fill="#aed6f1" filter="drop-shadow(0 0 5px #3498db)"/>
-        <text x="140" y="30" font-size="12" fill="#aed6f1" text-anchor="middle" font-weight="bold">♌</text>
+        <!-- 2. 獅子 -->
+        <circle cx="110" cy="45" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 5px #3498db)"/>
+        <circle cx="106" cy="36" r="2.5" stroke="#aed6f1" stroke-width="1.5" fill="none"/>
+        <path d="M 108.5,36 Q 112,28 114,33 Q 116,42 110,40" stroke="#aed6f1" stroke-width="1.5" fill="none"/>
 
-        <circle cx="220" cy="70" r="5" fill="#aed6f1" filter="drop-shadow(0 0 5px #3498db)"/>
-        <text x="220" y="60" font-size="12" fill="#aed6f1" text-anchor="middle" font-weight="bold">♐</text>
+        <!-- 3. 天蠍 -->
+        <circle cx="175" cy="52" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 5px #3498db)"/>
+        <path d="M 170,44 L 170,36 Q 173,32 175,36 L 175,44 Q 178,32 180,36 L 180,46" stroke="#aed6f1" stroke-width="1.5" fill="none"/>
+
+        <!-- 4. 射手 -->
+        <circle cx="230" cy="75" r="5" fill="#eaf2f8" filter="drop-shadow(0 0 5px #3498db)"/>
+        <line x1="223" y1="72" x2="237" y2="58" stroke="#aed6f1" stroke-width="1.8"/>
+        <path d="M 229,58 L 237,58 L 237,66" stroke="#aed6f1" stroke-width="1.8" fill="none"/>
       `;
     }
 
     content += `
           </svg>
-          <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
+          <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
             ${!state.isLightOn
-              ? '<strong style="color:#5dade2;">暗闇の中で蓄光の星が浮かび上がった！<br>星辰が線で結ばれ、光の軌跡を示している。</strong>'
-              : '月明かりに浮かぶ古塔の絵画《星辰の刻》だ。<br>中央の尖塔には古びた大時計が描かれている。'}
+              ? '<strong style="color:#5dade2;">暗闇の中で4つの星辰が青白く発光した！<br>左から右へと結ばれる光の軌跡が現れている。</strong>'
+              : '月夜の古塔が描かれた油絵《星辰の夜》だ。<br>（暗闇の中で何かが浮かび上がるかもしれない…）'}
           </p>
         </div>
       </div>
@@ -1305,7 +1347,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <button id="btn-clock-hour">+1 時間</button>
           <button id="btn-clock-min">+15 分</button>
         </div>
-        <p style="color:#d5cac0; font-size:0.85rem; text-align:center;">天体日誌と絵画が示す『星辰の刻』に針を合わせよう。</p>
+        <p style="color:#d5cac0; font-size:0.85rem; text-align:center;">天体日誌に記された【西】と【東】の方位にならい、針を合わせよう。</p>
       `;
     } else {
       content += `
