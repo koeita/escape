@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
         <div class="item-picker-container">
           <span class="item-picker-title">${actionTitle}</span>
-          <p style="font-size:0.8rem; color:#a8947d;">（所持アイテムはありません。/部屋を探索してみよう）</p>
+          <p style="font-size:0.8rem; color:#a8947d;">（所持アイテムはありません。部屋を探索してみよう）</p>
         </div>
       `;
     }
