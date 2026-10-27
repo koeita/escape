@@ -426,13 +426,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 基本操作 ---
   function setMessage(msg) {
-    // / で区切られた部分を「塊（inline-block）」にする（PCでは繋がり、スマホでは\nの位置で改行される）
+    // 親要素のflexによる左右分裂を防ぐため、全体を1つのdivで包む
+    // スラッシュ（/）または改行（\n）の位置で分割する
     const formatted = msg
-      .split('/')
+      .split(/[\/\n]/g)
       .map(part => `<span style="display:inline-block;">${part}</span>`)
       .join('');
 
-    elMessageBar.innerHTML = formatted;
+    elMessageBar.innerHTML = `<div style="width:100%; text-align:center; line-height:1.5;">${formatted}</div>`;
     elMessageBar.style.opacity = '0';
     setTimeout(() => {
       elMessageBar.style.opacity = '1';
