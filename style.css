@@ -288,21 +288,24 @@ body {
   line-height: 1;
 }
 
-/* ヘッダー */
+/* ヘッダー (設定ボタンへ統一) */
 #game-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 14px;
+  padding: 10px 16px;
   background: linear-gradient(180deg, #2b1f15 0%, #1c140d 100%);
   border-bottom: 2px solid #573f27;
   flex-shrink: 0;
+  gap: 12px;
 }
 
 .title-area {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  min-width: 0; /* フレックス縮小を許容して折り返し防止 */
+  flex: 1;
 }
 
 h1 {
@@ -311,35 +314,48 @@ h1 {
   color: #dfba73;
   text-shadow: 1px 1px 3px #000;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .room-direction {
-  font-size: 0.8rem;
-  color: #a8947d;
+  font-size: 0.82rem;
+  color: #d5cac0;
   background: #120e0a;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 4px;
-  border: 1px solid #49392b;
+  border: 1px solid #5a4634;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .header-controls {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .btn-icon {
   background: #2f2217;
   border: 1px solid #705537;
   color: #dfba73;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 16px;
   transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+
+.btn-icon:hover {
+  background: #4a3726;
+  border-color: #d4af37;
+  transform: scale(1.05);
 }
 
 .btn-icon:active {
@@ -523,15 +539,16 @@ h1 {
 
 /* モーダル共通 (背景を黒く塗りつぶさず、部屋が見える半透明に) */
 #modal-overlay,
-#item-detail-modal {
+#item-detail-modal,
+#settings-modal {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(10, 8, 6, 0.45); /* 部屋の背景が透けて見える自然な暗さ */
-  backdrop-filter: blur(1.5px);
-  -webkit-backdrop-filter: blur(1.5px);
+  background: rgba(10, 8, 6, 0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -1319,6 +1336,141 @@ h1 {
   align-items: center;
   justify-content: center;
   margin: 6px auto;
+}
+
+/* 設定モーダルカード */
+.settings-card {
+  background: #231913;
+  border: 3px solid #7e5c3b;
+  border-radius: 12px;
+  padding: 24px 20px;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 20px rgba(184, 147, 68, 0.25);
+  animation: popIn 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.settings-header {
+  text-align: center;
+  border-bottom: 1px solid #4a3726;
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.settings-header h3 {
+  color: #f4d03f;
+  font-size: 1.15rem;
+  letter-spacing: 1px;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #18110b;
+  border: 1px solid #543c26;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.settings-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: #e5ded5;
+}
+
+.settings-icon {
+  font-size: 1.1rem;
+}
+
+.btn-setting-toggle {
+  background: #2f2217;
+  border: 1.5px solid #d4af37;
+  color: #f1c40f;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  touch-action: manipulation;
+  min-width: 60px;
+}
+
+.btn-setting-toggle:hover,
+.btn-setting-toggle:active {
+  background: #4a3726;
+  transform: scale(0.97);
+}
+
+.settings-action-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.settings-btn {
+  width: 100%;
+  min-height: 44px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-danger {
+  background: linear-gradient(180deg, #922b21 0%, #641e16 100%);
+  color: #fff;
+  border: 1px solid #c0392b;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.15s;
+  touch-action: manipulation;
+}
+
+.btn-danger:hover {
+  background: linear-gradient(180deg, #b03a2e 0%, #78281f 100%);
+}
+
+.btn-danger:active {
+  transform: scale(0.97);
+}
+
+.settings-hint {
+  font-size: 0.72rem;
+  color: #8c7865;
+}
+
+.settings-help-box {
+  background: #19120c;
+  border: 1px dashed #543c26;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  color: #bfa588;
+}
+
+.settings-help-box h4 {
+  color: #dfba73;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.settings-help-box ul {
+  padding-left: 18px;
+  line-height: 1.5;
 }
 
 /* スマホ縦持ち専用レイアウト (iPhone 15 / 16: 幅390〜430px程度) */

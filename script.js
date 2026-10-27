@@ -124,13 +124,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- DOM要素 ---
   const elMenuScreen = document.getElementById('menu-screen');
   const elGameContainer = document.getElementById('game-container');
-  const elBtnBackMenu = document.getElementById('btn-back-menu');
   const elBtnPlayStage1 = document.getElementById('btn-play-stage-1');
   const elBtnRestartStage1 = document.getElementById('btn-restart-stage-1');
   const elStage1Badge = document.getElementById('stage-1-badge');
   const elStage1Meta = document.getElementById('stage-1-meta');
   const elBtnClearToMenu = document.getElementById('btn-clear-to-menu');
-  const elMenuBtnSound = document.getElementById('menu-btn-sound');
+
+  // 設定関連DOM要素
+  const elBtnGameSettings = document.getElementById('btn-game-settings');
+  const elMenuBtnSettings = document.getElementById('menu-btn-settings');
+  const elSettingsModal = document.getElementById('settings-modal');
+  const elSettingsModalClose = document.getElementById('settings-modal-close');
+  const elBtnToggleSound = document.getElementById('btn-toggle-sound-setting');
+  const elSoundSettingStatus = document.getElementById('sound-setting-status');
+  const elBtnSettingToMenu = document.getElementById('btn-setting-to-menu');
+  const elBtnSettingRestart = document.getElementById('btn-setting-restart');
+  const elBlockMenuReturn = document.getElementById('block-menu-return');
+  const elBlockRestartStage = document.getElementById('block-restart-stage');
 
   const elDirectionText = document.getElementById('current-direction-text');
   const elMessageBar = document.getElementById('message-bar');
@@ -146,8 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const elBtnItemAction = document.getElementById('btn-item-action');
   const elGameClearModal = document.getElementById('game-clear-modal');
   const elClearTimeDisplay = document.getElementById('clear-time-display');
-  const elBtnSound = document.getElementById('btn-sound');
-  const elBtnRestart = document.getElementById('btn-restart');
   const elBtnPlayAgain = document.getElementById('btn-play-again');
 
   // --- セーブ＆ロード機能 ---
@@ -1768,6 +1776,7 @@ document.addEventListener('DOMContentLoaded', () => {
     soundManager.init();
     if (!elModalOverlay.classList.contains('modal-hidden') ||
         !elItemDetailModal.classList.contains('modal-hidden') ||
+        !elSettingsModal.classList.contains('modal-hidden') ||
         !elGameClearModal.classList.contains('modal-hidden')) {
       return;
     }
@@ -1779,6 +1788,7 @@ document.addEventListener('DOMContentLoaded', () => {
   elViewport.addEventListener('touchend', (e) => {
     if (!elModalOverlay.classList.contains('modal-hidden') ||
         !elItemDetailModal.classList.contains('modal-hidden') ||
+        !elSettingsModal.classList.contains('modal-hidden') ||
         !elGameClearModal.classList.contains('modal-hidden')) {
       return;
     }
@@ -1802,30 +1812,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // キーボード
-  window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') changeDirection(-1);
-    if (e.key === 'ArrowRight') changeDirection(1);
-    if (e.key === 'Escape') {
-      closeModal();
-      elItemDetailModal.classList.add('modal-hidden');
-    }
-  });
-
-  // モーダル閉じる
-  elModalClose.addEventListener('click', closeModal);
-  elItemDetailClose.addEventListener('click', () => {
-    elItemDetailModal.classList.add('modal-hidden');
-  });
-
-  // メニュー・セーブ関連
-  elBtnBackMenu.addEventListener('click', () => {
+  // --- 設定モーダル制御 ---
+  function openSettingsModal(fromMenu = false) {
     soundManager.playClick();
+    updateSoundSettingUI();
+
+    // メニュー画面から開いた場合は「メニューに戻る」「最初からやり直す」を非表示にする
+    if (fromMenu) {
+      elBlockMenuReturn.style.display = 'none';
+      elBlockRestartStage.style.display = 'none';
+    } else {
+      elBlockMenuReturn.style.display = 'flex';
+      elBlockRestartStage.style.display = 'flex';
+    }
+
+    elSettingsModal.classList.remove('modal-hidden');
+  }
+
+  function closeSettingsModal() {
+    elSettingsModal.classList.add('modal-hidden');
+  }
+
+  function updateSoundSettingUI() {
+    const isMuted = soundManager.muted;
+    elSoundSettingStatus.textContent = isMuted ? 'OFF (消音)' : 'ON (有効)';
+    elSoundSettingStatus.style.color = isMuted ? '#e74c3c' : '#2ecc71';
+  }
+
+  elBtnGameSettings.addEventListener('click', () => openSettingsModal(false));
+  elMenuBtnSettings.addEventListener('click', () => openSettingsModal(true));
+  elSettingsModalClose.addEventListener('click', closeSettingsModal);
+
+  // 音量ON/OFF切替
+  elBtnToggleSound.addEventListener('click', () => {
+    soundManager.toggleMute();
+    soundManager.playClick();
+    updateSoundSettingUI();
+  });
+
+  // 設定からメニューへ戻る
+  elBtnSettingToMenu.addEventListener('click', () => {
+    soundManager.playClick();
+    closeSettingsModal();
     closeModal();
     elItemDetailModal.classList.add('modal-hidden');
     showMenu();
   });
 
+  // 設定から最初からやり直す
+  elBtnSettingRestart.addEventListener('click', () => {
+    if (confirm('書斎を最初からやり直しますか？（セーブデータはリセットされます）')) {
+      closeSettingsModal();
+      launchStage(true);
+    }
+  });
+
+  // クリア画面からメニューへ戻る
+  elBtnClearToMenu.addEventListener('click', () => {
+    soundManager.playClick();
+    elGameClearModal.classList.add('modal-hidden');
+    showMenu();
+  });
+
+  elBtnPlayAgain.addEventListener('click', () => {
+    elGameClearModal.classList.add('modal-hidden');
+    launchStage(true);
+  });
+
+  // ステージ選択ボタン
   elBtnPlayStage1.addEventListener('click', () => {
     const saved = getSavedData();
     if (saved && !saved.state.gameCleared) {
@@ -1841,30 +1895,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  elBtnClearToMenu.addEventListener('click', () => {
-    soundManager.playClick();
-    elGameClearModal.classList.add('modal-hidden');
-    showMenu();
-  });
-
-  const handleSoundToggle = () => {
-    const isMuted = soundManager.toggleMute();
-    const icon = isMuted ? '🔇' : '🔊';
-    elBtnSound.textContent = icon;
-    elMenuBtnSound.textContent = icon;
-  };
-  elBtnSound.addEventListener('click', handleSoundToggle);
-  elMenuBtnSound.addEventListener('click', handleSoundToggle);
-
-  elBtnRestart.addEventListener('click', () => {
-    if (confirm('書斎を最初からやり直しますか？（セーブデータはリセットされます）')) {
-      launchStage(true);
+  // キーボード
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') changeDirection(-1);
+    if (e.key === 'ArrowRight') changeDirection(1);
+    if (e.key === 'Escape') {
+      closeModal();
+      elItemDetailModal.classList.add('modal-hidden');
+      closeSettingsModal();
     }
   });
 
-  elBtnPlayAgain.addEventListener('click', () => {
-    elGameClearModal.classList.add('modal-hidden');
-    launchStage(true);
+  // モーダル閉じる
+  elModalClose.addEventListener('click', closeModal);
+  elItemDetailClose.addEventListener('click', () => {
+    elItemDetailModal.classList.add('modal-hidden');
   });
 
   // iOS Safari初回アンロック

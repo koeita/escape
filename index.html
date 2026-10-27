@@ -17,7 +17,7 @@
         <h1 class="menu-title">密室の謎解き脱出</h1>
       </div>
       <div class="menu-controls">
-        <button id="menu-btn-sound" class="btn-icon" title="音量切替">🔊</button>
+        <button id="menu-btn-settings" class="btn-icon" title="設定">⚙️</button>
       </div>
     </div>
 
@@ -78,18 +78,14 @@
 
   <!-- 脱出ゲームコンテナ -->
   <div id="game-container" style="display: none;">
-    <!-- ヘッダー情報 -->
+    <!-- ヘッダー情報 (設定ボタンへ統一) -->
     <header id="game-header">
       <div class="title-area">
-        <button id="btn-back-menu" class="btn-menu-back" title="メニューに戻る（自動セーブ）">
-          <span class="back-arrow">‹</span> メニュー
-        </button>
         <h1 id="game-stage-title">古びた書斎と賢者の鍵</h1>
         <span class="room-direction" id="current-direction-text">正面 (北)</span>
       </div>
       <div class="header-controls">
-        <button id="btn-sound" class="btn-icon" title="音量切替">🔊</button>
-        <button id="btn-restart" class="btn-icon" title="最初からやり直す">🔄</button>
+        <button id="btn-game-settings" class="btn-icon" title="設定・メニュー">⚙️</button>
       </div>
     </header>
 
@@ -499,6 +495,54 @@
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
         <button id="btn-play-again" class="btn-primary">もう一度遊ぶ</button>
         <button id="btn-clear-to-menu" class="btn-secondary" style="min-height: 44px; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">メニューに戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 設定 & メニューダイアログモーダル -->
+  <div id="settings-modal" class="modal-hidden">
+    <div class="settings-card">
+      <button id="settings-modal-close" class="modal-close-btn" aria-label="閉じる">&times;</button>
+      <div class="settings-header">
+        <h3>⚙️ 設定 & メニュー</h3>
+      </div>
+      <div class="settings-content">
+        <!-- 音量切替セクション -->
+        <div class="settings-row">
+          <div class="settings-label">
+            <span class="settings-icon">🔊</span>
+            <span class="settings-text">効果音 (SE)</span>
+          </div>
+          <button id="btn-toggle-sound-setting" class="btn-setting-toggle">
+            <span id="sound-setting-status">ON</span>
+          </button>
+        </div>
+
+        <!-- メニューに戻るボタン (ゲーム進行中は自動セーブ案内付き) -->
+        <div class="settings-action-block" id="block-menu-return">
+          <button id="btn-setting-to-menu" class="btn-primary settings-btn">
+            🏠 セーブしてメニューに戻る
+          </button>
+          <span class="settings-hint">※進行状況は自動保存されます</span>
+        </div>
+
+        <!-- 最初からやり直すボタン -->
+        <div class="settings-action-block" id="block-restart-stage">
+          <button id="btn-setting-restart" class="btn-danger settings-btn">
+            🔄 最初からやり直す
+          </button>
+          <span class="settings-hint">※このステージのセーブデータを破棄します</span>
+        </div>
+
+        <!-- 操作方法ガイド -->
+        <div class="settings-help-box">
+          <h4>💡 操作のヒント</h4>
+          <ul>
+            <li>左右の画面スワイプまたは矢印で視点変更</li>
+            <li>アイテムを2回タップで詳細画面（分解・合成が可能）</li>
+            <li>怪しい箇所はアイテムを選んだ状態でタップ</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
