@@ -587,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `
         <div class="item-picker-container">
           <span class="item-picker-title">${actionTitle}</span>
-          <p style="font-size:0.8rem; color:#a8947d;">（所持アイテムはありません。部屋を探索してみよう）</p>
+          <p style="font-size:0.8rem; color:#a8947d;">（所持アイテムはありません。/部屋を探索してみよう）</p>
         </div>
       `;
     }
@@ -759,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveGame();
         updateRoomDomState();
         addItem('music_box');
-        setMessage('ソファの座面クッションの隙間を探ると、頑丈な「真鍮の小箱」が挟まっていた！');
+        setMessage('ソファの座面クッションの隙間を探ると、/頑丈な「真鍮の小箱」が挟まっていた！');
       } else {
         setMessage('座り心地のよい革張りソファだ。もう隙間には何もない。');
       }
