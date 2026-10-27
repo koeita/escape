@@ -9,11 +9,82 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="game-container">
+  <!-- タイトル & ステージ選択メニュー画面 -->
+  <div id="menu-screen">
+    <div class="menu-header">
+      <div class="menu-brand">
+        <span class="menu-subtitle">MYSTERY ESCAPE GAME</span>
+        <h1 class="menu-title">密室の謎解き脱出</h1>
+      </div>
+      <div class="menu-controls">
+        <button id="menu-btn-sound" class="btn-icon" title="音量切替">🔊</button>
+      </div>
+    </div>
+
+    <div class="stage-select-container">
+      <h2 class="stage-select-heading">STAGE SELECT</h2>
+      <div class="stage-grid">
+        <!-- Stage 1 -->
+        <div class="stage-card active-stage" id="stage-card-1">
+          <div class="stage-card-badge" id="stage-1-badge">STAGE 1</div>
+          <div class="stage-thumbnail stage-thumb-1">
+            <span class="stage-thumb-icon">🗝️📖</span>
+          </div>
+          <div class="stage-info">
+            <h3 class="stage-name">古びた書斎と賢者の鍵</h3>
+            <p class="stage-desc">アンティークな家具と静寂が包む書斎。賢者が残した暗号を解き明かし脱出せよ。</p>
+            <div class="stage-meta" id="stage-1-meta">未プレイ</div>
+          </div>
+          <div class="stage-actions">
+            <button id="btn-play-stage-1" class="btn-primary btn-stage-action">プレイする</button>
+            <button id="btn-restart-stage-1" class="btn-secondary btn-stage-action" style="display: none;">はじめから</button>
+          </div>
+        </div>
+
+        <!-- Stage 2 (今後の拡張用) -->
+        <div class="stage-card stage-locked">
+          <div class="stage-card-badge">STAGE 2</div>
+          <div class="stage-thumbnail stage-thumb-locked">
+            <span class="stage-thumb-icon">🔒🤖</span>
+          </div>
+          <div class="stage-info">
+            <h3 class="stage-name">暴走AIと閉鎖シェルター</h3>
+            <p class="stage-desc">緊急遮断された地下研究施設。端末のコードを復旧しポッドを開放せよ。</p>
+            <div class="stage-meta">COMING SOON</div>
+          </div>
+          <div class="stage-actions">
+            <button class="btn-secondary btn-stage-action" disabled>準備中</button>
+          </div>
+        </div>
+
+        <!-- Stage 3 (今後の拡張用) -->
+        <div class="stage-card stage-locked">
+          <div class="stage-card-badge">STAGE 3</div>
+          <div class="stage-thumbnail stage-thumb-locked">
+            <span class="stage-thumb-icon">🔒⏳</span>
+          </div>
+          <div class="stage-info">
+            <h3 class="stage-name">刻を戻す時計塔の小部屋</h3>
+            <p class="stage-desc">過去と現在を行き来する不思議な時計塔。二つの時代の歯車を噛み合わせろ。</p>
+            <div class="stage-meta">COMING SOON</div>
+          </div>
+          <div class="stage-actions">
+            <button class="btn-secondary btn-stage-action" disabled>準備中</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 脱出ゲームコンテナ -->
+  <div id="game-container" style="display: none;">
     <!-- ヘッダー情報 -->
     <header id="game-header">
       <div class="title-area">
-        <h1>古びた書斎と賢者の鍵</h1>
+        <button id="btn-back-menu" class="btn-menu-back" title="メニューに戻る（自動セーブ）">
+          <span class="back-arrow">‹</span> メニュー
+        </button>
+        <h1 id="game-stage-title">古びた書斎と賢者の鍵</h1>
         <span class="room-direction" id="current-direction-text">正面 (北)</span>
       </div>
       <div class="header-controls">
@@ -302,7 +373,10 @@
       <p>扉の重い鍵が開き、冷涼な夜風が吹き込んできた。</p>
       <p class="congrats-text">お見事！ 書斎の謎をすべて解き明かし、脱出に成功しました！</p>
       <div class="clear-time" id="clear-time-display">脱出タイム: 00:00</div>
-      <button id="btn-play-again" class="btn-primary">もう一度遊ぶ</button>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <button id="btn-play-again" class="btn-primary">もう一度遊ぶ</button>
+        <button id="btn-clear-to-menu" class="btn-secondary" style="min-height: 44px; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">メニューに戻る</button>
+      </div>
     </div>
   </div>
 

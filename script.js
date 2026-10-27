@@ -3,38 +3,45 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // --- ゲーム状態管理 ---
-  const state = {
-    currentDirection: 0, // 0: 北(North), 1: 東(East), 2: 南(South), 3: 西(West)
-    directions: [
-      { name: '正面 (北)', id: 'view-north' },
-      { name: '右側 (東)', id: 'view-east' },
-      { name: '後方 (南)', id: 'view-south' },
-      { name: '左側 (西)', id: 'view-west' }
-    ],
-    inventory: [], // { id, name, icon, desc }
-    selectedItem: null,
-    
-    // パズルフラグ
-    carpetFlipped: false,
-    hasSilverKey: false,
-    drawerUnlocked: false,
-    hasBrush: false,
-    hasMemo: false,
-    booksSequence: [],
-    booksPuzzleSolved: false,
-    clockHour: 12,
-    clockMinute: 0,
-    clockPuzzleSolved: false,
-    hasBrassKey: false,
-    fireplaceCleaned: false,
-    doorCode: [0, 0, 0, 0], // ダイヤル
-    doorKeyUnlocked: false,
-    doorCodeUnlocked: false,
-    gameCleared: false,
-    
-    startTime: Date.now()
-  };
+  const SAVE_KEY = 'escape_game_stage1_save';
+
+  // --- デフォルトゲーム状態 ---
+  function createInitialState() {
+    return {
+      currentDirection: 0, // 0: 北(North), 1: 東(East), 2: 南(South), 3: 西(West)
+      directions: [
+        { name: '正面 (北)', id: 'view-north' },
+        { name: '右側 (東)', id: 'view-east' },
+        { name: '後方 (南)', id: 'view-south' },
+        { name: '左側 (西)', id: 'view-west' }
+      ],
+      inventory: [], // [{ id, name, icon, desc }]
+      selectedItem: null,
+      
+      // パズルフラグ
+      carpetFlipped: false,
+      hasSilverKey: false,
+      drawerUnlocked: false,
+      hasBrush: false,
+      hasMemo: false,
+      booksSequence: [],
+      booksPuzzleSolved: false,
+      clockHour: 12,
+      clockMinute: 0,
+      clockPuzzleSolved: false,
+      hasBrassKey: false,
+      fireplaceCleaned: false,
+      doorCode: [0, 0, 0, 0], // ダイヤル
+      doorKeyUnlocked: false,
+      doorCodeUnlocked: false,
+      gameCleared: false,
+      
+      startTime: Date.now(),
+      elapsedBeforeSave: 0
+    };
+  }
+
+  let state = createInitialState();
 
   // アイテム定義
   const ITEMS = {
@@ -65,6 +72,16 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // --- DOM要素 ---
+  const elMenuScreen = document.getElementById('menu-screen');
+  const elGameContainer = document.getElementById('game-container');
+  const elBtnBackMenu = document.getElementById('btn-back-menu');
+  const elBtnPlayStage1 = document.getElementById('btn-play-stage-1');
+  const elBtnRestartStage1 = document.getElementById('btn-restart-stage-1');
+  const elStage1Badge = document.getElementById('stage-1-badge');
+  const elStage1Meta = document.getElementById('stage-1-meta');
+  const elBtnClearToMenu = document.getElementById('btn-clear-to-menu');
+  const elMenuBtnSound = document.getElementById('menu-btn-sound');
+
   const elDirectionText = document.getElementById('current-direction-text');
   const elMessageBar = document.getElementById('message-bar');
   const elModalOverlay = document.getElementById('modal-overlay');
@@ -81,7 +98,179 @@ document.addEventListener('DOMContentLoaded', () => {
   const elBtnRestart = document.getElementById('btn-restart');
   const elBtnPlayAgain = document.getElementById('btn-play-again');
 
-  // --- ヘルパー関数 ---
+  // --- セーブ＆ロード機能 (LocalStorage) ---
+  function saveGame() {
+    try {
+      const now = Date.now();
+      const currentSessionTime = state.startTime ? (now - state.startTime) : 0;
+      const totalElapsed = (state.elapsedBeforeSave || 0) + currentSessionTime;
+
+      const saveData = {
+        version: 1,
+        savedAt: now,
+        elapsedMs: totalElapsed,
+        state: {
+          currentDirection: state.currentDirection,
+          inventoryIds: state.inventory.map(i => i.id),
+          selectedItem: state.selectedItem,
+          carpetFlipped: state.carpetFlipped,
+          hasSilverKey: state.hasSilverKey,
+          drawerUnlocked: state.drawerUnlocked,
+          hasBrush: state.hasBrush,
+          hasMemo: state.hasMemo,
+          booksSequence: state.booksSequence,
+          booksPuzzleSolved: state.booksPuzzleSolved,
+          clockHour: state.clockHour,
+          clockMinute: state.clockMinute,
+          clockPuzzleSolved: state.clockPuzzleSolved,
+          hasBrassKey: state.hasBrassKey,
+          fireplaceCleaned: state.fireplaceCleaned,
+          doorCode: state.doorCode,
+          doorKeyUnlocked: state.doorKeyUnlocked,
+          doorCodeUnlocked: state.doorCodeUnlocked,
+          gameCleared: state.gameCleared
+        }
+      };
+
+      localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+    } catch (e) {
+      console.warn('Failed to save game:', e);
+    }
+  }
+
+  function getSavedData() {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function applySavedState(savedData) {
+    if (!savedData || !savedData.state) return;
+    const s = savedData.state;
+
+    state.currentDirection = s.currentDirection || 0;
+    state.inventory = (s.inventoryIds || []).map(id => ITEMS[id]).filter(Boolean);
+    state.selectedItem = s.selectedItem || null;
+    state.carpetFlipped = !!s.carpetFlipped;
+    state.hasSilverKey = !!s.hasSilverKey;
+    state.drawerUnlocked = !!s.drawerUnlocked;
+    state.hasBrush = !!s.hasBrush;
+    state.hasMemo = !!s.hasMemo;
+    state.booksSequence = s.booksSequence || [];
+    state.booksPuzzleSolved = !!s.booksPuzzleSolved;
+    state.clockHour = s.clockHour || 12;
+    state.clockMinute = s.clockMinute || 0;
+    state.clockPuzzleSolved = !!s.clockPuzzleSolved;
+    state.hasBrassKey = !!s.hasBrassKey;
+    state.fireplaceCleaned = !!s.fireplaceCleaned;
+    state.doorCode = s.doorCode || [0, 0, 0, 0];
+    state.doorKeyUnlocked = !!s.doorKeyUnlocked;
+    state.doorCodeUnlocked = !!s.doorCodeUnlocked;
+    state.gameCleared = !!s.gameCleared;
+    state.elapsedBeforeSave = savedData.elapsedMs || 0;
+    state.startTime = Date.now();
+
+    // DOMへの見た目反映
+    updateRoomDomState();
+  }
+
+  function updateRoomDomState() {
+    // 絨毯
+    const carpetFlat = document.getElementById('carpet-corner-flat');
+    const carpetFolded = document.getElementById('carpet-corner-folded');
+    const carpetKey = document.getElementById('carpet-silver-key');
+    if (carpetFlat && carpetFolded) {
+      carpetFlat.style.display = state.carpetFlipped ? 'none' : 'block';
+      carpetFolded.style.display = state.carpetFlipped ? 'block' : 'none';
+      if (carpetKey) {
+        carpetKey.style.display = (state.carpetFlipped && !state.hasSilverKey) ? 'block' : 'none';
+      }
+    }
+
+    // 暖炉プレート
+    const plateHint = document.getElementById('fireplace-plate-hint');
+    if (plateHint) {
+      plateHint.style.opacity = state.fireplaceCleaned ? '1' : '0';
+    }
+
+    // 扉のLED
+    const doorLed = document.getElementById('door-lock-status-led');
+    if (doorLed) {
+      if (state.doorCodeUnlocked) {
+        doorLed.textContent = '● UNLOCKED';
+        doorLed.setAttribute('fill', '#2ecc71');
+      } else {
+        doorLed.textContent = '● LOCKED';
+        doorLed.setAttribute('fill', '#e74c3c');
+      }
+    }
+
+    updateViewDirection();
+    renderInventory();
+  }
+
+  // --- 画面遷移（メニュー ⇔ ゲーム） ---
+  function showMenu() {
+    saveGame();
+    elGameContainer.style.display = 'none';
+    elMenuScreen.style.display = 'flex';
+    updateMenuScreenInfo();
+  }
+
+  function updateMenuScreenInfo() {
+    const saved = getSavedData();
+    if (!saved) {
+      elStage1Badge.textContent = 'STAGE 1';
+      elStage1Badge.className = 'stage-card-badge';
+      elStage1Meta.textContent = '未プレイ';
+      elBtnPlayStage1.textContent = 'プレイする';
+      elBtnRestartStage1.style.display = 'none';
+    } else if (saved.state.gameCleared) {
+      elStage1Badge.textContent = 'CLEARED ⭐';
+      elStage1Badge.className = 'stage-card-badge cleared';
+      const mins = Math.floor(saved.elapsedMs / 60000);
+      const secs = Math.floor((saved.elapsedMs % 60000) / 1000);
+      elStage1Meta.textContent = `クリア済み (タイム: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')})`;
+      elBtnPlayStage1.textContent = 'もう一度プレイ';
+      elBtnRestartStage1.style.display = 'none';
+    } else {
+      elStage1Badge.textContent = 'プレイ中 💾';
+      elStage1Badge.className = 'stage-card-badge saved';
+      const itemsCount = (saved.state.inventoryIds || []).length;
+      elStage1Meta.textContent = `セーブデータあり（アイテム: ${itemsCount}個）`;
+      elBtnPlayStage1.textContent = 'つづきから';
+      elBtnRestartStage1.style.display = 'block';
+    }
+  }
+
+  function launchStage(isNewGame) {
+    soundManager.playClick();
+    if (isNewGame) {
+      state = createInitialState();
+      try {
+        localStorage.removeItem(SAVE_KEY);
+      } catch (e) {}
+      updateRoomDomState();
+    } else {
+      const saved = getSavedData();
+      if (saved) {
+        applySavedState(saved);
+      } else {
+        state = createInitialState();
+        updateRoomDomState();
+      }
+    }
+
+    elMenuScreen.style.display = 'none';
+    elGameContainer.style.display = 'flex';
+    setMessage('いつでも左上の「メニュー」ボタンでセーブして戻れます。');
+  }
+
+  // ヘルパー関数
   function setMessage(msg) {
     elMessageBar.textContent = msg;
     elMessageBar.style.opacity = '0';
@@ -118,6 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     soundManager.playItemGet();
     setMessage(`【${item.name}】を手に入れた！`);
     renderInventory();
+    saveGame();
   }
 
   function removeItem(itemId) {
@@ -128,6 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       state.inventory.splice(idx, 1);
       renderInventory();
+      saveGame();
     }
   }
 
@@ -305,6 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
           soundManager.playUnlock();
           state.drawerUnlocked = true;
           removeItem('silver_key');
+          saveGame();
           setMessage('銀の鍵がカチリと回った！ 引き出しが開いた。');
           openDeskDrawerModal();
         } else {
@@ -446,6 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // 正解！
       soundManager.playSolved();
       state.booksPuzzleSolved = true;
+      saveGame();
       setMessage('カチリ！ 本棚の奥の小さな隠し扉が開いた！');
       setTimeout(() => openBookshelfModal(), 400);
     } else {
@@ -543,6 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
           soundManager.playBrush();
           state.fireplaceCleaned = true;
           document.getElementById('fireplace-plate-hint').style.opacity = '1';
+          saveGame();
           setMessage('ブラシで灰を払い落とした！ 奥から金属プレートが現れた。');
           openFireplaceModal();
         } else {
@@ -699,6 +893,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (state.clockHour === 9 && state.clockMinute === 15) {
       soundManager.playSolved();
       state.clockPuzzleSolved = true;
+      saveGame();
       setMessage('ガチャン！ 時計の中から重々しい音が鳴り響いた！');
     }
     openClockModal();
@@ -802,6 +997,7 @@ document.addEventListener('DOMContentLoaded', () => {
         soundManager.playUnlock();
         state.doorKeyUnlocked = true;
         removeItem('brass_key');
+        saveGame();
         setMessage('真鍮の鍵がぴったりと合致し、重いシリンダーが解錠された！');
         openDoorModal();
       } else {
@@ -866,6 +1062,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.doorCodeUnlocked = true;
         document.getElementById('door-lock-status-led').textContent = '● UNLOCKED';
         document.getElementById('door-lock-status-led').setAttribute('fill', '#2ecc71');
+        saveGame();
         setMessage('ピピッ！ 電子ダイヤル錠が認証された！');
       }
     } else {
@@ -887,6 +1084,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeStr = `脱出タイム: ${String(minutes).padStart(2, '0')}分 ${String(seconds).padStart(2, '0')}秒`;
 
     elClearTimeDisplay.textContent = timeStr;
+    saveGame();
     setTimeout(() => {
       elGameClearModal.classList.remove('modal-hidden');
     }, 700);
@@ -963,28 +1161,60 @@ document.addEventListener('DOMContentLoaded', () => {
     elItemDetailModal.classList.add('modal-hidden');
   });
 
-  // サウンドトグル
-  elBtnSound.addEventListener('click', () => {
-    const isMuted = soundManager.toggleMute();
-    elBtnSound.textContent = isMuted ? '🔇' : '🔊';
+  // --- メニュー＆セーブ操作リスナー ---
+  elBtnBackMenu.addEventListener('click', () => {
+    soundManager.playClick();
+    closeModal();
+    elItemDetailModal.classList.add('modal-hidden');
+    showMenu();
   });
 
-  // リセット
-  function resetGame() {
-    location.reload();
-  }
-
-  elBtnRestart.addEventListener('click', () => {
-    if (confirm('ゲームを最初からやり直しますか？')) {
-      resetGame();
+  elBtnPlayStage1.addEventListener('click', () => {
+    const saved = getSavedData();
+    // クリア済みの場合は新しくプレイ、セーブデータがある場合はつづきから
+    if (saved && !saved.state.gameCleared) {
+      launchStage(false);
+    } else {
+      launchStage(true);
     }
   });
 
-  elBtnPlayAgain.addEventListener('click', resetGame);
+  elBtnRestartStage1.addEventListener('click', () => {
+    if (confirm('現在の進行データを破棄して、はじめから遊びますか？')) {
+      launchStage(true);
+    }
+  });
 
-  // 初回レンダリング
-  updateViewDirection();
-  renderInventory();
+  elBtnClearToMenu.addEventListener('click', () => {
+    soundManager.playClick();
+    elGameClearModal.classList.add('modal-hidden');
+    showMenu();
+  });
+
+  // サウンドトグル (メニュー側 & ゲーム側)
+  const handleSoundToggle = () => {
+    const isMuted = soundManager.toggleMute();
+    const icon = isMuted ? '🔇' : '🔊';
+    elBtnSound.textContent = icon;
+    elMenuBtnSound.textContent = icon;
+  };
+  elBtnSound.addEventListener('click', handleSoundToggle);
+  elMenuBtnSound.addEventListener('click', handleSoundToggle);
+
+  // リセット (ゲーム内のやり直しボタン)
+  elBtnRestart.addEventListener('click', () => {
+    if (confirm('書斎を最初からやり直しますか？（セーブデータはリセットされます）')) {
+      launchStage(true);
+    }
+  });
+
+  elBtnPlayAgain.addEventListener('click', () => {
+    elGameClearModal.classList.add('modal-hidden');
+    launchStage(true);
+  });
+
+  // 初期画面表示：メニュー画面を初期表示
+  showMenu();
 
   // iOS Safari 向け：画面内の初回タップで確実にWeb Audioを有効化
   const unlockAudioOnce = () => {
