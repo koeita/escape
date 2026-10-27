@@ -421,12 +421,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     elMenuScreen.style.display = 'none';
     elGameContainer.style.display = 'flex';
-    setMessage('古びた書斎に閉じ込められているようだ。周囲を探索して脱出しよう。');
+    setMessage('古びた書斎に閉じ込められているようだ。/周囲を探索して脱出しよう。');
   }
 
   // --- 基本操作 ---
   function setMessage(msg) {
-    elMessageBar.textContent = msg;
+    // / で区切られた部分を「塊（inline-block）」にする（PCでは繋がり、スマホでは\nの位置で改行される）
+    const formatted = msg
+      .split('/')
+      .map(part => `<span style="display:inline-block;">${part}</span>`)
+      .join('');
+
+    elMessageBar.innerHTML = formatted;
     elMessageBar.style.opacity = '0';
     setTimeout(() => {
       elMessageBar.style.opacity = '1';
