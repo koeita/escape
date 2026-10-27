@@ -1,37 +1,105 @@
 /**
- * 古びた書斎と賢者の鍵 - メインゲームスクリプト
+ * 古びた書斎と賢者の鍵 - フルリメイク版
+ * 多層暗号、照明スイッチ（暗闇モード）、アイテム分解・合成、隠し金庫ギミック
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const SAVE_KEY = 'escape_game_stage1_save';
+  const SAVE_KEY = 'escape_game_stage1_save_v2';
 
-  // --- デフォルトゲーム状態 ---
+  // --- アイテム定義 ---
+  const ITEMS = {
+    screwdriver: {
+      id: 'screwdriver',
+      name: '精密ドライバー',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="18" y="4" width="4" height="18" fill="#c0392b" rx="2"/><line x1="20" y1="22" x2="20" y2="34" stroke="#bdc3c7" stroke-width="3" stroke-linecap="round"/><line x1="18" y1="34" x2="22" y2="34" stroke="#7f8c8d" stroke-width="2"/></svg>`,
+      desc: '絨毯の隅に隠されていた細身のマイナスドライバー。小さなネジを外すのに使えそうだ。'
+    },
+    music_box: {
+      id: 'music_box',
+      name: '真鍮の小箱',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="8" y="10" width="24" height="20" fill="#b78727" stroke="#684a0d" stroke-width="2" rx="3"/><circle cx="20" cy="20" r="4" fill="#684a0d"/><circle cx="12" cy="14" r="1.5" fill="#333"/><circle cx="28" cy="14" r="1.5" fill="#333"/><circle cx="12" cy="26" r="1.5" fill="#333"/><circle cx="28" cy="26" r="1.5" fill="#333"/></svg>`,
+      desc: 'ソファの隙間に挟まっていた頑丈な金属小箱。裏蓋が4隅の小さなネジで固く留められている。\n【調べる】で工具を使って開けられそうだ。'
+    },
+    silver_key: {
+      id: 'silver_key',
+      name: '小さな銀の鍵',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="15" cy="15" r="7" fill="none" stroke="#bdc3c7" stroke-width="3"/><line x1="20" y1="20" x2="30" y2="30" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/><line x1="26" y1="26" x2="29" y2="23" stroke="#bdc3c7" stroke-width="3"/></svg>`,
+      desc: '小箱の中から出てきた銀色の鍵。机の引き出しに合いそうだ。'
+    },
+    star_disc: {
+      id: 'star_disc',
+      name: '星座の円盤',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="20" cy="20" r="13" fill="#1b2631" stroke="#f1c40f" stroke-width="2.5"/><polygon points="20,11 22,17 28,17 23,21 25,27 20,23 15,27 17,21 12,17 18,17" fill="#f1c40f"/><circle cx="20" cy="20" r="2.5" fill="#1b2631"/></svg>`,
+      desc: '小箱の中から見つかった青銅と真鍮の円盤。中央に星の紋様が刻まれ、何かの台座にはめる突起がある。'
+    },
+    switch_key: {
+      id: 'switch_key',
+      name: '端子盤の鍵',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="14" cy="14" r="6" fill="none" stroke="#e67e22" stroke-width="3"/><line x1="18" y1="18" x2="28" y2="28" stroke="#e67e22" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="24" x2="27" y2="21" stroke="#e67e22" stroke-width="2.5"/></svg>`,
+      desc: '机の引き出しに入っていた小さな真鍮鍵。扉の横の照明盤カバーを開けられそうだ。'
+    },
+    poker: {
+      id: 'poker',
+      name: '真鍮の火かき棒',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><line x1="10" y1="30" x2="28" y2="12" stroke="#7f8c8d" stroke-width="3" stroke-linecap="round"/><path d="M 28,12 Q 32,8 30,6" stroke="#7f8c8d" stroke-width="2.5" fill="none"/><line x1="10" y1="30" x2="14" y2="33" stroke="#7f8c8d" stroke-width="2.5"/></svg>`,
+      desc: '机の脇に立てかけてあった長い金属の棒。先端がフック状になっており、重い物を引っ掛けて動かせる。'
+    },
+    emblem: {
+      id: 'emblem',
+      name: '賢者の青玉紋章',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="20" cy="20" r="12" fill="#b78727" stroke="#684a0d" stroke-width="2"/><circle cx="20" cy="20" r="6" fill="#3498db" stroke="#1b4f72" stroke-width="1.5"/></svg>`,
+      desc: '暖炉の灰の中から引き上げた重厚なメダル。中央に神秘的な青い宝玉が嵌め込まれている。何かの鍵の頭部だろうか。'
+    },
+    broken_key: {
+      id: 'broken_key',
+      name: '不完全な鍵身',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><line x1="14" y1="26" x2="28" y2="12" stroke="#f1c40f" stroke-width="4" stroke-linecap="round"/><line x1="24" y1="16" x2="27" y2="13" stroke="#f1c40f" stroke-width="3"/><circle cx="12" cy="28" r="4" fill="none" stroke="#f1c40f" stroke-width="2" stroke-dasharray="2,2"/></svg>`,
+      desc: '古時計のからくりから落ちてきた真鍮の鍵軸。持ち手（頭部）が欠損しており、このままでは回すことができない。\n【調べる】で別のパーツを結合できそうだ。'
+    },
+    brass_key: {
+      id: 'brass_key',
+      name: '賢者の真鍮鍵',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="15" cy="15" r="8" fill="#3498db" stroke="#f1c40f" stroke-width="3.5"/><line x1="21" y1="21" x2="33" y2="33" stroke="#f1c40f" stroke-width="4.5" stroke-linecap="round"/><line x1="29" y1="29" x2="33" y2="25" stroke="#f1c40f" stroke-width="3"/><line x1="25" y1="25" x2="29" y2="21" stroke="#f1c40f" stroke-width="3"/></svg>`,
+      desc: '欠損していた鍵身に賢者の青玉紋章を結合して完成した、荘厳な真鍮の大鍵。大扉の頑丈な鍵穴に適合する！'
+    }
+  };
+
+  // --- 初期ゲーム状態 ---
   function createInitialState() {
     return {
-      currentDirection: 0, // 0: 北(North), 1: 東(East), 2: 南(South), 3: 西(West)
+      currentDirection: 0,
       directions: [
         { name: '正面 (北)', id: 'view-north' },
         { name: '右側 (東)', id: 'view-east' },
         { name: '後方 (南)', id: 'view-south' },
         { name: '左側 (西)', id: 'view-west' }
       ],
-      inventory: [], // [{ id, name, icon, desc }]
+      inventory: [],
       selectedItem: null,
       
-      // パズルフラグ
+      // 新ギミックフラグ
+      isLightOn: true,
+      switchCoverUnlocked: false,
       carpetFlipped: false,
-      hasSilverKey: false,
+      hasScrewdriver: false,
+      sofaBoxFound: false,
+      boxDisassembled: false,
       drawerUnlocked: false,
-      hasBrush: false,
-      hasMemo: false,
+      hasSwitchKey: false,
+      hasPoker: false,
+      fireplaceGrilleRemoved: false,
+      hasEmblem: false,
       booksSequence: [],
       booksPuzzleSolved: false,
+      safeDiscInserted: false,
+      safeAngle: 0,
+      safeUnlocked: false,
       clockHour: 12,
       clockMinute: 0,
       clockPuzzleSolved: false,
-      hasBrassKey: false,
-      fireplaceCleaned: false,
-      doorCode: [0, 0, 0, 0], // ダイヤル
+      hasBrokenKey: false,
+      keyAssembled: false,
+      doorCode: [0, 0, 0, 0],
       doorKeyUnlocked: false,
       doorCodeUnlocked: false,
       gameCleared: false,
@@ -42,34 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   let state = createInitialState();
-
-  // アイテム定義
-  const ITEMS = {
-    silver_key: {
-      id: 'silver_key',
-      name: '銀の鍵',
-      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="15" cy="15" r="7" fill="none" stroke="#bdc3c7" stroke-width="3"/><line x1="20" y1="20" x2="30" y2="30" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/><line x1="26" y1="26" x2="29" y2="23" stroke="#bdc3c7" stroke-width="3"/></svg>`,
-      desc: '絨毯の隅に隠されていた小さな銀色の鍵。机の引き出しなどに合いそうだ。'
-    },
-    memo: {
-      id: 'memo',
-      name: '書斎主の覚え書き',
-      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="8" y="6" width="24" height="28" fill="#fdfefe" stroke="#b2babb" stroke-width="2" rx="2"/><line x1="12" y1="12" x2="28" y2="12" stroke="#7f8c8d" stroke-width="1.5"/><line x1="12" y1="17" x2="28" y2="17" stroke="#7f8c8d" stroke-width="1.5"/><line x1="12" y1="22" x2="22" y2="22" stroke="#7f8c8d" stroke-width="1.5"/></svg>`,
-      desc: '引き出しの中にあったメモ。\n「知識への扉は色によって開かれる。血の赤、深海の青、太陽の黄、若葉の緑。この順に書物を触れよ」と記されている。'
-    },
-    brush: {
-      id: 'brush',
-      name: '煤払い用ブラシ',
-      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="18" y="6" width="4" height="20" fill="#a0522d" rx="2"/><polygon points="14,26 26,26 28,34 12,34" fill="#5d6d7e"/></svg>`,
-      desc: '毛先がしっかりしたアンティークなブラシ。灰や煤（すす）を払うのに役立ちそうだ。'
-    },
-    brass_key: {
-      id: 'brass_key',
-      name: '賢者の真鍮鍵',
-      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="15" cy="15" r="8" fill="none" stroke="#f1c40f" stroke-width="3.5"/><circle cx="15" cy="15" r="3" fill="#f1c40f"/><line x1="21" y1="21" x2="33" y2="33" stroke="#f1c40f" stroke-width="4.5" stroke-linecap="round"/><line x1="29" y1="29" x2="33" y2="25" stroke="#f1c40f" stroke-width="3"/><line x1="25" y1="25" x2="29" y2="21" stroke="#f1c40f" stroke-width="3"/></svg>`,
-      desc: '古時計のからくりから落ちてきた、重厚で精巧な真鍮の鍵。部屋の大扉を開ける鍵だろうか。'
-    }
-  };
 
   // --- DOM要素 ---
   const elMenuScreen = document.getElementById('menu-screen');
@@ -92,13 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const elItemDetailIcon = document.getElementById('item-detail-icon');
   const elItemDetailName = document.getElementById('item-detail-name');
   const elItemDetailDesc = document.getElementById('item-detail-desc');
+  const elItemDetailActionArea = document.getElementById('item-detail-action-area');
+  const elBtnItemAction = document.getElementById('btn-item-action');
   const elGameClearModal = document.getElementById('game-clear-modal');
   const elClearTimeDisplay = document.getElementById('clear-time-display');
   const elBtnSound = document.getElementById('btn-sound');
   const elBtnRestart = document.getElementById('btn-restart');
   const elBtnPlayAgain = document.getElementById('btn-play-again');
 
-  // --- セーブ＆ロード機能 (LocalStorage) ---
+  // --- セーブ＆ロード機能 ---
   function saveGame() {
     try {
       const now = Date.now();
@@ -106,25 +148,34 @@ document.addEventListener('DOMContentLoaded', () => {
       const totalElapsed = (state.elapsedBeforeSave || 0) + currentSessionTime;
 
       const saveData = {
-        version: 1,
+        version: 2,
         savedAt: now,
         elapsedMs: totalElapsed,
         state: {
           currentDirection: state.currentDirection,
           inventoryIds: state.inventory.map(i => i.id),
           selectedItem: state.selectedItem,
+          isLightOn: state.isLightOn,
+          switchCoverUnlocked: state.switchCoverUnlocked,
           carpetFlipped: state.carpetFlipped,
-          hasSilverKey: state.hasSilverKey,
+          hasScrewdriver: state.hasScrewdriver,
+          sofaBoxFound: state.sofaBoxFound,
+          boxDisassembled: state.boxDisassembled,
           drawerUnlocked: state.drawerUnlocked,
-          hasBrush: state.hasBrush,
-          hasMemo: state.hasMemo,
+          hasSwitchKey: state.hasSwitchKey,
+          hasPoker: state.hasPoker,
+          fireplaceGrilleRemoved: state.fireplaceGrilleRemoved,
+          hasEmblem: state.hasEmblem,
           booksSequence: state.booksSequence,
           booksPuzzleSolved: state.booksPuzzleSolved,
+          safeDiscInserted: state.safeDiscInserted,
+          safeAngle: state.safeAngle,
+          safeUnlocked: state.safeUnlocked,
           clockHour: state.clockHour,
           clockMinute: state.clockMinute,
           clockPuzzleSolved: state.clockPuzzleSolved,
-          hasBrassKey: state.hasBrassKey,
-          fireplaceCleaned: state.fireplaceCleaned,
+          hasBrokenKey: state.hasBrokenKey,
+          keyAssembled: state.keyAssembled,
           doorCode: state.doorCode,
           doorKeyUnlocked: state.doorKeyUnlocked,
           doorCodeUnlocked: state.doorCodeUnlocked,
@@ -155,18 +206,27 @@ document.addEventListener('DOMContentLoaded', () => {
     state.currentDirection = s.currentDirection || 0;
     state.inventory = (s.inventoryIds || []).map(id => ITEMS[id]).filter(Boolean);
     state.selectedItem = s.selectedItem || null;
+    state.isLightOn = s.isLightOn !== false;
+    state.switchCoverUnlocked = !!s.switchCoverUnlocked;
     state.carpetFlipped = !!s.carpetFlipped;
-    state.hasSilverKey = !!s.hasSilverKey;
+    state.hasScrewdriver = !!s.hasScrewdriver;
+    state.sofaBoxFound = !!s.sofaBoxFound;
+    state.boxDisassembled = !!s.boxDisassembled;
     state.drawerUnlocked = !!s.drawerUnlocked;
-    state.hasBrush = !!s.hasBrush;
-    state.hasMemo = !!s.hasMemo;
+    state.hasSwitchKey = !!s.hasSwitchKey;
+    state.hasPoker = !!s.hasPoker;
+    state.fireplaceGrilleRemoved = !!s.fireplaceGrilleRemoved;
+    state.hasEmblem = !!s.hasEmblem;
     state.booksSequence = s.booksSequence || [];
     state.booksPuzzleSolved = !!s.booksPuzzleSolved;
+    state.safeDiscInserted = !!s.safeDiscInserted;
+    state.safeAngle = s.safeAngle || 0;
+    state.safeUnlocked = !!s.safeUnlocked;
     state.clockHour = s.clockHour || 12;
     state.clockMinute = s.clockMinute || 0;
     state.clockPuzzleSolved = !!s.clockPuzzleSolved;
-    state.hasBrassKey = !!s.hasBrassKey;
-    state.fireplaceCleaned = !!s.fireplaceCleaned;
+    state.hasBrokenKey = !!s.hasBrokenKey;
+    state.keyAssembled = !!s.keyAssembled;
     state.doorCode = s.doorCode || [0, 0, 0, 0];
     state.doorKeyUnlocked = !!s.doorKeyUnlocked;
     state.doorCodeUnlocked = !!s.doorCodeUnlocked;
@@ -174,27 +234,95 @@ document.addEventListener('DOMContentLoaded', () => {
     state.elapsedBeforeSave = savedData.elapsedMs || 0;
     state.startTime = Date.now();
 
-    // DOMへの見た目反映
     updateRoomDomState();
   }
 
   function updateRoomDomState() {
-    // 絨毯
-    const carpetFlat = document.getElementById('carpet-corner-flat');
-    const carpetFolded = document.getElementById('carpet-corner-folded');
-    const carpetKey = document.getElementById('carpet-silver-key');
-    if (carpetFlat && carpetFolded) {
-      carpetFlat.style.display = state.carpetFlipped ? 'none' : 'block';
-      carpetFolded.style.display = state.carpetFlipped ? 'block' : 'none';
-      if (carpetKey) {
-        carpetKey.style.display = (state.carpetFlipped && !state.hasSilverKey) ? 'block' : 'none';
+    // 照明モードのクラス
+    if (state.isLightOn) {
+      document.body.classList.remove('dark-mode');
+    } else {
+      document.body.classList.add('dark-mode');
+    }
+
+    // 照明スイッチ盤
+    const coverBox = document.getElementById('switch-cover-box');
+    const keyhole = document.getElementById('switch-keyhole');
+    const toggleGrp = document.getElementById('switch-toggle-group');
+    const lever = document.getElementById('switch-lever');
+    const indText = document.getElementById('switch-indicator-text');
+    if (coverBox && toggleGrp) {
+      if (state.switchCoverUnlocked) {
+        coverBox.style.display = 'none';
+        if (keyhole) keyhole.style.display = 'none';
+        toggleGrp.style.display = 'block';
+        if (state.isLightOn) {
+          lever.setAttribute('y', '210');
+          indText.textContent = 'ON';
+          indText.setAttribute('fill', '#2ecc71');
+        } else {
+          lever.setAttribute('y', '224');
+          indText.textContent = 'OFF';
+          indText.setAttribute('fill', '#e74c3c');
+        }
+      } else {
+        coverBox.style.display = 'block';
+        if (keyhole) keyhole.style.display = 'block';
+        toggleGrp.style.display = 'none';
       }
     }
 
-    // 暖炉プレート
-    const plateHint = document.getElementById('fireplace-plate-hint');
-    if (plateHint) {
-      plateHint.style.opacity = state.fireplaceCleaned ? '1' : '0';
+    // 蓄光絵画レイヤー
+    const glowLayer = document.getElementById('painting-glow-layer');
+    if (glowLayer) {
+      glowLayer.style.display = (!state.isLightOn) ? 'block' : 'none';
+    }
+
+    // 絨毯とドライバー
+    const carpetFlat = document.getElementById('carpet-corner-flat');
+    const carpetFolded = document.getElementById('carpet-corner-folded');
+    const carpetScrewdriver = document.getElementById('carpet-screwdriver');
+    if (carpetFlat && carpetFolded) {
+      carpetFlat.style.display = state.carpetFlipped ? 'none' : 'block';
+      carpetFolded.style.display = state.carpetFlipped ? 'block' : 'none';
+      if (carpetScrewdriver) {
+        carpetScrewdriver.style.display = (state.carpetFlipped && !state.hasScrewdriver) ? 'block' : 'none';
+      }
+    }
+
+    // ソファの小箱チラ見せ
+    const sofaBox = document.getElementById('sofa-box-peek');
+    if (sofaBox) {
+      sofaBox.style.display = state.sofaBoxFound ? 'none' : 'block';
+    }
+
+    // 机の脇の火かき棒
+    const objPoker = document.getElementById('obj-poker');
+    if (objPoker) {
+      objPoker.style.display = state.hasPoker ? 'none' : 'block';
+    }
+
+    // 本棚スライドと壁金庫
+    const objSafe = document.getElementById('obj-wall-safe');
+    const objBookshelf = document.getElementById('obj-bookshelf');
+    if (objSafe && objBookshelf) {
+      if (state.booksPuzzleSolved) {
+        objSafe.style.display = 'block';
+        objBookshelf.setAttribute('transform', 'translate(70, 0)');
+      } else {
+        objSafe.style.display = 'none';
+        objBookshelf.removeAttribute('transform');
+      }
+    }
+
+    // 暖炉の鉄格子
+    const grille = document.getElementById('fireplace-grille');
+    const medalHint = document.getElementById('fireplace-medal-hint');
+    if (grille) {
+      grille.style.display = state.fireplaceGrilleRemoved ? 'none' : 'block';
+      if (medalHint) {
+        medalHint.style.opacity = (state.fireplaceGrilleRemoved && !state.hasEmblem) ? '1' : '0';
+      }
     }
 
     // 扉のLED
@@ -213,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderInventory();
   }
 
-  // --- 画面遷移（メニュー ⇔ ゲーム） ---
+  // --- メニュー遷移 ---
   function showMenu() {
     saveGame();
     elGameContainer.style.display = 'none';
@@ -270,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setMessage('いつでも左上の「メニュー」ボタンでセーブして戻れます。');
   }
 
-  // ヘルパー関数
+  // --- 基本操作 ---
   function setMessage(msg) {
     elMessageBar.textContent = msg;
     elMessageBar.style.opacity = '0';
@@ -297,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elDirectionText.textContent = state.directions[state.currentDirection].name;
   }
 
-  // --- アイテムインベントリ管理 ---
+  // --- インベントリ ---
   function addItem(itemId) {
     if (state.inventory.find(i => i.id === itemId)) return;
     const item = ITEMS[itemId];
@@ -343,7 +471,6 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleSlotClick(itemId) {
     soundManager.playClick();
     if (state.selectedItem === itemId) {
-      // 既に選択中のアイテムをもう一度押したら詳細を表示
       showItemDetail(itemId);
     } else {
       state.selectedItem = itemId;
@@ -353,16 +480,75 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // --- アイテム詳細・分解・合成システム ---
+  let currentDetailItemId = null;
+
   function showItemDetail(itemId) {
+    currentDetailItemId = itemId;
     const item = ITEMS[itemId];
     if (!item) return;
+
     elItemDetailIcon.innerHTML = item.icon;
     elItemDetailName.textContent = item.name;
     elItemDetailDesc.innerText = item.desc;
+
+    // アクションボタンの表示制御
+    if (itemId === 'music_box') {
+      elItemDetailActionArea.style.display = 'block';
+      elBtnItemAction.textContent = '工具でネジを外す';
+      elBtnItemAction.onclick = handleDisassembleBox;
+    } else if (itemId === 'broken_key') {
+      elItemDetailActionArea.style.display = 'block';
+      elBtnItemAction.textContent = '紋章をはめ込んで結合する';
+      elBtnItemAction.onclick = handleAssembleKey;
+    } else {
+      elItemDetailActionArea.style.display = 'none';
+    }
+
     elItemDetailModal.classList.remove('modal-hidden');
   }
 
-  // --- アイテム選択UI生成ヘルパー ---
+  // 小箱の分解
+  function handleDisassembleBox() {
+    if (state.inventory.some(i => i.id === 'screwdriver')) {
+      soundManager.playScrewdriver();
+      removeItem('music_box');
+      state.boxDisassembled = true;
+      elItemDetailModal.classList.add('modal-hidden');
+
+      setTimeout(() => {
+        addItem('silver_key');
+        setTimeout(() => {
+          addItem('star_disc');
+          setMessage('ドライバーでネジを外すと、中から「銀の鍵」と「星座の円盤」が現れた！');
+        }, 500);
+      }, 300);
+    } else {
+      soundManager.playClick();
+      alert('4隅のネジが固く締まっている。小さなドライバーが必要だ。');
+    }
+  }
+
+  // 鍵の合成
+  function handleAssembleKey() {
+    if (state.inventory.some(i => i.id === 'emblem')) {
+      soundManager.playSolved();
+      removeItem('broken_key');
+      removeItem('emblem');
+      state.keyAssembled = true;
+      elItemDetailModal.classList.add('modal-hidden');
+
+      setTimeout(() => {
+        addItem('brass_key');
+        setMessage('カチリ！ 鍵身に青玉の紋章が吸い込まれるように結合し、「賢者の真鍮鍵」が完成した！');
+      }, 400);
+    } else {
+      soundManager.playClick();
+      alert('鍵の頭部に適合する円形パーツ（紋章）が必要だ。');
+    }
+  }
+
+  // アイテムピッカーUIヘルパー
   function getItemPickerHtml(actionTitle) {
     if (state.inventory.length === 0) {
       return `
@@ -387,7 +573,6 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  // --- モーダル制御 ---
   function openModal(contentHtml) {
     elModalContent.innerHTML = contentHtml;
     elModalOverlay.classList.remove('modal-hidden');
@@ -399,28 +584,126 @@ document.addEventListener('DOMContentLoaded', () => {
     elModalContent.innerHTML = '';
   }
 
-  // --- 各ギミックの実装 ---
+  // ==========================================
+  // 各ギミックの実装
+  // ==========================================
 
-  // 1. 絨毯（西側）
+  // 1. 照明スイッチ盤（北側扉横）
+  const elLightSwitch = document.getElementById('obj-light-switch');
+  if (elLightSwitch) {
+    elLightSwitch.addEventListener('click', () => {
+      openSwitchModal();
+    });
+  }
+
+  function openSwitchModal() {
+    let content = `
+      <div class="zoom-view-header">
+        <h3>壁の照明端子盤</h3>
+      </div>
+      <div class="zoom-body">
+    `;
+
+    if (!state.switchCoverUnlocked) {
+      content += `
+        <p style="color:#d5cac0; font-size:0.9rem;">堅牢な真鍮カバーで施錠されている。</p>
+        <div style="width:70px; height:90px; background:#8c6a3e; border:3px solid #4a3422; border-radius:6px; display:flex; align-items:center; justify-content:center; margin:10px 0;">
+          <div id="modal-switch-keyhole" class="drawer-keyhole"></div>
+        </div>
+        ${getItemPickerHtml('端子盤の鍵穴に使うアイテムを選んでください')}
+      `;
+    } else {
+      content += `
+        <p style="color:#d5cac0; font-size:0.9rem;">部屋全体のブラケットランプを制御するスイッチだ。</p>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin:16px 0;">
+          <div style="font-family:monospace; font-size:1.4rem; color:${state.isLightOn ? '#2ecc71' : '#e74c3c'};">
+            ● ${state.isLightOn ? 'LIGHT: ON (点灯中)' : 'LIGHT: OFF (消灯中)'}
+          </div>
+          <button id="btn-toggle-room-light" class="btn-primary" style="min-width:140px;">
+            ${state.isLightOn ? '明かりを消す (OFF)' : '明かりをつける (ON)'}
+          </button>
+        </div>
+        <p style="font-size:0.85rem; color:#a8947d;">暗闇にすることで、普段見えないものが見えるかもしれない…</p>
+      `;
+    }
+
+    content += `</div>`;
+    openModal(content);
+
+    if (!state.switchCoverUnlocked) {
+      const tryUnlockCover = (itemId) => {
+        if (itemId === 'switch_key') {
+          soundManager.playUnlock();
+          state.switchCoverUnlocked = true;
+          removeItem('switch_key');
+          saveGame();
+          updateRoomDomState();
+          setMessage('カチリ！ 端子盤のカバーが開き、照明スイッチが現れた！');
+          openSwitchModal();
+        } else {
+          soundManager.playClick();
+          setMessage('鍵の形が合わないようだ。');
+        }
+      };
+
+      const keyhole = document.getElementById('modal-switch-keyhole');
+      if (keyhole) {
+        keyhole.onclick = () => {
+          if (state.selectedItem) {
+            tryUnlockCover(state.selectedItem);
+          } else {
+            soundManager.playClick();
+            setMessage('端子盤に鍵がかかっている。鍵を選んでください。');
+          }
+        };
+      }
+
+      const itemBtns = elModalContent.querySelectorAll('.btn-use-item');
+      itemBtns.forEach(btn => {
+        btn.onclick = () => {
+          const itemId = btn.getAttribute('data-item-id');
+          state.selectedItem = itemId;
+          renderInventory();
+          tryUnlockCover(itemId);
+        };
+      });
+    } else {
+      const btnToggle = document.getElementById('btn-toggle-room-light');
+      if (btnToggle) {
+        btnToggle.onclick = () => {
+          soundManager.playSwitch();
+          state.isLightOn = !state.isLightOn;
+          saveGame();
+          updateRoomDomState();
+          if (!state.isLightOn) {
+            setMessage('カチッ…部屋の明かりが消え、暗闇に包まれた。どこかが青白く発光している…？');
+          } else {
+            setMessage('カチッ…部屋の明かりが点灯した。');
+          }
+          openSwitchModal();
+        };
+      }
+    }
+  }
+
+  // 2. 西側：絨毯（ドライバー）とソファ（真鍮小箱）
   const elCarpet = document.getElementById('obj-carpet');
   if (elCarpet) {
     elCarpet.addEventListener('click', () => {
       if (!state.carpetFlipped) {
         state.carpetFlipped = true;
         soundManager.playClick();
-        document.getElementById('carpet-corner-flat').style.display = 'none';
-        document.getElementById('carpet-corner-folded').style.display = 'block';
-        if (!state.hasSilverKey) {
-          document.getElementById('carpet-silver-key').style.display = 'block';
-          setMessage('絨毯の角をめくると、小さな銀色の鍵が落ちていた！');
-        } else {
-          setMessage('絨毯の角がめくられている。');
+        saveGame();
+        updateRoomDomState();
+        if (!state.hasScrewdriver) {
+          setMessage('絨毯の隅をめくると、細身の精密ドライバーが隠されていた！');
         }
       } else {
-        if (!state.hasSilverKey) {
-          state.hasSilverKey = true;
-          document.getElementById('carpet-silver-key').style.display = 'none';
-          addItem('silver_key');
+        if (!state.hasScrewdriver) {
+          state.hasScrewdriver = true;
+          saveGame();
+          updateRoomDomState();
+          addItem('screwdriver');
         } else {
           setMessage('絨毯の下にはもう何もない。');
         }
@@ -428,80 +711,99 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. 机と引き出し（東側）
-  const elDesk = document.getElementById('obj-desk');
-  if (elDesk) {
-    elDesk.addEventListener('click', () => {
-      openDeskDrawerModal();
+  const elSofa = document.getElementById('obj-sofa');
+  if (elSofa) {
+    elSofa.addEventListener('click', () => {
+      if (!state.sofaBoxFound) {
+        state.sofaBoxFound = true;
+        soundManager.playClick();
+        saveGame();
+        updateRoomDomState();
+        addItem('music_box');
+        setMessage('ソファの座面クッションの隙間を探ると、頑丈な「真鍮の小箱」が挟まっていた！');
+      } else {
+        setMessage('座り心地のよい革張りソファだ。もう隙間には何もない。');
+      }
     });
   }
 
-  function openDeskDrawerModal() {
-    let innerHtml = `
+  // 3. 東側：机と引き出し
+  const elDesk = document.getElementById('obj-desk');
+  if (elDesk) {
+    elDesk.addEventListener('click', (e) => {
+      openDeskModal();
+    });
+  }
+
+  function openDeskModal() {
+    let content = `
       <div class="zoom-view-header">
-        <h3>机の引き出し</h3>
+        <h3>書斎の重厚な机</h3>
       </div>
       <div class="zoom-body">
         <div class="drawer-container">
     `;
 
     if (!state.drawerUnlocked) {
-      innerHtml += `
-          <p style="color:#d5cac0; font-size:0.9rem;">頑丈な鍵穴がついている。鍵がかかっているようだ。</p>
-          <div class="drawer-box">
-            <div id="modal-drawer-keyhole" class="drawer-keyhole" title="鍵穴"></div>
-          </div>
-          ${getItemPickerHtml('鍵穴に使うアイテムを選んでください')}
+      content += `
+        <p style="color:#d5cac0; font-size:0.9rem;">上段の引き出しには銀色の小さな鍵穴がついている。</p>
+        <div class="drawer-box">
+          <div id="modal-drawer-keyhole" class="drawer-keyhole"></div>
+        </div>
+        ${getItemPickerHtml('引き出しの鍵穴に使うアイテムを選んでください')}
       `;
     } else {
-      innerHtml += `
-          <div class="drawer-box drawer-opened">
-            <div class="drawer-inside-items">
+      content += `
+        <div class="drawer-box drawer-opened">
+          <div class="drawer-inside-items">
       `;
-      if (!state.hasBrush) {
-        innerHtml += `
-          <button id="btn-take-brush" class="btn-icon" style="width:60px; height:60px;" title="ブラシを取る">
-            ${ITEMS.brush.icon}
+      if (!state.hasSwitchKey) {
+        content += `
+          <button id="btn-take-switch-key" class="btn-icon" style="width:60px; height:60px;" title="鍵を取る">
+            ${ITEMS.switch_key.icon}
           </button>
         `;
+      } else {
+        content += `<p style="color:#888; font-size:0.85rem;">引き出しの中はもう空だ。</p>`;
       }
-      if (!state.hasMemo) {
-        innerHtml += `
-          <button id="btn-take-memo" class="btn-icon" style="width:60px; height:60px;" title="メモを取る">
-            ${ITEMS.memo.icon}
-          </button>
-        `;
-      }
-      if (state.hasBrush && state.hasMemo) {
-        innerHtml += `<p style="color:#888; font-size:0.85rem;">引き出しの中はもう空っぽだ。</p>`;
-      }
-      innerHtml += `
-            </div>
+      content += `
           </div>
-          <p style="color:#ecc57e; font-size:0.9rem;">引き出しが開いている。</p>
+        </div>
+        <p style="color:#ecc57e; font-size:0.9rem;">引き出しが開いている。</p>
       `;
     }
 
-    innerHtml += `
+    content += `
+        </div>
+        <div style="margin-top:14px; border-top:1px solid #4a3422; padding-top:10px; width:100%; text-align:center;">
+          <button id="btn-open-diary" class="btn-secondary" style="padding:8px 16px; font-size:0.88rem;">
+            📖 机の上の天体日誌を読む
+          </button>
         </div>
       </div>
     `;
 
-    openModal(innerHtml);
+    openModal(content);
 
-    // イベントリスナー設定
+    // 日誌閲覧
+    const btnDiary = document.getElementById('btn-open-diary');
+    if (btnDiary) {
+      btnDiary.onclick = openDiaryModal;
+    }
+
     if (!state.drawerUnlocked) {
-      const tryUnlockWithItem = (itemId) => {
+      const tryUnlockDrawer = (itemId) => {
         if (itemId === 'silver_key') {
           soundManager.playUnlock();
           state.drawerUnlocked = true;
           removeItem('silver_key');
           saveGame();
-          setMessage('銀の鍵がカチリと回った！ 引き出しが開いた。');
-          openDeskDrawerModal();
+          updateRoomDomState();
+          setMessage('カチリ！ 銀の鍵が回り、引き出しが開いた！');
+          openDeskModal();
         } else {
           soundManager.playClick();
-          setMessage('このアイテムでは鍵穴に合わないようだ。');
+          setMessage('この鍵では合わないようだ。');
         }
       };
 
@@ -509,45 +811,76 @@ document.addEventListener('DOMContentLoaded', () => {
       if (keyhole) {
         keyhole.onclick = () => {
           if (state.selectedItem) {
-            tryUnlockWithItem(state.selectedItem);
+            tryUnlockDrawer(state.selectedItem);
           } else {
             soundManager.playClick();
-            setMessage('鍵穴がある。使うアイテムを選んでください。');
+            setMessage('引き出しに鍵穴がある。銀の鍵を選んでください。');
           }
         };
       }
 
-      // アイテム選択ピッカーのボタンクリック
       const itemBtns = elModalContent.querySelectorAll('.btn-use-item');
       itemBtns.forEach(btn => {
         btn.onclick = () => {
           const itemId = btn.getAttribute('data-item-id');
           state.selectedItem = itemId;
           renderInventory();
-          tryUnlockWithItem(itemId);
+          tryUnlockDrawer(itemId);
         };
       });
     } else {
-      const btnBrush = document.getElementById('btn-take-brush');
-      if (btnBrush) {
-        btnBrush.onclick = () => {
-          state.hasBrush = true;
-          addItem('brush');
-          openDeskDrawerModal();
-        };
-      }
-      const btnMemo = document.getElementById('btn-take-memo');
-      if (btnMemo) {
-        btnMemo.onclick = () => {
-          state.hasMemo = true;
-          addItem('memo');
-          openDeskDrawerModal();
+      const btnTakeKey = document.getElementById('btn-take-switch-key');
+      if (btnTakeKey) {
+        btnTakeKey.onclick = () => {
+          state.hasSwitchKey = true;
+          addItem('switch_key');
+          openDeskModal();
         };
       }
     }
   }
 
-  // 3. 本棚のパズル（東側）
+  // 机の脇の火かき棒
+  const elPoker = document.getElementById('obj-poker');
+  if (elPoker) {
+    elPoker.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!state.hasPoker) {
+        state.hasPoker = true;
+        saveGame();
+        updateRoomDomState();
+        addItem('poker');
+      }
+    });
+  }
+
+  // 天体日誌モーダル
+  function openDiaryModal() {
+    const content = `
+      <div class="zoom-view-header">
+        <h3>書斎主の天体日誌</h3>
+      </div>
+      <div class="zoom-body">
+        <div class="diary-page">
+          <h4>星辰の記録と隠された理</h4>
+          <p>『夜空を統べる天球の星々は、光が失われし暗闇においてのみ、その真の巡りを示す。』</p>
+          <div class="diary-poem">
+            星の旅路は三つの門を通る。<br>
+            初めに、角ある春の火（牡羊 ♈）。<br>
+            次に、百獣を統べる真夏の陽（獅子 ♌）。<br>
+            最後に、天を射貫く秋の狩人（射手 ♐）。<br>
+            この順を過たず本を収めし時、隠されし金庫は扉を開かん。
+          </div>
+          <p style="margin-top:10px; font-size:0.85rem; color:#7f5539;">
+            追記：壁画に描かれし『星辰の刻』、すなわち短針が西（9）、長針が東（3）を指す刻限に、大時計は賢者への捧げ物を落とす。
+          </p>
+        </div>
+      </div>
+    `;
+    openModal(content);
+  }
+
+  // 4. 東側：本棚パズル ＆ スライド後の隠し壁金庫
   const elBookshelf = document.getElementById('obj-bookshelf');
   if (elBookshelf) {
     elBookshelf.addEventListener('click', () => {
@@ -563,49 +896,43 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="zoom-body">
         <div class="bookshelf-puzzle-container">
           <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
-            色とりどりの背表紙の本が並んでいる。<br>押し込める仕掛けのようだ。
+            背表紙に天体シンボルが刻まれた古い書物が並んでいる。<br>
+            ${!state.isLightOn ? '<span style="color:#5dade2;">★ 暗闇の中でシンボルが青白く発光している！</span>' : '（部屋が明るい時は何の変哲もない古書に見える）'}
           </p>
     `;
 
     if (!state.booksPuzzleSolved) {
       content += `
-          <div class="shelf-row">
-            <button class="puzzle-book book-red" data-color="red">赤</button>
-            <button class="puzzle-book book-blue" data-color="blue">青</button>
-            <button class="puzzle-book book-yellow" data-color="yellow">黄</button>
-            <button class="puzzle-book book-green" data-color="green">緑</button>
-          </div>
-          <div style="font-size:0.85rem; color:#ecc57e; height:20px;" id="books-input-display">
-            押した順: ${state.booksSequence.map(c => ({ red: '赤', blue: '青', yellow: '黄', green: '緑' }[c])).join(' → ')}
-          </div>
-          <button id="btn-reset-books" class="clock-control-btns" style="padding:4px 10px; font-size:0.8rem; background:#332215; color:#ccc; border:1px solid #664b31; border-radius:4px; cursor:pointer;">並び順をやり直す</button>
+        <div class="shelf-row">
+          <button class="puzzle-book" data-symbol="♈" style="background:#5d3027; color:#f5b7b1;">♈<br><small>牡羊</small></button>
+          <button class="puzzle-book" data-symbol="♌" style="background:#1b3d54; color:#aed6f1;">♌<br><small>獅子</small></button>
+          <button class="puzzle-book" data-symbol="♐" style="background:#5c4d16; color:#f9e79f;">♐<br><small>射手</small></button>
+          <button class="puzzle-book" data-symbol="♏" style="background:#194d2e; color:#abebc6;">♏<br><small>蠍</small></button>
+        </div>
+        <div style="font-size:0.85rem; color:#ecc57e; height:20px;">
+          押した順: ${state.booksSequence.join(' → ')}
+        </div>
+        <button id="btn-reset-books" class="clock-control-btns" style="padding:4px 10px; font-size:0.8rem; background:#332215; color:#ccc; border:1px solid #664b31; border-radius:4px; cursor:pointer;">並び順をやり直す</button>
       `;
     } else {
       content += `
-          <div style="background:#1c2833; border:2px solid #5d6d7e; border-radius:6px; padding:16px; text-align:center;">
-            <p style="color:#58d68d; font-weight:bold; margin-bottom:8px;">★ 仕掛けが解除された ★</p>
-            <p style="color:#f7f9f9; font-size:0.95rem; line-height:1.6;">
-              奥から古い羊皮紙が滑り出てきた：<br>
-              <strong style="color:#f39c12; font-size:1.1rem;">『扉の四桁 ＝ 灰の奥の数 ＋ 135』</strong>
-            </p>
-          </div>
+        <div style="background:#1c2833; border:2px solid #5d6d7e; border-radius:6px; padding:16px; text-align:center;">
+          <p style="color:#58d68d; font-weight:bold; margin-bottom:8px;">★ 仕掛けが作動し、本棚が横にスライドした！ ★</p>
+          <p style="color:#f7f9f9; font-size:0.9rem;">背後の壁から頑丈な「壁金庫」が露出している。</p>
+        </div>
       `;
     }
 
-    content += `
-        </div>
-      </div>
-    `;
-
+    content += `</div></div>`;
     openModal(content);
 
     if (!state.booksPuzzleSolved) {
-      const books = document.querySelectorAll('.puzzle-book');
+      const books = elModalContent.querySelectorAll('.puzzle-book');
       books.forEach(b => {
         b.onclick = () => {
-          const color = b.getAttribute('data-color');
+          const sym = b.getAttribute('data-symbol');
           soundManager.playClick();
-          handleBookPress(color);
+          handleBookPress(sym);
         };
       });
 
@@ -620,33 +947,145 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function handleBookPress(color) {
-    state.booksSequence.push(color);
-    const correctSeq = ['red', 'blue', 'yellow', 'green'];
+  function handleBookPress(sym) {
+    state.booksSequence.push(sym);
+    // 正解順: ♈ → ♌ → ♐ (日誌＆絵画の軌跡)
+    const correct = ['♈', '♌', '♐'];
     const curIdx = state.booksSequence.length - 1;
 
-    if (state.booksSequence[curIdx] !== correctSeq[curIdx]) {
-      // 失敗
+    if (state.booksSequence[curIdx] !== correct[curIdx]) {
       soundManager.playClick();
-      setMessage('カチャ…何かが噛み合わずに元に戻ってしまった。');
+      setMessage('ガタッ…何かが引っかかり、本が押し戻されてしまった。');
       state.booksSequence = [];
-      setTimeout(() => openBookshelfModal(), 300);
+      setTimeout(openBookshelfModal, 300);
       return;
     }
 
-    if (state.booksSequence.length === correctSeq.length) {
-      // 正解！
+    if (state.booksSequence.length === correct.length) {
       soundManager.playSolved();
       state.booksPuzzleSolved = true;
       saveGame();
-      setMessage('カチリ！ 本棚の奥の小さな隠し扉が開いた！');
-      setTimeout(() => openBookshelfModal(), 400);
+      updateRoomDomState();
+      setMessage('ゴゴゴ…！ 本棚が横にスライドし、壁から真鍮の金庫が現れた！');
+      setTimeout(openBookshelfModal, 400);
     } else {
       openBookshelfModal();
     }
   }
 
-  // 4. 絵画（南側）
+  // 隠し壁金庫
+  const elWallSafe = document.getElementById('obj-wall-safe');
+  if (elWallSafe) {
+    elWallSafe.addEventListener('click', () => {
+      openSafeModal();
+    });
+  }
+
+  function openSafeModal() {
+    let content = `
+      <div class="zoom-view-header">
+        <h3>本棚奥の真鍮シリンダー金庫</h3>
+      </div>
+      <div class="zoom-body">
+        <div class="safe-puzzle-container">
+    `;
+
+    if (!state.safeDiscInserted) {
+      content += `
+        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
+          金庫の中央に円形の窪みがある。<br>何か丸いプレートを嵌め込めそうだ。
+        </p>
+        <div class="safe-disc-box">
+          <div class="safe-slot-empty">円盤スロット</div>
+        </div>
+        ${getItemPickerHtml('スロットにはめるアイテムを選んでください')}
+      `;
+    } else if (!state.safeUnlocked) {
+      content += `
+        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
+          円盤がはまった。タップして回転させ、星の向きを真上に合わせよう。
+        </p>
+        <div class="safe-disc-box">
+          <svg class="safe-disc-slotted" id="btn-rotate-safe-disc" viewBox="0 0 40 40" style="transform: rotate(${state.safeAngle}deg);">
+            <circle cx="20" cy="20" r="18" fill="#1b2631" stroke="#f1c40f" stroke-width="3"/>
+            <polygon points="20,7 23,15 31,15 25,20 27,28 20,23 13,28 15,20 9,15 17,15" fill="#f1c40f"/>
+            <circle cx="20" cy="20" r="3" fill="#1b2631"/>
+          </svg>
+        </div>
+        <p style="font-size:0.8rem; color:#f39c12;">現在角度: ${state.safeAngle}度（0度で真上）</p>
+        <button id="btn-unlock-safe" class="btn-primary" style="margin-top:6px;">解錠レバーを引く</button>
+      `;
+    } else {
+      content += `
+        <div style="background:#151b22; border:2px solid #58d68d; border-radius:8px; padding:20px; text-align:center;">
+          <p style="color:#58d68d; font-weight:bold; font-size:1.1rem; margin-bottom:10px;">★ 金庫が解錠された！ ★</p>
+          <div style="background:#fef9e7; color:#1e1e1e; padding:12px; border-radius:6px; font-family:monospace; font-size:1.15rem; font-weight:bold; letter-spacing:3px;">
+            大扉の解除コード：【 3928 】
+          </div>
+          <p style="color:#a8947d; font-size:0.85rem; margin-top:8px;">金庫の奥に羊皮紙のメモが保管されていた。</p>
+        </div>
+      `;
+    }
+
+    content += `</div></div>`;
+    openModal(content);
+
+    if (!state.safeDiscInserted) {
+      const tryInsertDisc = (itemId) => {
+        if (itemId === 'star_disc') {
+          soundManager.playUnlock();
+          state.safeDiscInserted = true;
+          removeItem('star_disc');
+          saveGame();
+          updateRoomDomState();
+          setMessage('カチリ！ 星座の円盤が金庫のシリンダーにぴったりとはまった！');
+          openSafeModal();
+        } else {
+          soundManager.playClick();
+          setMessage('このアイテムはスロットの形に合わない。');
+        }
+      };
+
+      const itemBtns = elModalContent.querySelectorAll('.btn-use-item');
+      itemBtns.forEach(btn => {
+        btn.onclick = () => {
+          const itemId = btn.getAttribute('data-item-id');
+          state.selectedItem = itemId;
+          renderInventory();
+          tryInsertDisc(itemId);
+        };
+      });
+    } else if (!state.safeUnlocked) {
+      const discBtn = document.getElementById('btn-rotate-safe-disc');
+      if (discBtn) {
+        discBtn.onclick = () => {
+          soundManager.playTick();
+          state.safeAngle = (state.safeAngle + 90) % 360;
+          openSafeModal();
+        };
+      }
+
+      const btnUnlock = document.getElementById('btn-unlock-safe');
+      if (btnUnlock) {
+        btnUnlock.onclick = () => {
+          // 星の向きが0度(真上)の時成功
+          if (state.safeAngle === 0) {
+            soundManager.playSolved();
+            state.safeUnlocked = true;
+            saveGame();
+            updateRoomDomState();
+            setMessage('ガチャリ！ 重厚なシリンダーが解放され、暗号メモが現れた！');
+            openSafeModal();
+          } else {
+            soundManager.playClick();
+            setMessage('レバーが重くて動かない。星の角度が合っていないようだ。');
+          }
+        };
+      }
+    }
+  }
+
+  // 5. 南側：絵画『星辰の刻』
   const elPainting = document.getElementById('obj-painting');
   if (elPainting) {
     elPainting.addEventListener('click', () => {
@@ -655,31 +1094,45 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function openPaintingModal() {
-    const content = `
+    let content = `
       <div class="zoom-view-header">
         <h3>油絵『星辰の刻』</h3>
       </div>
       <div class="zoom-body">
         <div class="painting-zoom-container">
           <svg class="painting-zoom-svg" viewBox="0 0 280 210">
-            <!-- 背景空 -->
-            <rect x="0" y="0" width="280" height="210" fill="#152238"/>
+            <rect x="0" y="0" width="280" height="210" fill="${state.isLightOn ? '#152238' : '#080d17'}"/>
             <polygon points="0,210 60,130 140,170 240,110 280,180 280,210" fill="#2c3e50"/>
-            <polygon points="40,210 110,150 180,190 280,130 280,210" fill="#1a252f"/>
-            <!-- 満月と時計塔 -->
-            <circle cx="140" cy="85" r="45" fill="#f9e79f" opacity="0.95"/>
-            <!-- 尖塔 -->
+            <circle cx="140" cy="85" r="45" fill="${state.isLightOn ? '#f9e79f' : '#85929e'}" opacity="0.95"/>
             <path d="M 125,210 L 125,115 L 140,40 L 155,115 L 155,210 Z" fill="#0b0e14"/>
-            <!-- 塔の大時計（9:15を指す） -->
             <circle cx="140" cy="115" r="18" fill="#fdfefe" stroke="#2c3e50" stroke-width="2"/>
-            <!-- 短針 (9時 = 左) -->
             <line x1="140" y1="115" x2="128" y2="115" stroke="#922b21" stroke-width="3" stroke-linecap="round"/>
-            <!-- 長針 (15分 = 右) -->
             <line x1="140" y1="115" x2="154" y2="115" stroke="#922b21" stroke-width="2" stroke-linecap="round"/>
+    `;
+
+    if (!state.isLightOn) {
+      // 暗闇時の蓄光星と星座ライン
+      content += `
+        <line x1="60" y1="65" x2="140" y2="40" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+        <line x1="140" y1="40" x2="220" y2="70" stroke="#5dade2" stroke-width="2.5" stroke-dasharray="4,4" filter="drop-shadow(0 0 3px #5dade2)"/>
+
+        <circle cx="60" cy="65" r="5" fill="#aed6f1" filter="drop-shadow(0 0 5px #3498db)"/>
+        <text x="60" y="55" font-size="12" fill="#aed6f1" text-anchor="middle" font-weight="bold">♈</text>
+
+        <circle cx="140" cy="40" r="5" fill="#aed6f1" filter="drop-shadow(0 0 5px #3498db)"/>
+        <text x="140" y="30" font-size="12" fill="#aed6f1" text-anchor="middle" font-weight="bold">♌</text>
+
+        <circle cx="220" cy="70" r="5" fill="#aed6f1" filter="drop-shadow(0 0 5px #3498db)"/>
+        <text x="220" y="60" font-size="12" fill="#aed6f1" text-anchor="middle" font-weight="bold">♐</text>
+      `;
+    }
+
+    content += `
           </svg>
           <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
-            月明かりに浮かぶ古塔の絵画だ。<br>
-            中央の時計台の針は<strong style="color:#ecc57e;">『短針が9、長針が3』</strong>を指している。
+            ${!state.isLightOn
+              ? '<strong style="color:#5dade2;">暗闇の中で蓄光の星が浮かび上がった！<br>【♈ 牡羊 → ♌ 獅子 → ♐ 射手】の光の軌跡が見える。</strong>'
+              : '月明かりに浮かぶ古塔の絵画だ。<br>時計台の針は<strong style="color:#ecc57e;">『短針が9、長針が3』</strong>を指している。'}
           </p>
         </div>
       </div>
@@ -687,7 +1140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal(content);
   }
 
-  // 5. 暖炉（南側）
+  // 6. 南側：暖炉（鉄格子外し＆灰の中の紋章）
   const elFireplace = document.getElementById('obj-fireplace');
   if (elFireplace) {
     elFireplace.addEventListener('click', () => {
@@ -704,58 +1157,51 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="fireplace-puzzle-container">
     `;
 
-    if (!state.fireplaceCleaned) {
+    if (!state.fireplaceGrilleRemoved) {
       content += `
-          <div class="ash-area" id="ash-click-area">
-            <div class="ash-overlay" id="ash-overlay-view">
-              灰が分厚く積もっている
-            </div>
-          </div>
-          ${getItemPickerHtml('灰を払うアイテムを選んでください')}
+        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
+          火室の手前に頑丈な鉄格子がはまっており、奥に手が届かない。<br>
+          フックのついた道具があれば引っ掛けて外せそうだ。
+        </p>
+        <div style="width:200px; height:120px; background:#1b1c1e; border:4px solid #34495e; border-radius:6px; display:flex; align-items:center; justify-content:center;">
+          <div style="width:100%; height:100%; background:repeating-linear-gradient(90deg, transparent, transparent 20px, #34495e 20px, #34495e 26px);"></div>
+        </div>
+        ${getItemPickerHtml('鉄格子に使うアイテムを選んでください')}
+      `;
+    } else if (!state.hasEmblem) {
+      content += `
+        <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
+          鉄格子が外れた！ 灰の中に何か光る金属が埋もれている。
+        </p>
+        <button id="btn-take-emblem" class="btn-primary" style="margin:16px 0;">
+          灰の中から光るメダルを拾い上げる
+        </button>
       `;
     } else {
       content += `
-          <div class="secret-panel">
-            <p style="color:#a8947d; font-size:0.85rem;">灰の奥に埋め込まれていた金属プレート</p>
-            <div class="keypad-display" style="letter-spacing:4px;">刻印: 7284</div>
-          </div>
-          <p style="color:#ecc57e; font-size:0.9rem;">「7284」という4桁の数字が刻まれている。</p>
+        <p style="color:#a8947d; font-size:0.9rem; text-align:center;">
+          灰の中はもう探り尽くした。
+        </p>
       `;
     }
 
-    content += `
-        </div>
-      </div>
-    `;
-
+    content += `</div></div>`;
     openModal(content);
 
-    if (!state.fireplaceCleaned) {
-      const tryCleanWithItem = (itemId) => {
-        if (itemId === 'brush') {
-          soundManager.playBrush();
-          state.fireplaceCleaned = true;
-          document.getElementById('fireplace-plate-hint').style.opacity = '1';
+    if (!state.fireplaceGrilleRemoved) {
+      const tryRemoveGrille = (itemId) => {
+        if (itemId === 'poker') {
+          soundManager.playUnlock();
+          state.fireplaceGrilleRemoved = true;
           saveGame();
-          setMessage('ブラシで灰を払い落とした！ 奥から金属プレートが現れた。');
+          updateRoomDomState();
+          setMessage('ガシャン！ 火かき棒を引っ掛けて重い鉄格子を外した！');
           openFireplaceModal();
         } else {
           soundManager.playClick();
-          setMessage('この道具では灰をうまく払えないようだ。');
+          setMessage('この道具では鉄格子を外せない。');
         }
       };
-
-      const ashArea = document.getElementById('ash-click-area');
-      if (ashArea) {
-        ashArea.onclick = () => {
-          if (state.selectedItem) {
-            tryCleanWithItem(state.selectedItem);
-          } else {
-            soundManager.playClick();
-            setMessage('灰が積もっている。払うためのアイテムを選んでください。');
-          }
-        };
-      }
 
       const itemBtns = elModalContent.querySelectorAll('.btn-use-item');
       itemBtns.forEach(btn => {
@@ -763,13 +1209,24 @@ document.addEventListener('DOMContentLoaded', () => {
           const itemId = btn.getAttribute('data-item-id');
           state.selectedItem = itemId;
           renderInventory();
-          tryCleanWithItem(itemId);
+          tryRemoveGrille(itemId);
         };
       });
+    } else if (!state.hasEmblem) {
+      const btnTakeEmblem = document.getElementById('btn-take-emblem');
+      if (btnTakeEmblem) {
+        btnTakeEmblem.onclick = () => {
+          state.hasEmblem = true;
+          saveGame();
+          updateRoomDomState();
+          addItem('emblem');
+          openFireplaceModal();
+        };
+      }
     }
   }
 
-  // 6. 古時計（北側）
+  // 7. 北側：古時計（9時15分で不完全な鍵身落下）
   const elClock = document.getElementById('obj-clock');
   if (elClock) {
     elClock.addEventListener('click', () => {
@@ -778,11 +1235,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function openClockModal() {
-    // 角度計算 (12時が上)
     const hourAngle = (state.clockHour % 12) * 30 + (state.clockMinute / 60) * 30;
     const minuteAngle = state.clockMinute * 6;
 
-    // 三角関数で正確な座標を直接算出 (CSS/SVGのtransformバグによる針消失を防止)
     const cx = 110;
     const cy = 110;
     const hourRad = (hourAngle - 90) * Math.PI / 180;
@@ -800,68 +1255,54 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="zoom-body">
         <div class="clock-puzzle-container">
           <svg class="clock-face-svg" viewBox="0 0 220 220">
-            <!-- 時計文字盤 -->
             <circle cx="110" cy="110" r="95" fill="#fdfbf7" stroke="#8c6a3e" stroke-width="8"/>
             <circle cx="110" cy="110" r="88" fill="#f4ebd9" stroke="#b89344" stroke-width="2"/>
-            <!-- 文字盤の数字 -->
             <text x="110" y="42" font-size="18" font-family="serif" text-anchor="middle" fill="#333" font-weight="bold">12</text>
             <text x="180" y="116" font-size="18" font-family="serif" text-anchor="middle" fill="#333" font-weight="bold">3</text>
             <text x="110" y="186" font-size="18" font-family="serif" text-anchor="middle" fill="#333" font-weight="bold">6</text>
             <text x="40" y="116" font-size="18" font-family="serif" text-anchor="middle" fill="#333" font-weight="bold">9</text>
 
-            <!-- 短針 (計算座標) -->
             <line x1="110" y1="110" x2="${hx2}" y2="${hy2}" stroke="#2c3e50" stroke-width="6" stroke-linecap="round"/>
-            <!-- 長針 (計算座標) -->
             <line x1="110" y1="110" x2="${mx2}" y2="${my2}" stroke="#b03a2e" stroke-width="4" stroke-linecap="round"/>
-            <!-- 中心ピン -->
             <circle cx="110" cy="110" r="6" fill="#8c6a3e"/>
           </svg>
     `;
 
     if (!state.clockPuzzleSolved) {
       content += `
-          <div style="font-size:1.1rem; color:#f4d03f; font-family:monospace;">
-            ${String(state.clockHour).padStart(2, '0')}:${String(state.clockMinute).padStart(2, '0')}
-          </div>
-          <div class="clock-control-btns">
-            <button id="btn-clock-hour">+1 時間</button>
-            <button id="btn-clock-min">+15 分</button>
-          </div>
-          <p style="color:#d5cac0; font-size:0.85rem; text-align:center;">針を回して正しい刻（とき）を刻もう。</p>
+        <div style="font-size:1.1rem; color:#f4d03f; font-family:monospace;">
+          ${String(state.clockHour).padStart(2, '0')}:${String(state.clockMinute).padStart(2, '0')}
+        </div>
+        <div class="clock-control-btns">
+          <button id="btn-clock-hour">+1 時間</button>
+          <button id="btn-clock-min">+15 分</button>
+        </div>
+        <p style="color:#d5cac0; font-size:0.85rem; text-align:center;">天体日誌と絵画が示す『星辰の刻』に針を合わせよう。</p>
       `;
     } else {
       content += `
-          <div style="text-align:center;">
-            <p style="color:#58d68d; font-weight:bold; margin-bottom:8px;">★ 9時15分で機構が固定された ★</p>
+        <div style="text-align:center;">
+          <p style="color:#58d68d; font-weight:bold; margin-bottom:8px;">★ 9時15分でからくりが作動した ★</p>
       `;
-      if (!state.hasBrassKey) {
+      if (!state.hasBrokenKey) {
         content += `
-            <p style="color:#f7f9f9; font-size:0.9rem; margin-bottom:12px;">振り子室の底から何か落ちてきた！</p>
-            <button id="btn-take-brass-key" class="btn-primary" style="font-size:0.9rem;">
-              真鍮の鍵を拾う
-            </button>
+          <p style="color:#f7f9f9; font-size:0.9rem; margin-bottom:12px;">振り子室の底から真鍮の鍵身が落ちてきた！</p>
+          <button id="btn-take-broken-key" class="btn-primary" style="font-size:0.9rem;">
+            鍵身を拾い上げる
+          </button>
         `;
       } else {
-        content += `
-            <p style="color:#a8947d; font-size:0.85rem;">鍵は既に回収した。</p>
-        `;
+        content += `<p style="color:#a8947d; font-size:0.85rem;">パーツは回収済みだ。</p>`;
       }
-      content += `
-          </div>
-      `;
+      content += `</div>`;
     }
 
-    content += `
-        </div>
-      </div>
-    `;
-
+    content += `</div></div>`;
     openModal(content);
 
     if (!state.clockPuzzleSolved) {
       const btnHour = document.getElementById('btn-clock-hour');
       const btnMin = document.getElementById('btn-clock-min');
-
       if (btnHour) {
         btnHour.onclick = () => {
           soundManager.playTick();
@@ -877,11 +1318,13 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       }
     } else {
-      const btnTakeKey = document.getElementById('btn-take-brass-key');
-      if (btnTakeKey) {
-        btnTakeKey.onclick = () => {
-          state.hasBrassKey = true;
-          addItem('brass_key');
+      const btnTake = document.getElementById('btn-take-broken-key');
+      if (btnTake) {
+        btnTake.onclick = () => {
+          state.hasBrokenKey = true;
+          saveGame();
+          updateRoomDomState();
+          addItem('broken_key');
           openClockModal();
         };
       }
@@ -889,17 +1332,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function checkClockSolution() {
-    // 目標: 9時15分
+    // 9時15分で解除
     if (state.clockHour === 9 && state.clockMinute === 15) {
       soundManager.playSolved();
       state.clockPuzzleSolved = true;
       saveGame();
-      setMessage('ガチャン！ 時計の中から重々しい音が鳴り響いた！');
+      setMessage('ガチャン！ 時計の中から重厚な金属パーツが落ちてきた！');
     }
     openClockModal();
   }
 
-  // 7. 大扉（北側）
+  // 8. 北側：脱出の大扉（賢者の真鍮鍵 ＋ 金庫コード3928）
   const elDoor = document.getElementById('obj-door');
   if (elDoor) {
     elDoor.addEventListener('click', () => {
@@ -908,10 +1351,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function openDoorModal() {
-    const codeDisplay = state.doorCode.join('');
-    // 正解コード: 7284 + 135 = 7419
-    const isCodeCorrect = codeDisplay === '7419';
-
     let content = `
       <div class="zoom-view-header">
         <h3>書斎の重厚な大扉</h3>
@@ -920,13 +1359,13 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="door-puzzle-container">
           <p style="color:#d5cac0; font-size:0.9rem; text-align:center;">
             頑丈な二重施錠が施されている。<br>
-            【4桁の暗号錠】と【賢者の真鍮鍵穴】の解除が必要だ。
+            【完成した賢者の鍵】と【金庫の暗号コード】が必要だ。
           </p>
 
           <div class="door-locks-status">
             <!-- 鍵穴 -->
             <div class="lock-box">
-              <span class="lock-label">1. 真鍮鍵穴</span>
+              <span class="lock-label">1. 賢者の鍵穴</span>
               <button id="btn-door-keyhole" class="keyhole-btn" title="鍵穴">
                 ${state.doorKeyUnlocked ? '🔓' : '🔒'}
               </button>
@@ -953,7 +1392,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           </div>
 
-          ${!state.doorKeyUnlocked ? getItemPickerHtml('真鍮鍵穴に使うアイテムを選んでください') : ''}
+          ${!state.doorKeyUnlocked ? getItemPickerHtml('大扉の鍵穴に使うアイテムを選んでください') : ''}
 
           <button id="btn-escape-door" class="btn-primary" style="margin-top:10px;">
             扉を開ける
@@ -964,9 +1403,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     openModal(content);
 
-    // ダイヤルボタン操作
-    const upBtns = document.querySelectorAll('.btn-dial-up');
-    const downBtns = document.querySelectorAll('.btn-dial-down');
+    // ダイヤル操作
+    const upBtns = elModalContent.querySelectorAll('.btn-dial-up');
+    const downBtns = elModalContent.querySelectorAll('.btn-dial-down');
 
     upBtns.forEach(b => {
       b.onclick = () => {
@@ -987,7 +1426,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 鍵穴操作
-    const keyholeBtn = document.getElementById('btn-door-keyhole');
     const tryUnlockDoorWithItem = (itemId) => {
       if (state.doorKeyUnlocked) {
         setMessage('鍵はすでに解除されている。');
@@ -998,21 +1436,23 @@ document.addEventListener('DOMContentLoaded', () => {
         state.doorKeyUnlocked = true;
         removeItem('brass_key');
         saveGame();
-        setMessage('真鍮の鍵がぴったりと合致し、重いシリンダーが解錠された！');
+        setMessage('完成した賢者の真鍮鍵が奥まで差し込まれ、重いシリンダーが解錠された！');
         openDoorModal();
+      } else if (itemId === 'broken_key') {
+        soundManager.playClick();
+        setMessage('鍵の頭部（持ち手）がないため、鍵穴に差し込んでも回すことができない！');
       } else {
         soundManager.playClick();
-        setMessage('このアイテムは真鍮鍵穴に合わないようだ。');
+        setMessage('このアイテムは鍵穴に合わない。');
       }
     };
 
+    const keyholeBtn = document.getElementById('btn-door-keyhole');
     if (keyholeBtn) {
       keyholeBtn.onclick = () => {
         if (state.doorKeyUnlocked) {
           setMessage('鍵はすでに解除されている。');
-          return;
-        }
-        if (state.selectedItem) {
+        } else if (state.selectedItem) {
           tryUnlockDoorWithItem(state.selectedItem);
         } else {
           soundManager.playClick();
@@ -1021,7 +1461,6 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     }
 
-    // 大扉モーダル内のアイテムピッカーボタン
     const doorItemBtns = elModalContent.querySelectorAll('.btn-use-item');
     doorItemBtns.forEach(btn => {
       btn.onclick = () => {
@@ -1032,7 +1471,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
     });
 
-    // ドアを開けるボタン
+    // 脱出判定
     const btnEscape = document.getElementById('btn-escape-door');
     if (btnEscape) {
       btnEscape.onclick = () => {
@@ -1041,12 +1480,11 @@ document.addEventListener('DOMContentLoaded', () => {
           setMessage('ガチャン！ 鍵も暗号も施錠されたままだ。');
         } else if (!state.doorKeyUnlocked) {
           soundManager.playClick();
-          setMessage('暗号は合っているが、真鍮の鍵が開いていない！');
+          setMessage('暗号は合っているが、賢者の鍵が開いていない！');
         } else if (!state.doorCodeUnlocked) {
           soundManager.playClick();
-          setMessage('鍵は開いたが、ダイヤル暗号が解除されていない！');
+          setMessage('鍵は開いたが、ダイヤル暗号が認証されていない！');
         } else {
-          // 両方解除！クリア！
           closeModal();
           triggerGameClear();
         }
@@ -1056,19 +1494,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function verifyDoorCode() {
     const code = state.doorCode.join('');
-    if (code === '7419') {
+    // 正解コード: 3928 (壁金庫の羊皮紙)
+    if (code === '3928') {
       if (!state.doorCodeUnlocked) {
         soundManager.playSolved();
         state.doorCodeUnlocked = true;
-        document.getElementById('door-lock-status-led').textContent = '● UNLOCKED';
-        document.getElementById('door-lock-status-led').setAttribute('fill', '#2ecc71');
         saveGame();
+        updateRoomDomState();
         setMessage('ピピッ！ 電子ダイヤル錠が認証された！');
       }
     } else {
       state.doorCodeUnlocked = false;
-      document.getElementById('door-lock-status-led').textContent = '● LOCKED';
-      document.getElementById('door-lock-status-led').setAttribute('fill', '#e74c3c');
+      updateRoomDomState();
     }
     openDoorModal();
   }
@@ -1078,9 +1515,11 @@ document.addEventListener('DOMContentLoaded', () => {
     state.gameCleared = true;
     soundManager.playDoorOpen();
 
-    const elapsedMs = Date.now() - state.startTime;
-    const minutes = Math.floor(elapsedMs / 60000);
-    const seconds = Math.floor((elapsedMs % 60000) / 1000);
+    const now = Date.now();
+    const currentSessionTime = state.startTime ? (now - state.startTime) : 0;
+    const totalElapsed = (state.elapsedBeforeSave || 0) + currentSessionTime;
+    const minutes = Math.floor(totalElapsed / 60000);
+    const seconds = Math.floor((totalElapsed % 60000) / 1000);
     const timeStr = `脱出タイム: ${String(minutes).padStart(2, '0')}分 ${String(seconds).padStart(2, '0')}秒`;
 
     elClearTimeDisplay.textContent = timeStr;
@@ -1090,11 +1529,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 700);
   }
 
-  // --- ナビゲーションイベント ---
+  // --- ナビゲーション & スワイプ ---
   document.getElementById('btn-turn-left').addEventListener('click', () => changeDirection(-1));
   document.getElementById('btn-turn-right').addEventListener('click', () => changeDirection(1));
 
-  // --- スマホ向けスワイプ操作対応 (iPhone 15 / 16 等) ---
   const elViewport = document.getElementById('viewport-wrapper');
   let touchStartX = 0;
   let touchStartY = 0;
@@ -1102,10 +1540,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let touchEndY = 0;
 
   elViewport.addEventListener('touchstart', (e) => {
-    // 最初のタッチでiOS SafariのWeb Audio APIをアンロック
     soundManager.init();
-    
-    // モーダル表示中はスワイプ無効
     if (!elModalOverlay.classList.contains('modal-hidden') ||
         !elItemDetailModal.classList.contains('modal-hidden') ||
         !elGameClearModal.classList.contains('modal-hidden')) {
@@ -1131,21 +1566,18 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleSwipe() {
     const diffX = touchEndX - touchStartX;
     const diffY = touchEndY - touchStartY;
-    const minSwipeDistance = 45; // 誤判定を防ぐスワイプ閾値(px)
+    const minSwipeDistance = 45;
 
-    // 横方向の移動量が縦方向より大きく、かつ閾値を超えている場合
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
       if (diffX > 0) {
-        // 右スワイプ → 左を向く
         changeDirection(-1);
       } else {
-        // 左スワイプ → 右を向く
         changeDirection(1);
       }
     }
   }
 
-  // キーボード操作対応（左右キーで方向転換、ESCでモーダル閉じる）
+  // キーボード
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') changeDirection(-1);
     if (e.key === 'ArrowRight') changeDirection(1);
@@ -1161,7 +1593,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elItemDetailModal.classList.add('modal-hidden');
   });
 
-  // --- メニュー＆セーブ操作リスナー ---
+  // メニュー・セーブ関連
   elBtnBackMenu.addEventListener('click', () => {
     soundManager.playClick();
     closeModal();
@@ -1171,7 +1603,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   elBtnPlayStage1.addEventListener('click', () => {
     const saved = getSavedData();
-    // クリア済みの場合は新しくプレイ、セーブデータがある場合はつづきから
     if (saved && !saved.state.gameCleared) {
       launchStage(false);
     } else {
@@ -1191,7 +1622,6 @@ document.addEventListener('DOMContentLoaded', () => {
     showMenu();
   });
 
-  // サウンドトグル (メニュー側 & ゲーム側)
   const handleSoundToggle = () => {
     const isMuted = soundManager.toggleMute();
     const icon = isMuted ? '🔇' : '🔊';
@@ -1201,7 +1631,6 @@ document.addEventListener('DOMContentLoaded', () => {
   elBtnSound.addEventListener('click', handleSoundToggle);
   elMenuBtnSound.addEventListener('click', handleSoundToggle);
 
-  // リセット (ゲーム内のやり直しボタン)
   elBtnRestart.addEventListener('click', () => {
     if (confirm('書斎を最初からやり直しますか？（セーブデータはリセットされます）')) {
       launchStage(true);
@@ -1213,10 +1642,7 @@ document.addEventListener('DOMContentLoaded', () => {
     launchStage(true);
   });
 
-  // 初期画面表示：メニュー画面を初期表示
-  showMenu();
-
-  // iOS Safari 向け：画面内の初回タップで確実にWeb Audioを有効化
+  // iOS Safari初回アンロック
   const unlockAudioOnce = () => {
     soundManager.init();
     document.removeEventListener('touchstart', unlockAudioOnce);
@@ -1224,4 +1650,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   document.addEventListener('touchstart', unlockAudioOnce, { passive: true });
   document.addEventListener('click', unlockAudioOnce, { passive: true });
+
+  // 初期起動：メニュー表示
+  showMenu();
 });

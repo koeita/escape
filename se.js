@@ -180,6 +180,52 @@ class SoundManager {
     noise.start(now);
   }
 
+  // スイッチ切替音 (カチッ)
+  playSwitch() {
+    if (this.muted) return;
+    this.init();
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(400, now);
+    osc.frequency.setValueAtTime(800, now + 0.02);
+
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.06);
+  }
+
+  // ネジを回す音 (ギギッ)
+  playScrewdriver() {
+    if (this.muted) return;
+    this.init();
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.linearRampToValueAtTime(480, now + 0.08);
+
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+
   // ギミック正解ファンファーレ
   playSolved() {
     if (this.muted) return;

@@ -101,29 +101,25 @@
 
       <!-- 部屋のシーンコンテナ -->
       <div id="room-scene">
-        <!-- 北：脱出の大扉と古時計 -->
+        <!-- 北：脱出の大扉と古時計、照明スイッチ -->
         <div class="direction-view" id="view-north">
-          <svg class="scene-bg" viewBox="0 0 800 500">
-            <!-- 部屋の壁と床 -->
-            <rect x="0" y="0" width="800" height="380" fill="#2b231d"/>
-            <polygon points="0,380 800,380 720,340 80,340" fill="#3a2f26" opacity="0.3"/>
-            <rect x="0" y="380" width="800" height="120" fill="#1d1712"/>
-            <!-- 巾木とモールディング -->
+          <svg class="scene-bg" viewBox="0 0 800 500" id="svg-north">
+            <!-- 部屋の壁と床 (通常時は暖色、暗闇モード時はクラスで青暗色に) -->
+            <rect x="0" y="0" width="800" height="380" class="wall-bg" fill="#2b231d"/>
+            <polygon points="0,380 800,380 720,340 80,340" class="floor-trim" fill="#3a2f26" opacity="0.3"/>
+            <rect x="0" y="380" width="800" height="120" class="floor-bg" fill="#1d1712"/>
             <rect x="0" y="370" width="800" height="10" fill="#4a3b2c"/>
             <line x1="80" y1="0" x2="80" y2="370" stroke="#1d1611" stroke-width="3"/>
             <line x1="720" y1="0" x2="720" y2="370" stroke="#1d1611" stroke-width="3"/>
 
             <!-- 脱出の大扉 (中央) -->
             <g id="obj-door" class="interactive" tabindex="0">
-              <!-- ドア枠 -->
               <rect x="310" y="80" width="180" height="290" fill="#3c2616" stroke="#180f08" stroke-width="5"/>
               <path d="M 310,120 Q 400,60 490,120 L 490,370 L 310,370 Z" fill="#4e321e" stroke="#25160d" stroke-width="3"/>
-              <!-- ドアパネル彫刻 -->
               <rect x="330" y="140" width="60" height="80" fill="#3e2716" stroke="#23140a" stroke-width="2"/>
               <rect x="410" y="140" width="60" height="80" fill="#3e2716" stroke="#23140a" stroke-width="2"/>
               <rect x="330" y="240" width="60" height="100" fill="#3e2716" stroke="#23140a" stroke-width="2"/>
               <rect x="410" y="240" width="60" height="100" fill="#3e2716" stroke="#23140a" stroke-width="2"/>
-              <!-- ドアノブと頑丈な鍵穴 -->
               <circle cx="335" cy="235" r="9" fill="#c29b38" stroke="#684f13" stroke-width="2"/>
               <circle cx="335" cy="235" r="3" fill="#111"/>
               <!-- ダイヤル式電子錠プレート -->
@@ -131,63 +127,92 @@
               <text id="door-lock-status-led" x="350" y="208" font-size="8.5" text-anchor="middle" fill="#e74c3c" font-family="monospace" font-weight="bold" letter-spacing="0.5">● LOCKED</text>
             </g>
 
+            <!-- 照明スイッチ盤 (扉の左側) -->
+            <g id="obj-light-switch" class="interactive" tabindex="0">
+              <rect x="250" y="200" width="34" height="48" fill="#5c442c" stroke="#28170c" stroke-width="2" rx="4"/>
+              <!-- カバー（初期は鍵付き） -->
+              <rect id="switch-cover-box" x="253" y="203" width="28" height="42" fill="#8c6a3e" stroke="#3b2611" stroke-width="1.5" rx="2"/>
+              <circle id="switch-keyhole" cx="267" cy="224" r="3" fill="#111"/>
+              <!-- カバー開いたときのトグルスイッチ -->
+              <g id="switch-toggle-group" style="display: none;">
+                <rect x="255" y="206" width="24" height="36" fill="#222" rx="2"/>
+                <rect id="switch-lever" x="261" y="210" width="12" height="14" fill="#e5c378" rx="2"/>
+                <text id="switch-indicator-text" x="267" y="236" font-size="7" fill="#2ecc71" text-anchor="middle" font-family="monospace">ON</text>
+              </g>
+            </g>
+
             <!-- 壁掛けの古時計 (右側の壁) -->
             <g id="obj-clock" class="interactive" tabindex="0">
-              <!-- 時計本体木枠 -->
               <rect x="560" y="90" width="90" height="180" fill="#5c381e" stroke="#241407" stroke-width="3" rx="8"/>
-              <!-- 時計文字盤外枠 -->
-              <circle cx="605" cy="145" r="36" fill="#f4ebd9" stroke="#b89344" stroke-width="4"/>
-              <!-- 文字盤の点 -->
+              <circle cx="605" cy="145" r="36" fill="#f4ebd9" stroke="#b89344" stroke-width="4" id="mini-clock-face"/>
               <circle cx="605" cy="115" r="2.5" fill="#333"/>
               <circle cx="635" cy="145" r="2.5" fill="#333"/>
               <circle cx="605" cy="175" r="2.5" fill="#333"/>
               <circle cx="575" cy="145" r="2.5" fill="#333"/>
-              <!-- 時計の針 (初期表示) -->
               <line id="clock-mini-hour" x1="605" y1="145" x2="605" y2="128" stroke="#111" stroke-width="3" stroke-linecap="round"/>
               <line id="clock-mini-min" x1="605" y1="145" x2="626" y2="145" stroke="#222" stroke-width="2" stroke-linecap="round"/>
               <circle cx="605" cy="145" r="3.5" fill="#b89344"/>
-              <!-- 下部振り子室のガラス窓 -->
               <rect x="580" y="195" width="50" height="65" fill="#1b120c" stroke="#3d2616" stroke-width="2" rx="3"/>
-              <!-- 振り子 -->
               <line x1="605" y1="195" x2="605" y2="235" stroke="#c29b38" stroke-width="2"/>
               <circle cx="605" cy="240" r="10" fill="#d4af37" stroke="#876d1e" stroke-width="1.5"/>
+              <!-- 暗闇時の蓄光発光表現 -->
+              <g id="clock-dark-glow" style="display: none;" opacity="0.9">
+                <circle cx="605" cy="145" r="36" fill="none" stroke="#5dade2" stroke-width="2" filter="blur(1px)"/>
+              </g>
             </g>
 
-            <!-- 壁のランプ (左側) -->
+            <!-- 壁のブラケットランプ (左側) -->
             <g id="obj-lamp-left">
-              <path d="M 180,140 L 200,120 L 220,140 Z" fill="#c29b38"/>
-              <polygon points="185,140 215,140 225,180 175,180" fill="#fff8db" opacity="0.85"/>
-              <circle cx="200" cy="160" r="18" fill="#ffeaa7" opacity="0.4" filter="blur(4px)"/>
+              <path d="M 175,135 L 205,115 L 225,135 Z" fill="#c29b38"/>
+              <polygon points="180,135 220,135 230,175 170,175" fill="#fff8db" opacity="0.85" id="lamp-shade-light"/>
+              <circle id="lamp-glow-light" cx="200" cy="155" r="26" fill="#ffeaa7" opacity="0.35" filter="blur(6px)"/>
             </g>
+
+            <!-- 暗闇オーバーレイ (北) -->
+            <rect id="dark-overlay-north" x="0" y="0" width="800" height="500" fill="#050a14" opacity="0" pointer-events="none"/>
           </svg>
         </div>
 
         <!-- 東：本棚とアンティーク机 -->
         <div class="direction-view" id="view-east" style="display: none;">
-          <svg class="scene-bg" viewBox="0 0 800 500">
-            <!-- 部屋の壁と床 -->
-            <rect x="0" y="0" width="800" height="380" fill="#2b231d"/>
-            <rect x="0" y="380" width="800" height="120" fill="#1d1712"/>
+          <svg class="scene-bg" viewBox="0 0 800 500" id="svg-east">
+            <rect x="0" y="0" width="800" height="380" class="wall-bg" fill="#2b231d"/>
+            <rect x="0" y="380" width="800" height="120" class="floor-bg" fill="#1d1712"/>
             <rect x="0" y="370" width="800" height="10" fill="#4a3b2c"/>
+
+            <!-- 本棚の後ろの壁金庫 (本棚スライド時に露出) -->
+            <g id="obj-wall-safe" style="display: none;" class="interactive" tabindex="0">
+              <rect x="150" y="140" width="110" height="110" fill="#1b2631" stroke="#34495e" stroke-width="4" rx="6"/>
+              <circle cx="205" cy="195" r="32" fill="#2c3e50" stroke="#7f8c8d" stroke-width="3"/>
+              <!-- ダイヤルと鍵穴 -->
+              <circle cx="205" cy="195" r="18" fill="#17202a" stroke="#d4ac0d" stroke-width="2"/>
+              <rect x="203" y="187" width="4" height="16" fill="#f1c40f"/>
+              <text x="205" y="172" font-size="8" fill="#aed6f1" text-anchor="middle" font-family="monospace">SAFE</text>
+            </g>
 
             <!-- 本棚 (左側) -->
             <g id="obj-bookshelf" class="interactive" tabindex="0">
-              <!-- 本棚外枠 -->
               <rect x="90" y="70" width="230" height="300" fill="#4a2e1b" stroke="#26150a" stroke-width="4"/>
-              <!-- 棚板 -->
               <rect x="95" y="145" width="220" height="12" fill="#5d3c24"/>
               <rect x="95" y="220" width="220" height="12" fill="#5d3c24"/>
               <rect x="95" y="295" width="220" height="12" fill="#5d3c24"/>
 
-              <!-- 最上段の並び本 (赤・青・黄・緑の仕掛け本) -->
+              <!-- 最上段の星座仕掛け本 (暗闇でシンボルが光る) -->
               <g id="mini-puzzle-books">
-                <rect x="115" y="88" width="22" height="57" fill="#b03a2e" stroke="#5c1d16" rx="1"/> <!-- 赤 -->
-                <rect x="140" y="93" width="20" height="52" fill="#2471a3" stroke="#153e5a" rx="1"/> <!-- 青 -->
-                <rect x="163" y="85" width="24" height="60" fill="#d4ac0d" stroke="#6f5a07" rx="1"/> <!-- 黄 -->
-                <rect x="190" y="90" width="22" height="55" fill="#229954" stroke="#12532d" rx="1"/> <!-- 緑 -->
-                <rect x="215" y="92" width="18" height="53" fill="#6e2c00" stroke="#381600" rx="1"/>
-                <rect x="236" y="87" width="26" height="58" fill="#512e5f" stroke="#28172f" rx="1"/>
-                <rect x="265" y="95" width="20" height="50" fill="#784212" stroke="#402309" rx="1"/>
+                <rect x="115" y="88" width="24" height="57" fill="#6e2d22" stroke="#3e1710" rx="1"/>
+                <text class="book-mini-symbol" x="127" y="122" font-size="14" fill="#f5b7b1" text-anchor="middle">♈</text>
+
+                <rect x="144" y="93" width="22" height="52" fill="#1b4f72" stroke="#0e2a3f" rx="1"/>
+                <text class="book-mini-symbol" x="155" y="124" font-size="14" fill="#aed6f1" text-anchor="middle">♌</text>
+
+                <rect x="171" y="85" width="26" height="60" fill="#7d6608" stroke="#483c07" rx="1"/>
+                <text class="book-mini-symbol" x="184" y="122" font-size="14" fill="#f9e79f" text-anchor="middle">♐</text>
+
+                <rect x="202" y="90" width="24" height="55" fill="#145a32" stroke="#0a2f1a" rx="1"/>
+                <text class="book-mini-symbol" x="214" y="123" font-size="14" fill="#abebc6" text-anchor="middle">♏</text>
+
+                <rect x="230" y="92" width="20" height="53" fill="#4a235a" stroke="#23112b" rx="1"/>
+                <rect x="254" y="87" width="28" height="58" fill="#5d4037" stroke="#32221d" rx="1"/>
               </g>
 
               <!-- 中段・下段の一般的な本 -->
@@ -207,16 +232,16 @@
 
             <!-- 書斎机 (右側) -->
             <g id="obj-desk" class="interactive" tabindex="0">
-              <!-- 机の天板 -->
               <polygon points="390,270 710,270 740,300 360,300" fill="#6a4427" stroke="#331e0f" stroke-width="2"/>
               <rect x="360" y="300" width="380" height="25" fill="#57361d" stroke="#2b190c" stroke-width="2"/>
-              <!-- 引き出し部分 -->
+              <!-- 引き出し -->
               <rect x="560" y="325" width="160" height="110" fill="#4d3019" stroke="#271609" stroke-width="2"/>
               <rect x="575" y="335" width="130" height="40" fill="#5e3c20" stroke="#301c0c" stroke-width="1.5"/>
               <rect x="575" y="385" width="130" height="40" fill="#5e3c20" stroke="#301c0c" stroke-width="1.5"/>
-              <!-- 引き出しの取っ手・鍵穴 -->
+              <!-- 上段引き出し鍵穴 -->
               <circle cx="640" cy="355" r="5" fill="#c29b38"/>
-              <path d="M 638,358 L 642,358 L 641,363 L 639,363 Z" fill="#111"/> <!-- 鍵穴 -->
+              <path d="M 638,358 L 642,358 L 641,363 L 639,363 Z" fill="#111"/>
+              <!-- 下段取っ手 -->
               <rect x="625" y="402" width="30" height="6" fill="#c29b38" rx="2"/>
 
               <!-- 机の脚 -->
@@ -225,70 +250,105 @@
               <rect x="695" y="435" width="20" height="20" fill="#2b180a"/>
               <rect x="565" y="435" width="20" height="20" fill="#2b180a"/>
 
-              <!-- 机の上の小物（スタンドライト、開かれた古書） -->
-              <!-- デスクライト -->
+              <!-- 机の上のデスクライト -->
               <path d="M 430,270 Q 430,210 460,200" stroke="#c29b38" stroke-width="4" fill="none"/>
               <path d="M 450,195 L 480,205 L 465,225 Z" fill="#2e7d32" stroke="#1b4d1f"/>
-              <polygon points="460,220 485,210 520,280 430,280" fill="#fff9c4" opacity="0.3"/>
-              <!-- 机の上の手帳 -->
-              <polygon points="500,278 545,274 555,290 510,295" fill="#f5f5dc" stroke="#5d4037"/>
+              <polygon id="desk-lamp-light" points="460,220 485,210 520,280 430,280" fill="#fff9c4" opacity="0.3"/>
+              <!-- 机の上の手帳（クリックで読める天体日誌） -->
+              <g id="obj-diary" class="interactive">
+                <polygon points="500,278 545,274 555,290 510,295" fill="#f5f5dc" stroke="#5d4037"/>
+                <line x1="510" y1="281" x2="540" y2="278" stroke="#795548" stroke-width="1"/>
+                <line x1="512" y1="286" x2="542" y2="283" stroke="#795548" stroke-width="1"/>
+              </g>
+
+              <!-- 机の脇に立てかけられた火かき棒（フック） -->
+              <g id="obj-poker" class="interactive" tabindex="0">
+                <line x1="375" y1="260" x2="350" y2="430" stroke="#7f8c8d" stroke-width="3.5" stroke-linecap="round"/>
+                <path d="M 375,260 Q 380,250 370,248" stroke="#7f8c8d" stroke-width="3" fill="none"/>
+                <path d="M 350,430 L 358,422" stroke="#7f8c8d" stroke-width="3"/>
+              </g>
             </g>
+
+            <!-- 暗闇オーバーレイ (東) -->
+            <rect id="dark-overlay-east" x="0" y="0" width="800" height="500" fill="#050a14" opacity="0" pointer-events="none"/>
           </svg>
         </div>
 
         <!-- 南：暖炉と絵画 -->
         <div class="direction-view" id="view-south" style="display: none;">
-          <svg class="scene-bg" viewBox="0 0 800 500">
-            <!-- 部屋の壁と床 -->
-            <rect x="0" y="0" width="800" height="380" fill="#2b231d"/>
-            <rect x="0" y="380" width="800" height="120" fill="#1d1712"/>
+          <svg class="scene-bg" viewBox="0 0 800 500" id="svg-south">
+            <rect x="0" y="0" width="800" height="380" class="wall-bg" fill="#2b231d"/>
+            <rect x="0" y="380" width="800" height="120" class="floor-bg" fill="#1d1712"/>
             <rect x="0" y="370" width="800" height="10" fill="#4a3b2c"/>
 
             <!-- 壁の絵画 (上部中央) -->
             <g id="obj-painting" class="interactive" tabindex="0">
-              <!-- 重厚な金縁フレーム -->
               <rect x="300" y="40" width="200" height="150" fill="#b78727" stroke="#684a0d" stroke-width="5" rx="3"/>
               <rect x="312" y="52" width="176" height="126" fill="#181310"/>
-              <!-- 絵画の内容（賢者と天体のシンボル、針の暗示） -->
+              <!-- 絵画の内容 -->
               <path d="M 312,178 L 360,110 L 420,150 L 488,90 L 488,178 Z" fill="#2e4053"/>
               <circle cx="430" cy="90" r="22" fill="#f9e79f" opacity="0.9"/>
-              <!-- 時計のヒント（絵画内の尖塔の針：9時15分を示唆） -->
               <line x1="430" y1="90" x2="430" y2="74" stroke="#78281f" stroke-width="3" stroke-linecap="round"/>
               <line x1="430" y1="90" x2="446" y2="90" stroke="#78281f" stroke-width="2" stroke-linecap="round"/>
               <text x="400" y="165" font-size="11" fill="#ecf0f1" font-family="serif" text-anchor="middle" opacity="0.8">『星辰の刻』</text>
+
+              <!-- 暗闇モード時の蓄光星座ライン（青白く発光） -->
+              <g id="painting-glow-layer" style="display: none;">
+                <circle cx="345" cy="78" r="4" fill="#aed6f1" filter="drop-shadow(0 0 4px #5dade2)"/>
+                <text x="345" y="70" font-size="10" fill="#aed6f1" text-anchor="middle">♈</text>
+
+                <circle cx="395" cy="115" r="4" fill="#aed6f1" filter="drop-shadow(0 0 4px #5dade2)"/>
+                <text x="395" y="107" font-size="10" fill="#aed6f1" text-anchor="middle">♌</text>
+
+                <circle cx="465" cy="70" r="4" fill="#aed6f1" filter="drop-shadow(0 0 4px #5dade2)"/>
+                <text x="465" y="62" font-size="10" fill="#aed6f1" text-anchor="middle">♐</text>
+
+                <!-- 光る星座ライン -->
+                <line x1="345" y1="78" x2="395" y2="115" stroke="#5dade2" stroke-width="2" stroke-dasharray="3,3"/>
+                <line x1="395" y1="115" x2="465" y2="70" stroke="#5dade2" stroke-width="2" stroke-dasharray="3,3"/>
+              </g>
             </g>
 
             <!-- 暖炉 (中央下部) -->
             <g id="obj-fireplace" class="interactive" tabindex="0">
-              <!-- マントルピース（暖炉枠石造り） -->
               <rect x="250" y="210" width="300" height="165" fill="#5d646b" stroke="#34383c" stroke-width="4"/>
               <rect x="230" y="198" width="340" height="20" fill="#757d87" stroke="#34383c" stroke-width="2"/>
-              <!-- 火室（炉の内側） -->
               <path d="M 300,375 L 300,280 Q 400,245 500,280 L 500,375 Z" fill="#1b1c1e"/>
-              <!-- 薪と灰 -->
+              <!-- 灰の層 -->
               <ellipse cx="400" cy="360" rx="75" ry="18" fill="#424242" id="fireplace-ash-layer"/>
-              <!-- 焦げた薪 -->
               <rect x="350" y="348" width="80" height="14" fill="#212121" transform="rotate(-8 390 355)"/>
               <rect x="370" y="348" width="80" height="14" fill="#2c2523" transform="rotate(12 410 355)"/>
-              <!-- 灰の下に隠された金属プレートのチラ見せ -->
-              <rect id="fireplace-plate-hint" x="385" y="353" width="30" height="14" fill="#a6acaf" opacity="0" stroke="#17202a"/>
+
+              <!-- 暖炉の鉄格子（火かき棒で外すまで手が出せない） -->
+              <g id="fireplace-grille">
+                <rect x="315" y="275" width="170" height="95" fill="none" stroke="#2c3e50" stroke-width="5" rx="3"/>
+                <line x1="345" y1="275" x2="345" y2="370" stroke="#34495e" stroke-width="3"/>
+                <line x1="375" y1="275" x2="375" y2="370" stroke="#34495e" stroke-width="3"/>
+                <line x1="400" y1="275" x2="400" y2="370" stroke="#34495e" stroke-width="3"/>
+                <line x1="425" y1="275" x2="425" y2="370" stroke="#34495e" stroke-width="3"/>
+                <line x1="455" y1="275" x2="455" y2="370" stroke="#34495e" stroke-width="3"/>
+                <line x1="315" y1="320" x2="485" y2="320" stroke="#34495e" stroke-width="4"/>
+              </g>
+
+              <!-- 灰の中のメダルのチラ見せ -->
+              <circle id="fireplace-medal-hint" cx="400" cy="358" r="8" fill="#d4ac0d" stroke="#7d6608" opacity="0"/>
             </g>
+
+            <!-- 暗闇オーバーレイ (南) -->
+            <rect id="dark-overlay-south" x="0" y="0" width="800" height="500" fill="#050a14" opacity="0" pointer-events="none"/>
           </svg>
         </div>
 
         <!-- 西：ソファ・テーブルと絨毯 -->
         <div class="direction-view" id="view-west" style="display: none;">
-          <svg class="scene-bg" viewBox="0 0 800 500">
-            <!-- 部屋の壁と床 -->
-            <rect x="0" y="0" width="800" height="380" fill="#2b231d"/>
-            <rect x="0" y="380" width="800" height="120" fill="#1d1712"/>
+          <svg class="scene-bg" viewBox="0 0 800 500" id="svg-west">
+            <rect x="0" y="0" width="800" height="380" class="wall-bg" fill="#2b231d"/>
+            <rect x="0" y="380" width="800" height="120" class="floor-bg" fill="#1d1712"/>
             <rect x="0" y="370" width="800" height="10" fill="#4a3b2c"/>
 
             <!-- 高級感のある革張りソファ (中央後方) -->
-            <g id="obj-sofa">
-              <!-- 背もたれ -->
+            <g id="obj-sofa" class="interactive" tabindex="0">
               <rect x="240" y="210" width="320" height="120" rx="15" fill="#6e2d22" stroke="#3e1710" stroke-width="3"/>
-              <!-- ボタン留めクッション風ステッチ -->
               <circle cx="290" cy="245" r="4" fill="#3e1710"/>
               <circle cx="360" cy="245" r="4" fill="#3e1710"/>
               <circle cx="440" cy="245" r="4" fill="#3e1710"/>
@@ -296,12 +356,15 @@
               <circle cx="325" cy="285" r="4" fill="#3e1710"/>
               <circle cx="400" cy="285" r="4" fill="#3e1710"/>
               <circle cx="475" cy="285" r="4" fill="#3e1710"/>
-              <!-- 座面 -->
-              <rect x="230" y="310" width="340" height="60" rx="8" fill="#823528" stroke="#3e1710" stroke-width="2"/>
-              <!-- 肘掛け -->
+
+              <!-- 座面クッション（左右2分割） -->
+              <rect x="230" y="310" width="168" height="60" rx="8" fill="#823528" stroke="#3e1710" stroke-width="2"/>
+              <rect x="402" y="310" width="168" height="60" rx="8" fill="#823528" stroke="#3e1710" stroke-width="2"/>
+              <!-- クッションの隙間に覗く金属小箱の角 -->
+              <rect id="sofa-box-peek" x="395" y="316" width="14" height="22" fill="#c29b38" stroke="#7d6608" rx="2"/>
+
               <rect x="210" y="260" width="45" height="100" rx="12" fill="#58231a" stroke="#2b0e0a" stroke-width="2"/>
               <rect x="545" y="260" width="45" height="100" rx="12" fill="#58231a" stroke="#2b0e0a" stroke-width="2"/>
-              <!-- 脚 -->
               <rect x="240" y="370" width="15" height="20" fill="#23130c"/>
               <rect x="545" y="370" width="15" height="20" fill="#23130c"/>
             </g>
@@ -309,19 +372,20 @@
             <!-- 床のペルシャ風絨毯 (手前) -->
             <g id="obj-carpet" class="interactive" tabindex="0">
               <polygon points="180,390 620,390 700,480 100,480" fill="#8b1e1e" stroke="#c0392b" stroke-width="3"/>
-              <!-- 絨毯の模様 -->
               <polygon points="210,400 590,400 660,470 140,470" fill="#c0392b" stroke="#f39c12" stroke-width="2"/>
               <ellipse cx="400" cy="435" rx="110" ry="25" fill="#f1c40f" opacity="0.3"/>
-              <!-- めくれる角（右下コーナー） -->
+              <!-- めくれる角 -->
               <polygon id="carpet-corner-flat" points="670,455 700,480 645,480" fill="#962d22" stroke="#f39c12" stroke-width="1.5"/>
               <polygon id="carpet-corner-folded" points="670,455 645,480 655,450" fill="#e0d0b0" stroke="#888" stroke-width="1.5" style="display:none;"/>
-              <!-- めくった下に見える銀の鍵 -->
-              <g id="carpet-silver-key" style="display: none;">
-                <ellipse cx="675" cy="468" rx="8" ry="5" fill="#bdc3c7" stroke="#7f8c8d" stroke-width="1.5"/>
-                <line x1="675" y1="468" x2="688" y2="473" stroke="#bdc3c7" stroke-width="3" stroke-linecap="round"/>
-                <line x1="685" y1="472" x2="684" y2="476" stroke="#bdc3c7" stroke-width="2"/>
+              <!-- めくった下に見える精密ドライバー -->
+              <g id="carpet-screwdriver" style="display: none;">
+                <rect x="670" y="465" width="20" height="4" fill="#c0392b" rx="1" transform="rotate(25 680 467)"/>
+                <line x1="685" y1="472" x2="695" y2="476" stroke="#bdc3c7" stroke-width="2.5" stroke-linecap="round"/>
               </g>
             </g>
+
+            <!-- 暗闇オーバーレイ (西) -->
+            <rect id="dark-overlay-west" x="0" y="0" width="800" height="500" fill="#050a14" opacity="0" pointer-events="none"/>
           </svg>
         </div>
       </div>
@@ -355,13 +419,19 @@
     </div>
   </div>
 
-  <!-- アイテム詳細モーダル -->
+  <!-- アイテム詳細モーダル (分解・合成・調査対応) -->
   <div id="item-detail-modal" class="modal-hidden">
     <div class="item-detail-card">
       <button id="item-detail-close" class="modal-close-btn">&times;</button>
       <div id="item-detail-icon"></div>
       <h3 id="item-detail-name">アイテム名</h3>
       <p id="item-detail-desc">アイテムの説明文がここに入ります。</p>
+      <!-- アイテム調査・合成アクション領域 -->
+      <div id="item-detail-action-area" style="margin-top: 14px; display: none;">
+        <button id="btn-item-action" class="btn-primary" style="font-size: 0.88rem; padding: 8px 16px;">
+          調べる / 分解する
+        </button>
+      </div>
     </div>
   </div>
 
