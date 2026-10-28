@@ -1955,6 +1955,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchstart', unlockAudioOnce, { passive: true });
   document.addEventListener('click', unlockAudioOnce, { passive: true });
 
-  // 初期起動：メニュー表示
-  showMenu();
+  // 初期起動：メニュー表示（?play=1 クエリがある場合は即座にゲームを開始）
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('play')) {
+    launchStage(false);
+    if (urlParams.has('dir')) {
+      state.currentDirection = parseInt(urlParams.get('dir')) || 0;
+      updateViewDirection();
+    }
+    if (urlParams.has('dark')) {
+      state.isLightOn = false;
+      updateRoomDomState();
+    }
+  } else {
+    showMenu();
+  }
 });

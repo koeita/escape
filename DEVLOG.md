@@ -42,7 +42,8 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 #### 1. ポートフォリオ向けドキュメント・技術解説の全面刷新 (11:30〜)
 - **[README.md](file:///c:/Users/xcang/Desktop/Antigravity/escape/README.md) のブラッシュアップ**:
   - 就職活動・技術ポートフォリオとして面接官・エンジニアに伝わりやすい構成へ全面改訂。
-  - **デモプレビュー配置領域**: PC版・スマホ版のプレイ画面/GIF動画表示枠を設置。
+  - **実機スクリーンショットの配置**:
+    - ヘッドレスブラウザを用いて、PC探索ビュー（`preview-pc.png`）、スマホ実機縦画面（`preview-mobile.png`）、暗闇モード蓄光ギミック（`preview-dark.png`）、ステージ選択メニュー（`preview-menu.png`）を撮影し、`docs/` 配下に格納・READMEへ埋め込み。
   - **技術スタック**: Vanilla JS / HTML5 / CSS3 / Web Audio API / SVG / Cloudflare / Antigravity の役割を明確化。
   - **技術的なこだわり**: 外部依存ゼロ（Zero-Dependency）による通信遅延ゼロ、Single Source of Truth による堅牢な状態管理とオートセーブ、スマホファーストの日本語組版（auto-phrase, balance/pretty, phrase spans）を体系化。
   - **開発中の課題と解決エピソード**:

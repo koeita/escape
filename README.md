@@ -10,21 +10,29 @@
 
 ## 📸 デモプレビュー
 
-<!-- スクリーンショットまたはデモGIFをここに配置できます -->
 <div align="center">
-  <table style="border: none;">
+  <table>
+    <tr>
+      <td align="center" width="60%">
+        <b>【PC / タブレット表示（通常探索）】</b><br>
+        <img src="docs/preview-pc.png" alt="PC版プレイ画面" width="100%">
+      </td>
+      <td align="center" width="40%">
+        <b>【スマートフォン縦画面表示】</b><br>
+        <img src="docs/preview-mobile.png" alt="スマホ版プレイ画面" width="100%">
+      </td>
+    </tr>
     <tr>
       <td align="center">
-        <b>【PC / タブレット表示】</b><br>
-        <img src="https://raw.githubusercontent.com/koeita/escape/main/docs/preview-pc.png" alt="PC版プレイ画面" width="480" onerror="this.src='https://placehold.co/600x400/18110b/f1c40f?text=Play+Screen+Preview+(PC)';">
+        <b>【照明OFF：暗闇モード（蓄光ギミック探索）】</b><br>
+        <img src="docs/preview-dark.png" alt="暗闇モード" width="100%">
       </td>
       <td align="center">
-        <b>【スマホ縦画面表示】</b><br>
-        <img src="https://raw.githubusercontent.com/koeita/escape/main/docs/preview-mobile.png" alt="スマホ版プレイ画面" width="240" onerror="this.src='https://placehold.co/300x533/18110b/f1c40f?text=Mobile+Preview';">
+        <b>【ステージ選択 ＆ オートセーブメニュー】</b><br>
+        <img src="docs/preview-menu.png" alt="ステージ選択画面" width="100%">
       </td>
     </tr>
   </table>
-  <p><i>※ 画像が存在しない場合はプレースホルダーが表示されます。<code>docs/</code> フォルダに画像を配置すると自動で反映されます。</i></p>
 </div>
 
 ---
