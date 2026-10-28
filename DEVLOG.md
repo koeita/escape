@@ -37,6 +37,19 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 
 ## 2. 日付別 開発記録 (Daily Development Log)
 
+### 2026-10-28 (水)
+
+#### 1. ポートフォリオ向けドキュメント・技術解説の全面刷新 (11:30〜)
+- **[README.md](file:///c:/Users/xcang/Desktop/Antigravity/escape/README.md) のブラッシュアップ**:
+  - 就職活動・技術ポートフォリオとして面接官・エンジニアに伝わりやすい構成へ全面改訂。
+  - **デモプレビュー配置領域**: PC版・スマホ版のプレイ画面/GIF動画表示枠を設置。
+  - **技術スタック**: Vanilla JS / HTML5 / CSS3 / Web Audio API / SVG / Cloudflare / Antigravity の役割を明確化。
+  - **技術的なこだわり**: 外部依存ゼロ（Zero-Dependency）による通信遅延ゼロ、Single Source of Truth による堅牢な状態管理とオートセーブ、スマホファーストの日本語組版（auto-phrase, balance/pretty, phrase spans）を体系化。
+  - **開発中の課題と解決エピソード**:
+    1. パズルの総当たり（当てずっぽう）防止（本棚7冊・840通り化）とヒントの完全分離。
+    2. `innerText` 代入によるHTMLコード露出バグの分析と、安全な自動文節パーサーの実装。
+    3. モバイル実機でのヘッダーボタン密集解消（設定モーダルへの統合）。
+
 ### 2026-10-27 (火)
 
 #### 1. 初期プロトタイプ構築 & スマホ最適化 (12:00〜13:00)
