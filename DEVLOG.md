@@ -24,18 +24,55 @@
 ### ■ ファイル構成
 ```text
 c:\Users\xcang\Desktop\Antigravity\escape\
-├── index.html       # メインDOM構造、メニュー画面、SVGルームビュー、モーダル群
-├── script.js        # ゲームステート管理、パズルロジック、モーダル展開、セーブ機能
-├── style.css        # アンティーク調UIデザイン、レスポンシブ組版、アニメーション
-├── se.js            # Web Audio API シンセ効果音マネージャー
-├── DEVLOG.md        # 本開発日記・技術ドキュメント（日付別運用）
-├── README.md        # プロジェクト概要・プレイガイド
-└── .gitignore       # OS一時ファイル・エディタ設定等のGit除外設定
+├── index.html            # メインDOM構造、メニュー画面、SVGルームビュー、PWAメタタグ
+├── script.js             # ゲームステート管理、パズルロジック、モーダル展開、セーブ機能
+├── style.css             # アンティーク調UIデザイン、レスポンシブ組版、アニメーション
+├── se.js                 # Web Audio API シンセ効果音マネージャー
+├── manifest.json         # Web App Manifest（スタンドアロン起動・アプリアイコン定義）
+├── icon.svg              # アプリアイコン（ベクター原画：真鍮の賢者の鍵＆コバルトブルー宝石）
+├── icon-192.png          # Android/PWA用標準アプリアイコン（192x192px）
+├── icon-512.png          # Android/PWAスプラッシュ用アプリアイコン（512x512px）
+├── apple-touch-icon.png  # iOS Safari ホーム画面追加用高精細アイコン（180x180px）
+├── favicon.png           # PCブラウザ用タブファビコン（48x48px）
+├── wrangler.json         # Cloudflare Workers Builds / 静的サイト（assets & previews）設定
+├── DEVLOG.md             # 本開発日記・技術ドキュメント（日付別運用）
+├── README.md             # プロジェクト概要・プレイガイド
+└── .gitignore            # OS一時ファイル・エディタ設定等のGit除外設定
 ```
 
 ---
 
 ## 2. 日付別 開発記録 (Daily Development Log)
+
+### 2026-10-30 (金)
+
+#### 1. アプリアイコン制作・PWAマニフェスト対応・全画面スタンドアロン起動の実装
+- **ブランチ作成**: `feat/app-icon-and-pwa` 作業用ブランチを作成して実装。
+- **オリジナルアプリアイコンのデザイン & マルチ解像度生成**:
+  - 本作の世界観（クラシカルな洋館・密室ミステリー）に合わせ、チャコールブラック（`#121316`）の背景に真鍮の二重枠線、そして中央に青玉（コバルトブルー宝石）を嵌め込んだ重厚な真鍮の「賢者の鍵」をモチーフとした `icon.svg` をオリジナル制作。
+  - スマホのホーム画面で小さく表示されても一目で脱出ゲームと識別できるよう、文字を省きモチーフとシャドウを際立たせた設計を採用。
+  - 高解像度ベクターから高品質リサンプリング（Lanczos）を行い、各プラットフォーム向けに最適化されたアイコンファイルを生成・配置：
+    - `icon.svg`（ベクターマスター画像）
+    - `apple-touch-icon.png`（iOS Safari「ホーム画面に追加」用 180×180px）
+    - `icon-192.png`（Android PWA / ホーム画面用 192×192px）
+    - `icon-512.png`（高解像度ディスプレイ・スプラッシュ画面用 512×512px）
+    - `favicon.png`（PCブラウザタブ用 48×48px）
+- **Web App Manifest (`manifest.json`) の新規作成**:
+  - `name`: 「密室の謎解き脱出 - Mystery Escape Game」
+  - `short_name`: 「密室脱出」（ホーム画面のアプリ名として最適な4文字表記）
+  - `display`: `"standalone"`（ブラウザのアドレスバー・ナビゲーションバーを非表示にし、ネイティブアプリのように全画面起動）
+  - `background_color` / `theme_color`: ゲームの統一ダークトーン `#121316` を指定。
+  - `icons`: SVG、192px、512px（`purpose: "any maskable"`）、180px をすべて登録。
+- **`index.html` ヘッダーへのメタタグ拡充**:
+  - PCファビコン指定（`icon.svg`, `icon-192.png`, `favicon.png`）
+  - iPhone / iPad ホーム画面用アイコン指定（`apple-touch-icon.png`）
+  - Android / PWA用マニフェストリンク（`manifest.json`）
+  - iOSスタンドアロン起動設定（`apple-mobile-web-app-capable: yes`, `apple-mobile-web-app-status-bar-style: black-translucent`, `apple-mobile-web-app-title: 密室脱出`）
+  - Android Web App起動設定（`mobile-web-app-capable: yes`, `theme-color: #121316`）
+
+#### 2. Cloudflare Workers Builds / 静的サイト配信設定の追加
+- **`wrangler.json`（Static Assets & Worker Previews設定）の構成**:
+  - Cloudflare Workers Builds のプレビュービルドおよび静的アセット配信に対応するため、成功実績のある構成に合わせて `wrangler.json`（`name: "escape"`, `compatibility_date: "2024-10-22"`, `assets.directory: "."`, `previews: {}`）を配置。`wrangler.toml` との競合エラーを解消。
 
 ### 2026-10-29 (木)
 

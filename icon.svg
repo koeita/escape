@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#1f2227"/>
+      <stop offset="70%" stop-color="#121316"/>
+      <stop offset="100%" stop-color="#0a0b0d"/>
+    </radialGradient>
+    <linearGradient id="brassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5dfa8"/>
+      <stop offset="35%" stop-color="#d4af37"/>
+      <stop offset="70%" stop-color="#aa8328"/>
+      <stop offset="100%" stop-color="#735515"/>
+    </linearGradient>
+    <linearGradient id="blueGem" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5dade2"/>
+      <stop offset="50%" stop-color="#2980b9"/>
+      <stop offset="100%" stop-color="#1b4f72"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- 背景ベース -->
+  <rect width="512" height="512" fill="url(#bgGrad)"/>
+
+  <!-- 装飾枠（外枠・内枠） -->
+  <rect x="24" y="24" width="464" height="464" rx="28" fill="none" stroke="#4a443b" stroke-width="4"/>
+  <rect x="36" y="36" width="440" height="440" rx="20" fill="none" stroke="#322f29" stroke-width="1.5" stroke-dasharray="8,8"/>
+
+  <!-- 4隅のアンティークコーナー飾り -->
+  <path d="M 24,70 L 70,24 M 442,24 L 488,70 M 488,442 L 442,488 M 70,488 L 24,442" stroke="#6a6052" stroke-width="2"/>
+
+  <!-- メインモチーフ：賢者の真鍮大鍵 -->
+  <g filter="url(#softShadow)" transform="rotate(-45 256 256)">
+    <!-- 鍵の軸 -->
+    <rect x="244" y="190" width="24" height="190" rx="4" fill="url(#brassGrad)"/>
+    <path d="M 244,190 L 268,190 L 268,380 L 244,380 Z" stroke="#5a4212" stroke-width="2" fill="none"/>
+    
+    <!-- 鍵の先端リング -->
+    <circle cx="256" cy="385" r="14" fill="url(#brassGrad)" stroke="#5a4212" stroke-width="2"/>
+    <circle cx="256" cy="385" r="6" fill="#121316"/>
+
+    <!-- 鍵の歯 -->
+    <rect x="268" y="310" width="38" height="18" rx="2" fill="url(#brassGrad)"/>
+    <rect x="286" y="316" width="20" height="18" rx="2" fill="url(#brassGrad)"/>
+    <rect x="268" y="346" width="46" height="20" rx="2" fill="url(#brassGrad)"/>
+    <rect x="290" y="352" width="8" height="14" fill="#121316"/>
+
+    <!-- 鍵の頭部（賢者の青玉紋章ボウ） -->
+    <circle cx="256" cy="140" r="64" fill="url(#brassGrad)" stroke="#5a4212" stroke-width="3"/>
+    <circle cx="256" cy="140" r="50" fill="#17191d" stroke="#5a4212" stroke-width="2"/>
+    
+    <!-- 紋章のクロスフレーム -->
+    <path d="M 256,76 L 256,204 M 192,140 L 320,140" stroke="url(#brassGrad)" stroke-width="6" stroke-linecap="round"/>
+    
+    <!-- 中央の青玉宝石 -->
+    <circle cx="256" cy="140" r="30" fill="url(#blueGem)" stroke="#f5dfa8" stroke-width="3"/>
+    <ellipse cx="248" cy="130" rx="10" ry="6" fill="#ffffff" opacity="0.45" transform="rotate(-30 248 130)"/>
+  </g>
+</svg>
