@@ -34,7 +34,7 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 ├── icon-512.png          # Android/PWAスプラッシュ用アプリアイコン（512x512px）
 ├── apple-touch-icon.png  # iOS Safari ホーム画面追加用高精細アイコン（180x180px）
 ├── favicon.png           # PCブラウザ用タブファビコン（48x48px）
-├── wrangler.json         # Cloudflare Pages / Wrangler設定（プレビュービルド対応）
+├── wrangler.toml         # Cloudflare Workers Builds / 静的サイト（assets）設定
 ├── DEVLOG.md             # 本開発日記・技術ドキュメント（日付別運用）
 ├── README.md             # プロジェクト概要・プレイガイド
 └── .gitignore            # OS一時ファイル・エディタ設定等のGit除外設定
@@ -70,10 +70,10 @@ c:\Users\xcang\Desktop\Antigravity\escape\
   - iOSスタンドアロン起動設定（`apple-mobile-web-app-capable: yes`, `apple-mobile-web-app-status-bar-style: black-translucent`, `apple-mobile-web-app-title: 密室脱出`）
   - Android Web App起動設定（`mobile-web-app-capable: yes`, `theme-color: #121316`）
 
-#### 2. Cloudflare Wranglerプレビュービルド設定の追加
-- **`wrangler.json` の作成と Workers Static Assets & `previews` 設定**:
-  - `npx wrangler preview` 実行時に `Your Wrangler configuration is missing a previews block to run this command.` エラーが発生する問題に対応。
-  - プロジェクト作成日（`2026-10-27`）を `compatibility_date` に設定し、Workers Static Assets 形式（`"assets": { "directory": "." }`）および空の `"previews": {}` ブロックを定義。プレビュー環境へのデプロイ・ビルドを正常化。
+#### 2. Cloudflare Workers Builds / 静的サイト配信設定の追加
+- **`wrangler.toml`（Static Assets & previews設定）の作成**:
+  - Cloudflare Workers Builds で静的サイト（HTML/CSS/JS）をそのままデプロイできるよう、最小構成の `wrangler.toml`（`[assets]` および `[previews]` 設定）を作成。
+  - プロジェクト作成日（`2026-10-27`）を `compatibility_date` に設定し、重複エラーを防ぐため以前の `wrangler.json` を削除して一本化。プレビュービルドおよびWorkers Buildsの両方に対応。
 
 ### 2026-10-29 (木)
 
