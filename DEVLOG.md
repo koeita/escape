@@ -71,9 +71,9 @@ c:\Users\xcang\Desktop\Antigravity\escape\
   - Android Web App起動設定（`mobile-web-app-capable: yes`, `theme-color: #121316`）
 
 #### 2. Cloudflare Wranglerプレビュービルド設定の追加
-- **`wrangler.json` の作成と `previews` ブロックの追加**:
+- **`wrangler.json` の作成と Workers Static Assets & `previews` 設定**:
   - `npx wrangler preview` 実行時に `Your Wrangler configuration is missing a previews block to run this command.` エラーが発生する問題に対応。
-  - プロジェクトルートに `wrangler.json` を配置し、静的配信設定（`pages_build_output_dir: "."`）とともに空の `"previews": {}` ブロックを定義。プレビュー環境へのデプロイ・ビルドを正常化。
+  - プロジェクト作成日（`2026-10-27`）を `compatibility_date` に設定し、Workers Static Assets 形式（`"assets": { "directory": "." }`）および空の `"previews": {}` ブロックを定義。プレビュー環境へのデプロイ・ビルドを正常化。
 
 ### 2026-10-29 (木)
 
