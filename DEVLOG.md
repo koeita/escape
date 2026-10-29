@@ -34,6 +34,7 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 ├── icon-512.png          # Android/PWAスプラッシュ用アプリアイコン（512x512px）
 ├── apple-touch-icon.png  # iOS Safari ホーム画面追加用高精細アイコン（180x180px）
 ├── favicon.png           # PCブラウザ用タブファビコン（48x48px）
+├── wrangler.json         # Cloudflare Pages / Wrangler設定（プレビュービルド対応）
 ├── DEVLOG.md             # 本開発日記・技術ドキュメント（日付別運用）
 ├── README.md             # プロジェクト概要・プレイガイド
 └── .gitignore            # OS一時ファイル・エディタ設定等のGit除外設定
@@ -68,6 +69,11 @@ c:\Users\xcang\Desktop\Antigravity\escape\
   - Android / PWA用マニフェストリンク（`manifest.json`）
   - iOSスタンドアロン起動設定（`apple-mobile-web-app-capable: yes`, `apple-mobile-web-app-status-bar-style: black-translucent`, `apple-mobile-web-app-title: 密室脱出`）
   - Android Web App起動設定（`mobile-web-app-capable: yes`, `theme-color: #121316`）
+
+#### 2. Cloudflare Wranglerプレビュービルド設定の追加
+- **`wrangler.json` の作成と `previews` ブロックの追加**:
+  - `npx wrangler preview` 実行時に `Your Wrangler configuration is missing a previews block to run this command.` エラーが発生する問題に対応。
+  - プロジェクトルートに `wrangler.json` を配置し、静的配信設定（`pages_build_output_dir: "."`）とともに空の `"previews": {}` ブロックを定義。プレビュー環境へのデプロイ・ビルドを正常化。
 
 ### 2026-10-29 (木)
 
