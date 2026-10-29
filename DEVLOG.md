@@ -34,7 +34,7 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 ├── icon-512.png          # Android/PWAスプラッシュ用アプリアイコン（512x512px）
 ├── apple-touch-icon.png  # iOS Safari ホーム画面追加用高精細アイコン（180x180px）
 ├── favicon.png           # PCブラウザ用タブファビコン（48x48px）
-├── wrangler.toml         # Cloudflare Workers Builds / 静的サイト（assets）設定
+├── wrangler.json         # Cloudflare Workers Builds / 静的サイト（assets & previews）設定
 ├── DEVLOG.md             # 本開発日記・技術ドキュメント（日付別運用）
 ├── README.md             # プロジェクト概要・プレイガイド
 └── .gitignore            # OS一時ファイル・エディタ設定等のGit除外設定
@@ -71,9 +71,8 @@ c:\Users\xcang\Desktop\Antigravity\escape\
   - Android Web App起動設定（`mobile-web-app-capable: yes`, `theme-color: #121316`）
 
 #### 2. Cloudflare Workers Builds / 静的サイト配信設定の追加
-- **`wrangler.toml`（Static Assets & previews設定）の作成**:
-  - Cloudflare Workers Builds で静的サイト（HTML/CSS/JS）をそのままデプロイできるよう、最小構成の `wrangler.toml`（`[assets]` および `[previews]` 設定）を作成。
-  - プロジェクト作成日（`2026-10-27`）を `compatibility_date` に設定し、重複エラーを防ぐため以前の `wrangler.json` を削除して一本化。プレビュービルドおよびWorkers Buildsの両方に対応。
+- **`wrangler.json`（Static Assets & Worker Previews設定）の構成**:
+  - Cloudflare Workers Builds のプレビュービルドおよび静的アセット配信に対応するため、成功実績のある構成に合わせて `wrangler.json`（`name: "escape"`, `compatibility_date: "2024-10-22"`, `assets.directory: "."`, `previews: {}`）を配置。`wrangler.toml` との競合エラーを解消。
 
 ### 2026-10-29 (木)
 
