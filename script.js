@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
       elBtnPlayStage1.textContent = 'もう一度プレイ';
       elBtnRestartStage1.style.display = 'none';
     } else {
-      elStage1Badge.textContent = 'プレイ中 💾';
+      elStage1Badge.textContent = '進行中';
       elStage1Badge.className = 'stage-card-badge saved';
       const itemsCount = (saved.state.inventoryIds || []).length;
       elStage1Meta.textContent = `セーブデータあり（アイテム: ${itemsCount}個）`;
@@ -831,12 +831,16 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else {
       content += `
-        <div style="background:#151b22; border:2px solid #58d68d; border-radius:8px; padding:18px; text-align:center;">
-          <p style="color:#58d68d; font-weight:bold; font-size:1.05rem; margin-bottom:8px;">★ 天球儀の仕掛けが解放された ★</p>
+        <div style="background:#17191d; border:1px solid #4a443b; border-radius:2px; padding:18px; text-align:center;">
+          <p style="color:#c89b3c; font-weight:bold; font-size:1.02rem; margin-bottom:8px; letter-spacing:0.08em;">天球儀の機構が解放された</p>
           <div style="width:120px; height:80px; margin:10px auto; display:flex; align-items:center; justify-content:center;">
-            <span style="font-size:44px;">🌐✨</span>
+            <svg viewBox="0 0 60 60" style="width:48px; height:48px;" aria-hidden="true">
+              <circle cx="30" cy="30" r="24" stroke="#c89b3c" stroke-width="1.5" fill="none"/>
+              <ellipse cx="30" cy="30" rx="24" ry="9" stroke="#c89b3c" stroke-width="1.2" fill="none"/>
+              <ellipse cx="30" cy="30" rx="9" ry="24" stroke="#c89b3c" stroke-width="1.2" fill="none"/>
+            </svg>
           </div>
-          <p style="color:#f7ede2; font-size:0.88rem; text-align:center;">
+          <p style="color:#e2ddd5; font-size:0.88rem; text-align:center;">
             <span class="phrase">内部の空洞から</span><span class="phrase">「真鍮の火かき棒」を取り出した。</span>
           </p>
         </div>
@@ -952,9 +956,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     content += `
         </div>
-        <div style="margin-top:14px; border-top:1px solid #4a3422; padding-top:10px; width:100%; text-align:center;">
+        <div style="margin-top:14px; border-top:1px solid #4a443b; padding-top:10px; width:100%; text-align:center;">
           <button id="btn-open-diary" class="btn-secondary" style="padding:8px 16px; font-size:0.88rem;">
-            📖 机の上の天体日誌を読む
+            机の上の天体日誌を開く
           </button>
         </div>
       </div>
@@ -1634,7 +1638,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="lock-box">
               <span class="lock-label">1. 賢者の鍵穴</span>
               <button id="btn-door-keyhole" class="keyhole-btn" title="鍵穴">
-                ${state.doorKeyUnlocked ? '🔓' : '🔒'}
+                ${state.doorKeyUnlocked
+                  ? '<svg viewBox="0 0 24 24" style="width:20px;height:20px;" aria-hidden="true"><path d="M7 11V7a5 5 0 0 1 9.9-1" stroke="#c89b3c" stroke-width="2" fill="none"/><rect x="4" y="11" width="16" height="11" rx="2" stroke="#c89b3c" stroke-width="2" fill="none"/></svg>'
+                  : '<svg viewBox="0 0 24 24" style="width:20px;height:20px;" aria-hidden="true"><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#8a7e6f" stroke-width="2" fill="none"/><rect x="4" y="11" width="16" height="11" rx="2" stroke="#8a7e6f" stroke-width="2" fill="none"/></svg>'}
               </button>
               <span style="font-size:0.8rem; color:${state.doorKeyUnlocked ? '#58d68d' : '#e74c3c'};">
                 ${state.doorKeyUnlocked ? '解錠済' : '施錠中'}
