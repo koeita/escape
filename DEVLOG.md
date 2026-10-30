@@ -93,6 +93,10 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 - **上部余白の撤去**: ステータスバーを `black` にしたことでコンテンツは自動的にステータスバー直下から始まるため、強制していた最低 48px の上余白を撤去し `padding-top: env(safe-area-inset-top, 0px)` のみに変更。ヘッダーがステータスバー直下に密着する表示へ改善。
 - `position: fixed` 要素は存在せず、`position: absolute; top: 0` のモーダル類はすべて `#game-container`（`position: relative`）基準のため、`body` の余白内に正しく収まることを確認。
 
+#### 5. iOS スタンドアロン時のヘッダー上部ブラーの抑止
+- ホーム画面起動時、iOS の scroll edge effect（ステータスバー下のぼかし）によりヘッダー上半分がブラー表示される問題に対応。
+- 画面最上部に高さ11pxの固定要素 `.ios-blur-fix`（背景色 `#121316`、`background-clip: text` で実描画なし、`pointer-events: none`）を配置し、WebKit に最上部の色を検出させてぼかしを抑止。iOS 以外では `display: none`。
+
 ### 2026-10-29 (木)
 
 #### 1. クラシック密室ミステリー調UIへの全面刷新 (14:30〜)

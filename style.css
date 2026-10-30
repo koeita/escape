@@ -1673,3 +1673,29 @@ h1#game-stage-title {
     padding-bottom: 40px !important;
   }
 }
+
+/* ==========================================================================
+   iOS ステータスバー下のブラー（scroll edge effect）抑止
+   - iOS は画面最上部に「色付きの要素」が無いとヘッダー上部をぼかして表示する
+   - 高さ11px（判定しきい値10px超）の固定要素に背景色を持たせて色を検出させつつ、
+     background-clip: text で実際には何も描画しない（タップも透過）
+   ========================================================================== */
+.ios-blur-fix {
+  display: none;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .ios-blur-fix {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 11px;
+    z-index: 2147483647;
+    pointer-events: none;
+    background-color: #121316;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}

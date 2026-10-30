@@ -24,9 +24,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Shippori+Mincho:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=20261030_08">
+  <link rel="stylesheet" href="style.css?v=20261030_09">
 </head>
 <body>
+  <!-- iOS スタンドアロン時のステータスバー下ブラー（scroll edge effect）抑止用。画面には何も描画されない -->
+  <div class="ios-blur-fix" aria-hidden="true"></div>
   <!-- タイトル & ステージ選択メニュー画面 -->
   <div id="menu-screen">
     <div class="menu-header">
