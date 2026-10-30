@@ -147,6 +147,29 @@ class SoundManager {
     osc.stop(now + 0.03);
   }
 
+  // ダイヤル・機器ボタン操作音 (ピッ / カチッ)
+  playDial() {
+    if (this.muted) return;
+    this.init();
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, now);
+    osc.frequency.exponentialRampToValueAtTime(440, now + 0.04);
+
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.04);
+  }
+
   // 灰を払うブラシ音 (サッサッ)
   playBrush() {
     if (this.muted) return;
