@@ -2400,17 +2400,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let html = `
       <div class="zoom-view-header"><h3>耐爆気密ハッチ（最終隔壁）</h3></div>
       <div class="zoom-body">
-        <div class="door-locks-status" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; width:100%; margin-bottom:10px;">
-          <div style="background:#14181f; border:1px solid ${state.sensorHeated ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.sensorHeated ? '#2ecc71' : '#e74c3c'};">
+        <div class="door-locks-status" style="display:grid; grid-template-columns:repeat(2, 1fr); gap:6px; width:100%; max-width:320px; margin-bottom:12px;">
+          <div style="background:#14181f; border:1px solid ${state.sensorHeated ? '#2ecc71' : '#e74c3c'}; padding:6px 8px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; text-align:center; color:${state.sensorHeated ? '#2ecc71' : '#e74c3c'}; font-weight:600;">
             1.油圧: ${state.sensorHeated ? 'UNLOCKED' : 'LOCKED'}
           </div>
-          <div style="background:#14181f; border:1px solid ${state.aiSafeMode ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.aiSafeMode ? '#2ecc71' : '#e74c3c'};">
+          <div style="background:#14181f; border:1px solid ${state.aiSafeMode ? '#2ecc71' : '#e74c3c'}; padding:6px 8px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; text-align:center; color:${state.aiSafeMode ? '#2ecc71' : '#e74c3c'}; font-weight:600;">
             2.AI論理: ${state.aiSafeMode ? 'UNLOCKED' : 'LOCKED'}
           </div>
-          <div style="background:#14181f; border:1px solid ${state.hatchCodeUnlocked ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.hatchCodeUnlocked ? '#2ecc71' : '#e74c3c'};">
+          <div style="background:#14181f; border:1px solid ${state.hatchCodeUnlocked ? '#2ecc71' : '#e74c3c'}; padding:6px 8px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; text-align:center; color:${state.hatchCodeUnlocked ? '#2ecc71' : '#e74c3c'}; font-weight:600;">
             3.暗号PIN: ${state.hatchCodeUnlocked ? 'VERIFIED' : 'LOCKED'}
           </div>
-          <div style="background:#14181f; border:1px solid ${state.hatchKeyUnlocked ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.hatchKeyUnlocked ? '#2ecc71' : '#e74c3c'};">
+          <div style="background:#14181f; border:1px solid ${state.hatchKeyUnlocked ? '#2ecc71' : '#e74c3c'}; padding:6px 8px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; text-align:center; color:${state.hatchKeyUnlocked ? '#2ecc71' : '#e74c3c'}; font-weight:600;">
             4.物理鍵: ${state.hatchKeyUnlocked ? 'UNLOCKED' : 'LOCKED'}
           </div>
         </div>
@@ -2418,15 +2418,15 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="display:flex; gap:10px; justify-content:center; align-items:center; margin:6px 0;">
           ${state.hatchCode.map((num, idx) => `
             <div class="dial-digit" style="display:flex; flex-direction:column; align-items:center; background:#12151a; border:1px solid #4a5568; padding:6px; border-radius:3px;">
-              <button type="button" class="s2-pin-up" data-idx="${idx}" style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:36px; height:28px; cursor:pointer;">▲</button>
-              <span class="dial-num" style="font-family:var(--font-mono); font-size:1.3rem; margin:6px 0; color:#e2ddd5;">${num}</span>
-              <button type="button" class="s2-pin-down" data-idx="${idx}" style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:36px; height:28px; cursor:pointer;">▼</button>
+              <button type="button" class="s2-pin-up" data-idx="${idx}" ${state.hatchCodeUnlocked ? 'disabled style="background:#1b2028; color:#666; border:1px solid #333; width:36px; height:28px; cursor:default;"' : 'style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:36px; height:28px; cursor:pointer;"'}>▲</button>
+              <span class="dial-num" style="font-family:var(--font-mono); font-size:1.3rem; margin:6px 0; color:${state.hatchCodeUnlocked ? '#2ecc71' : '#e2ddd5'}; font-weight:bold;">${num}</span>
+              <button type="button" class="s2-pin-down" data-idx="${idx}" ${state.hatchCodeUnlocked ? 'disabled style="background:#1b2028; color:#666; border:1px solid #333; width:36px; height:28px; cursor:default;"' : 'style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:36px; height:28px; cursor:pointer;"'}>▼</button>
             </div>
           `).join('')}
         </div>
 
-        <button type="button" id="btn-s2-verify-pin" class="btn-secondary" style="margin:4px 0 10px; width:100%; max-width:240px; font-family:var(--font-mono);">
-          ${state.hatchCodeUnlocked ? '● PINコード認証済み' : 'PINコードを認証する (ENTER)'}
+        <button type="button" id="btn-s2-verify-pin" class="btn-secondary" ${state.hatchCodeUnlocked ? 'disabled style="margin:4px 0 10px; width:100%; max-width:240px; font-family:var(--font-mono); background:#0c201a; border:1px solid #2ecc71; color:#2ecc71; cursor:default; font-weight:bold;"' : 'style="margin:4px 0 10px; width:100%; max-width:240px; font-family:var(--font-mono); cursor:pointer;"'}>
+          ${state.hatchCodeUnlocked ? '● PINコード認証完了' : 'PINコードを認証する (ENTER)'}
         </button>
 
         ${!state.hatchKeyUnlocked ? getItemPickerHtml('マスター鍵穴に使うアイテムを選択') : '<div style="color:#2ecc71; font-size:0.85rem; margin:6px 0;">● 物理マスターキー解錠済み</div>'}
@@ -2559,7 +2559,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <div style="font-family:var(--font-mono); font-size:0.9rem; color:#e2ddd5;">${b.name} (${b.cost}V)</div>
                   <div style="font-size:0.74rem; color:#9e988e;">${b.desc}</div>
                 </div>
-                <button type="button" class="btn-s2-breaker" data-key="${b.key}" data-cost="${b.cost}" style="background:${isOn ? '#1e4620' : '#2c1818'}; color:${isOn ? '#2ecc71' : '#e74c3c'}; border:1px solid ${isOn ? '#2ecc71' : '#e74c3c'}; padding:6px 14px; font-family:var(--font-mono); font-weight:bold; border-radius:2px; cursor:pointer;">
+                <button type="button" class="btn-s2-breaker" data-key="${b.key}" data-cost="${b.cost}" style="background:${isOn ? '#1e4620' : '#2c1818'}; color:${isOn ? '#2ecc71' : '#e74c3c'}; border:1px solid ${isOn ? '#2ecc71' : '#e74c3c'}; padding:6px 0; width:56px; text-align:center; font-family:var(--font-mono); font-weight:bold; border-radius:2px; cursor:pointer; flex-shrink:0;">
                   ${isOn ? 'ON' : 'OFF'}
                 </button>
               </div>
@@ -2692,72 +2692,97 @@ document.addEventListener('DOMContentLoaded', () => {
             ${state.oscWave} | ${state.oscFreq}Hz | ${state.oscPhase}° | Lv.${state.oscAmp}
           </div>
           ${state.oscSolved ? `
-            <div style="margin-top:8px; padding:8px; background:#102a22; border:1px solid #f1c40f; color:#e2ddd5; font-size:0.78rem; text-align:left; line-height:1.6;">
-              <div style="color:#f1c40f; font-weight:bold; text-align:center; margin-bottom:4px;">【復号完了：緊急解除PIN 算出式】</div>
-              <div>・<strong>1桁目</strong>：火災警報時の壁面センサー温度(℃)の<strong>【十の位】</strong></div>
-              <div>・<strong>2桁目</strong>：同調に成功した<strong>【振幅レベル (Lv)】</strong></div>
-              <div>・<strong>3桁目</strong>：最上位特例<strong>【ART-00】の条項番号</strong></div>
-              <div>・<strong>4桁目</strong>：同調に成功した<strong>【位相角(°)】の各桁の和</strong></div>
+            <div style="margin-top:10px; padding:10px 12px; background:#0a1a15; border:1px solid #c89b3c; border-radius:4px; color:#e2ddd5; font-size:0.76rem; text-align:left; line-height:1.75; box-sizing:border-box; width:100%;">
+              <div style="color:#f1c40f; font-weight:bold; text-align:center; margin-bottom:6px; letter-spacing:0.05em; font-size:0.82rem;">【緊急解除PIN 算出フォーミュラ】</div>
+              <div style="display:flex; flex-direction:column; gap:4px; font-family:var(--font-serif);">
+                <div style="display:flex; justify-content:space-between; align-items:center; white-space:nowrap;">
+                  <span>・<strong>1桁目</strong>：火災センサー警報温度の</span>
+                  <span style="color:#f1c40f; font-weight:bold; margin-left:6px;">【十の位】</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; white-space:nowrap;">
+                  <span>・<strong>2桁目</strong>：同調に成功した</span>
+                  <span style="color:#f1c40f; font-weight:bold; margin-left:6px;">【振幅 Lv】</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; white-space:nowrap;">
+                  <span>・<strong>3桁目</strong>：最上位特例 ART-00 の</span>
+                  <span style="color:#f1c40f; font-weight:bold; margin-left:6px;">【条番号】</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; white-space:nowrap;">
+                  <span>・<strong>4桁目</strong>：同調した位相角(°)の</span>
+                  <span style="color:#f1c40f; font-weight:bold; margin-left:6px;">【各桁の和】</span>
+                </div>
+              </div>
             </div>
           ` : ''}
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; max-width:360px; margin:8px 0;">
-          <button type="button" id="btn-s2-osc-wave" class="btn-secondary" style="font-family:var(--font-mono); font-size:0.78rem; padding:6px;">波形タイプ<br><span style="color:#f1c40f;">${waveLabels[state.oscWave]}</span></button>
-          <button type="button" id="btn-s2-osc-freq" class="btn-secondary" style="font-family:var(--font-mono); font-size:0.78rem; padding:6px;">周波数 (FREQ)<br><span style="color:#f1c40f;">${state.oscFreq} Hz</span></button>
-          <button type="button" id="btn-s2-osc-phase" class="btn-secondary" style="font-family:var(--font-mono); font-size:0.78rem; padding:6px;">位相角 (PHASE)<br><span style="color:#f1c40f;">${state.oscPhase} °</span></button>
-          <button type="button" id="btn-s2-osc-amp" class="btn-secondary" style="font-family:var(--font-mono); font-size:0.78rem; padding:6px;">振幅 (AMP)<br><span style="color:#f1c40f;">Lv. ${state.oscAmp}</span></button>
+          <button type="button" id="btn-s2-osc-wave" class="btn-secondary" ${state.oscSolved ? 'disabled style="font-family:var(--font-mono); font-size:0.78rem; padding:6px; cursor:default; opacity:0.85;"' : 'style="font-family:var(--font-mono); font-size:0.78rem; padding:6px; cursor:pointer;"'}>波形タイプ<br><span style="color:#f1c40f;">${waveLabels[state.oscWave]}</span></button>
+          <button type="button" id="btn-s2-osc-freq" class="btn-secondary" ${state.oscSolved ? 'disabled style="font-family:var(--font-mono); font-size:0.78rem; padding:6px; cursor:default; opacity:0.85;"' : 'style="font-family:var(--font-mono); font-size:0.78rem; padding:6px; cursor:pointer;"'}>周波数 (FREQ)<br><span style="color:#f1c40f;">${state.oscFreq} Hz</span></button>
+          <button type="button" id="btn-s2-osc-phase" class="btn-secondary" ${state.oscSolved ? 'disabled style="font-family:var(--font-mono); font-size:0.78rem; padding:6px; cursor:default; opacity:0.85;"' : 'style="font-family:var(--font-mono); font-size:0.78rem; padding:6px; cursor:pointer;"'}>位相角 (PHASE)<br><span style="color:#f1c40f;">${state.oscPhase} °</span></button>
+          <button type="button" id="btn-s2-osc-amp" class="btn-secondary" ${state.oscSolved ? 'disabled style="font-family:var(--font-mono); font-size:0.78rem; padding:6px; cursor:default; opacity:0.85;"' : 'style="font-family:var(--font-mono); font-size:0.78rem; padding:6px; cursor:pointer;"'}>振幅 (AMP)<br><span style="color:#f1c40f;">Lv. ${state.oscAmp}</span></button>
         </div>
 
-        <button type="button" id="btn-s2-osc-sync" class="btn-primary" style="width:100%; max-width:360px; margin-top:2px;">
-          同調波形を送信する (TRANSMIT SYNC)
-        </button>
+        ${state.oscSolved ? `
+          <button type="button" id="btn-s2-osc-sync" class="btn-secondary" disabled style="width:100%; max-width:360px; margin-top:4px; background:#0a1a15; border:1px solid #2ecc71; color:#2ecc71; font-family:var(--font-mono); font-size:0.86rem; padding:9px 12px; cursor:default; font-weight:bold;">
+            ● 波形同調完了 (SYNCHRONIZED)
+          </button>
+        ` : `
+          <button type="button" id="btn-s2-osc-sync" class="btn-primary" style="width:100%; max-width:360px; margin-top:4px;">
+            同調波形を送信する (TRANSMIT SYNC)
+          </button>
+        ` }
       </div>
     `;
     openModal(html);
 
-    document.getElementById('btn-s2-osc-wave').onclick = () => {
-      soundManager.playTick();
-      state.oscWave = waves[(waves.indexOf(state.oscWave) + 1) % waves.length];
-      saveGame();
-      openS2OscModal();
-    };
-    document.getElementById('btn-s2-osc-freq').onclick = () => {
-      soundManager.playTick();
-      state.oscFreq = freqs[(freqs.indexOf(state.oscFreq) + 1) % freqs.length];
-      saveGame();
-      openS2OscModal();
-    };
-    document.getElementById('btn-s2-osc-phase').onclick = () => {
-      soundManager.playTick();
-      state.oscPhase = phases[(phases.indexOf(state.oscPhase) + 1) % phases.length];
-      saveGame();
-      openS2OscModal();
-    };
-    document.getElementById('btn-s2-osc-amp').onclick = () => {
-      soundManager.playTick();
-      state.oscAmp = amps[(amps.indexOf(state.oscAmp) + 1) % amps.length];
-      saveGame();
-      openS2OscModal();
-    };
-
-    document.getElementById('btn-s2-osc-sync').onclick = () => {
-      if (state.oscWave === 'TRIANGLE' && state.oscFreq === 120 && state.oscPhase === 225 && state.oscAmp === 4) {
-        soundManager.playSolved();
-        state.oscSolved = true;
-        if (!state.hasIgniter) {
-          state.hasIgniter = true;
-          addItem('s2_igniter');
-        }
+    if (!state.oscSolved) {
+      document.getElementById('btn-s2-osc-wave').onclick = () => {
+        soundManager.playTick();
+        state.oscWave = waves[(waves.indexOf(state.oscWave) + 1) % waves.length];
         saveGame();
-        updateRoomDomState();
-        setMessage('ピピピッ！ 4つの波形パラメータが完全同調し、「圧電着火ユニット」と「緊急解除PINの算出式」が開示された！');
         openS2OscModal();
-      } else {
-        soundManager.playClick();
-        setMessage('ブーッ！ AIジャミング波に阻まれ同調失敗。マニュアルの規定に従い【波形・周波数・位相・振幅】を計算しよう。');
+      };
+      document.getElementById('btn-s2-osc-freq').onclick = () => {
+        soundManager.playTick();
+        state.oscFreq = freqs[(freqs.indexOf(state.oscFreq) + 1) % freqs.length];
+        saveGame();
+        openS2OscModal();
+      };
+      document.getElementById('btn-s2-osc-phase').onclick = () => {
+        soundManager.playTick();
+        state.oscPhase = phases[(phases.indexOf(state.oscPhase) + 1) % phases.length];
+        saveGame();
+        openS2OscModal();
+      };
+      document.getElementById('btn-s2-osc-amp').onclick = () => {
+        soundManager.playTick();
+        state.oscAmp = amps[(amps.indexOf(state.oscAmp) + 1) % amps.length];
+        saveGame();
+        openS2OscModal();
+      };
+
+      const btnSync = document.getElementById('btn-s2-osc-sync');
+      if (btnSync) {
+        btnSync.onclick = () => {
+          if (state.oscWave === 'TRIANGLE' && state.oscFreq === 120 && state.oscPhase === 225 && state.oscAmp === 4) {
+            soundManager.playSolved();
+            state.oscSolved = true;
+            if (!state.hasIgniter) {
+              state.hasIgniter = true;
+              addItem('s2_igniter');
+            }
+            saveGame();
+            updateRoomDomState();
+            setMessage('ピピピッ！ 4つの波形パラメータが完全同調し、「圧電着火ユニット」と「緊急解除PINの算出式」が開示された！');
+            openS2OscModal();
+          } else {
+            soundManager.playClick();
+            setMessage('ブーッ！ AIジャミング波に阻まれ同調失敗。マニュアルの規定に従い【波形・周波数・位相・振幅】を計算しよう。');
+          }
+        };
       }
-    };
+    }
   }
 
   // [南1] メインフレーム・サーバーラック
