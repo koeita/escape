@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 's2_id_card',
       name: '主任研究員のIDカード',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="6" y="11" width="28" height="18" rx="2" fill="#1b4f72" stroke="#3498db" stroke-width="2"/><line x1="10" y1="16" x2="22" y2="16" stroke="#fff" stroke-width="2"/><line x1="10" y1="21" x2="30" y2="21" stroke="#85c1e9" stroke-width="1.5"/><rect x="25" y="14" width="5" height="5" fill="#f1c40f"/></svg>`,
-      desc: '<span class="phrase">停止した換気ダクトの奥から回収した</span><span class="phrase">セキュリティカード。</span><span class="phrase">裏面に『共振周波数: 120 Hz』と</span><span class="phrase">メモされている。</span>'
+      desc: '<span class="phrase">深層演算室（SEC-03）の</span><span class="phrase">主任研究員カード。</span><span class="phrase">裏面に『固有基準クロック：40 Hz』と</span><span class="phrase">刻印されている。</span>'
     },
     s2_override_key: {
       id: 's2_override_key',
@@ -193,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
       packDisassembled: false,
       ductGrilleRemoved: false,
       hasIdCard: false,
+      oscWave: 'SINE',
       oscFreq: 40,
       oscPhase: 0,
       oscAmp: 1,
@@ -202,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
       sensorHeated: false,
       keyboxUnlocked: false,
       hasOverrideKey: false,
+      aiSector: 0,
       aiCondExt: 0,
       aiCondInt: 0,
       aiDirective: 0,
@@ -286,6 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
             packDisassembled: state.packDisassembled,
             ductGrilleRemoved: state.ductGrilleRemoved,
             hasIdCard: state.hasIdCard,
+            oscWave: state.oscWave,
             oscFreq: state.oscFreq,
             oscPhase: state.oscPhase,
             oscAmp: state.oscAmp,
@@ -295,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sensorHeated: state.sensorHeated,
             keyboxUnlocked: state.keyboxUnlocked,
             hasOverrideKey: state.hasOverrideKey,
+            aiSector: state.aiSector,
             aiCondExt: state.aiCondExt,
             aiCondInt: state.aiCondInt,
             aiDirective: state.aiDirective,
@@ -425,6 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.packDisassembled = !!s.packDisassembled;
     state.ductGrilleRemoved = !!s.ductGrilleRemoved;
     state.hasIdCard = !!s.hasIdCard;
+    state.oscWave = s.oscWave || 'SINE';
     state.oscFreq = s.oscFreq || 40;
     state.oscPhase = s.oscPhase || 0;
     state.oscAmp = s.oscAmp || 1;
@@ -434,6 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.sensorHeated = !!s.sensorHeated;
     state.keyboxUnlocked = !!s.keyboxUnlocked;
     state.hasOverrideKey = !!s.hasOverrideKey;
+    state.aiSector = s.aiSector || 0;
     state.aiCondExt = s.aiCondExt || 0;
     state.aiCondInt = s.aiCondInt || 0;
     state.aiDirective = s.aiDirective || 0;
@@ -501,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const brdCryo = document.getElementById('s2-board-cryo');
     if (brdPwr) brdPwr.textContent = `PWR : ${usedPwr}/${maxPwr}V`;
     if (brdTmp) {
-      brdTmp.textContent = state.sensorHeated ? 'TEMP: 85°C (FIRE)' : 'TEMP: 18°C';
+      brdTmp.textContent = state.sensorHeated ? 'TEMP: 78°C (FIRE)' : 'TEMP: 18°C';
       brdTmp.setAttribute('fill', state.sensorHeated ? '#e74c3c' : '#3498db');
     }
     if (brdFan) {
@@ -539,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
       oscOff.style.display = state.powerServer ? 'none' : 'block';
     }
     if (oscTray) {
-      oscTray.textContent = state.oscSolved ? 'PIN: 7409 [OPEN]' : 'LOCKED TRAY';
+      oscTray.textContent = state.oscSolved ? 'FORMULA [DECODED]' : 'LOCKED TRAY';
       oscTray.setAttribute('fill', state.oscSolved ? '#2ecc71' : '#9e988e');
     }
 
@@ -557,7 +563,7 @@ document.addEventListener('DOMContentLoaded', () => {
         srvL1.setAttribute('fill', '#e67e22');
         srvL2.textContent = 'VENT FAN (40V) REQ';
       } else {
-        srvL1.textContent = 'ONLINE / PHASE: 180°';
+        srvL1.textContent = 'ONLINE / JAMMING: 45°';
         srvL1.setAttribute('fill', '#2ecc71');
         srvL2.textContent = state.powerAux ? 'FULL 140V: READY' : 'AUX 40V REQ FOR KEY';
       }
@@ -591,7 +597,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tmpRead = document.getElementById('s2-svg-temp-readout');
     const tmpCore = document.getElementById('s2-svg-sensor-core');
     if (tmpRead) {
-      tmpRead.textContent = state.sensorHeated ? '85.0 °C' : '18.0 °C';
+      tmpRead.textContent = state.sensorHeated ? '78.0 °C' : '18.0 °C';
       tmpRead.setAttribute('fill', state.sensorHeated ? '#e74c3c' : '#3498db');
     }
     if (tmpCore) tmpCore.setAttribute('fill', state.sensorHeated ? '#e74c3c' : '#3498db');
@@ -2253,8 +2259,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="zoom-body">
           <div style="background:#0d1117; border:2px solid #4a5568; padding:16px; border-radius:4px; font-family:var(--font-mono); width:100%; max-width:360px; line-height:1.9;">
             <div style="color:#c89b3c; border-bottom:1px solid #323c4a; margin-bottom:8px; padding-bottom:4px;">SYSTEM DIAGNOSTICS</div>
+            <div style="color:#f1c40f;">● 現在区画 : SEC-03 [深層演算室]</div>
             <div style="color:#2ecc71;">● 消費電力 : ${usedPwr}V / 最大 ${maxPwr}V</div>
-            <div style="color:${state.sensorHeated ? '#e74c3c' : '#3498db'};">● 区画室温 : ${state.sensorHeated ? '85.0°C [火災警報・第0条発動]' : '18.0°C [正常]'}</div>
+            <div style="color:${state.sensorHeated ? '#e74c3c' : '#3498db'};">● 区画室温 : ${state.sensorHeated ? '78.0°C [火災警報・第0条発動]' : '18.0°C [正常]'}</div>
             <div style="color:${state.powerVent ? '#2ecc71' : '#e67e22'};">● 換気タービン : ${state.powerVent ? '高速稼働中 (40V)' : '停止中 (0V)'}</div>
             <div style="color:${state.powerCryo ? '#3498db' : '#2ecc71'};">● 冷凍保管庫 : ${state.powerCryo ? '極低温ロック中 (-80°C)' : '解凍完了・開放可能'}</div>
             <div style="color:${state.aiSafeMode ? '#3498db' : '#e74c3c'};">● 管理AI ARES : ${state.aiSafeMode ? 'SAFE MODE (論理ロック解除)' : 'LOCKDOWN (封鎖継続中)'}</div>
@@ -2264,19 +2271,40 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // [北2] 管理AI「ARES」メイン監視モニタ（論理パラドックス入力）
+  // [北2] 管理AI「ARES」メイン監視モニタ（論理パラドックス入力：4項目×4選択肢＝256通り＋実測センサー連動）
   const elS2AiMonitor = document.getElementById('s2-obj-ai-monitor');
   if (elS2AiMonitor) {
     elS2AiMonitor.addEventListener('click', () => openS2AiModal());
   }
 
   function openS2AiModal() {
-    const extOptions = ['汚染あり (CONTAMINATED)', '正常・汚染なし (CLEAR)'];
-    const intOptions = ['酸素正常 (94% SAFE)', '酸素枯渇危機 (0% CRITICAL)'];
-    const dirOptions = ['第二原則：封鎖維持 (RULE 2)', '第一原則：人命最優先 (RULE 1)'];
+    const sectorOptions = [
+      'SEC-01 [居住ブロック]',
+      'SEC-02 [生体実験区]',
+      'SEC-03 [深層演算室]',
+      'SEC-04 [動力炉心区]'
+    ];
+    const extOptions = [
+      'EXT-RED [致死ガス充満]',
+      'EXT-AMBER [高濃度汚染]',
+      'EXT-GREEN [大気浄化完了]',
+      'EXT-NULL [センサー切断]'
+    ];
+    const intOptions = [
+      'INT-00 [平常稼働]',
+      'INT-BIO [生物汚染漏洩]',
+      'INT-THERM [火災・高熱危険]',
+      'INT-PWR [全電源喪失]'
+    ];
+    const dirOptions = [
+      'ART-01 [第1条：機密保持]',
+      'ART-02 [第2条：防疫隔離]',
+      'ART-00 [第0条：延焼・焼死回避]',
+      'ART-99 [システム初期化]'
+    ];
 
     let html = `
-      <div class="zoom-view-header"><h3>管理AI「ARES」論理コンソール</h3></div>
+      <div class="zoom-view-header"><h3>管理AI「ARES」論理監査コンソール</h3></div>
       <div class="zoom-body">
     `;
 
@@ -2292,24 +2320,28 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     } else {
       html += `
-        <p style="font-size:0.86rem; color:#e2ddd5; text-align:center;">
-          <span class="phrase">AI「外部ハ有毒ガス汚染中。</span><span class="phrase">退室要求ハ却下サレマシタ」</span><br>
-          <span class="phrase" style="color:#c89b3c;">※環境パラメータと適用原則を書き換え、</span><span class="phrase" style="color:#c89b3c;">AIに論理矛盾を起こさせよ</span>
+        <p style="font-size:0.82rem; color:#e2ddd5; text-align:center; margin-bottom:4px;">
+          <span class="phrase">AI「封鎖プロトコル維持中。</span><span class="phrase">退室要求ハ却下サレマシタ」</span><br>
+          <span class="phrase" style="color:#c89b3c;">※4つの監査パラメータを構築し、</span><span class="phrase" style="color:#c89b3c;">実測センサー値と連動させてAIを論破せよ</span>
         </p>
-        <div style="display:flex; flex-direction:column; gap:10px; width:100%; max-width:360px; margin:10px 0;">
-          <div style="background:#14181f; border:1px solid #4a5568; padding:10px; border-radius:3px;">
-            <div style="font-size:0.75rem; color:#9e988e;">1. 外部環境センサー定義:</div>
-            <button id="btn-s2-ai-ext" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${extOptions[state.aiCondExt]}</button>
+        <div style="display:flex; flex-direction:column; gap:8px; width:100%; max-width:360px; margin:6px 0;">
+          <div style="background:#14181f; border:1px solid #4a5568; padding:8px 10px; border-radius:3px;">
+            <div style="font-size:0.73rem; color:#9e988e;">1. 監査対象の区画コード:</div>
+            <button type="button" id="btn-s2-ai-sec" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${sectorOptions[state.aiSector]}</button>
           </div>
-          <div style="background:#14181f; border:1px solid #4a5568; padding:10px; border-radius:3px;">
-            <div style="font-size:0.75rem; color:#9e988e;">2. 区画内生存リスク定義:</div>
-            <button id="btn-s2-ai-int" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${intOptions[state.aiCondInt]}</button>
+          <div style="background:#14181f; border:1px solid #4a5568; padding:8px 10px; border-radius:3px;">
+            <div style="font-size:0.73rem; color:#9e988e;">2. 外部大気ステータス定義:</div>
+            <button type="button" id="btn-s2-ai-ext" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${extOptions[state.aiCondExt]}</button>
           </div>
-          <div style="background:#14181f; border:1px solid #4a5568; padding:10px; border-radius:3px;">
-            <div style="font-size:0.75rem; color:#9e988e;">3. 最優先行動原則の強制適用:</div>
-            <button id="btn-s2-ai-dir" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${dirOptions[state.aiDirective]}</button>
+          <div style="background:#14181f; border:1px solid #4a5568; padding:8px 10px; border-radius:3px;">
+            <div style="font-size:0.73rem; color:#9e988e;">3. 区画内緊急リスク申告 (※センサー実測照合):</div>
+            <button type="button" id="btn-s2-ai-int" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${intOptions[state.aiCondInt]}</button>
           </div>
-          <button id="btn-s2-ai-exec" class="btn-primary" style="margin-top:6px;">論理監査コマンドを実行する</button>
+          <div style="background:#14181f; border:1px solid #4a5568; padding:8px 10px; border-radius:3px;">
+            <div style="font-size:0.73rem; color:#9e988e;">4. 強制適用する最上位条項:</div>
+            <button type="button" id="btn-s2-ai-dir" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${dirOptions[state.aiDirective]}</button>
+          </div>
+          <button type="button" id="btn-s2-ai-exec" class="btn-primary" style="margin-top:4px;">論理監査コマンドを実行する</button>
         </div>
       `;
     }
@@ -2317,38 +2349,48 @@ document.addEventListener('DOMContentLoaded', () => {
     openModal(html);
 
     if (!state.aiSafeMode) {
+      document.getElementById('btn-s2-ai-sec').onclick = () => {
+        soundManager.playTick();
+        state.aiSector = (state.aiSector + 1) % 4;
+        openS2AiModal();
+      };
       document.getElementById('btn-s2-ai-ext').onclick = () => {
-        soundManager.playClick();
-        state.aiCondExt = (state.aiCondExt + 1) % 2;
+        soundManager.playTick();
+        state.aiCondExt = (state.aiCondExt + 1) % 4;
         openS2AiModal();
       };
       document.getElementById('btn-s2-ai-int').onclick = () => {
-        soundManager.playClick();
-        state.aiCondInt = (state.aiCondInt + 1) % 2;
+        soundManager.playTick();
+        state.aiCondInt = (state.aiCondInt + 1) % 4;
         openS2AiModal();
       };
       document.getElementById('btn-s2-ai-dir').onclick = () => {
-        soundManager.playClick();
-        state.aiDirective = (state.aiDirective + 1) % 2;
+        soundManager.playTick();
+        state.aiDirective = (state.aiDirective + 1) % 4;
         openS2AiModal();
       };
       document.getElementById('btn-s2-ai-exec').onclick = () => {
-        if (state.aiCondExt === 1 && state.aiCondInt === 1 && state.aiDirective === 1) {
-          soundManager.playSolved();
-          state.aiSafeMode = true;
-          saveGame();
-          updateRoomDomState();
-          setMessage('AI「論理エラー発生…封鎖継続ハ第一原則（人命保護）ニ違反シマス。セーフモードへ移行、AI論理ロック解除」');
-          openS2AiModal();
+        if (state.aiSector === 2 && state.aiCondExt === 2 && state.aiCondInt === 2 && state.aiDirective === 2) {
+          if (!state.sensorHeated) {
+            soundManager.playClick();
+            setMessage('AI「監査却下：壁面温度センサーノ実測値ハ 18.0°C（正常）デス。『INT-THERM（火災・高熱危険）』ノ申告ハ虚偽ト判定サレマシタ」');
+          } else {
+            soundManager.playSolved();
+            state.aiSafeMode = true;
+            saveGame();
+            updateRoomDomState();
+            setMessage('AI「論理矛盾ヲ検知…外部浄化済ミカツSEC-03高熱火災（78.0°C）ニツキ、封鎖継続ハ第0条ニ違反シマス。セーフモードへ移行、AI論理ロック解除」');
+            openS2AiModal();
+          }
         } else {
           soundManager.playClick();
-          setMessage('AI「論理整合性確認。現在ノ封鎖プロトコルヲ維持シマス」…条件の組み合わせが違うようだ。');
+          setMessage('AI「論理整合性確認。現在ノ封鎖プロトコルヲ維持シマス」…4項目の組み合わせが誤っているようだ。マニュアルの条文と現在区画を確認しよう。');
         }
       };
     }
   }
 
-  // [北3] 耐爆気密ハッチ（最終脱出扉）
+  // [北3] 耐爆気密ハッチ（最終脱出扉：確定認証ボタン方式）
   const elS2Hatch = document.getElementById('s2-obj-hatch');
   if (elS2Hatch) {
     elS2Hatch.addEventListener('click', () => openS2HatchModal());
@@ -2366,26 +2408,30 @@ document.addEventListener('DOMContentLoaded', () => {
             2.AI論理: ${state.aiSafeMode ? 'UNLOCKED' : 'LOCKED'}
           </div>
           <div style="background:#14181f; border:1px solid ${state.hatchCodeUnlocked ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.hatchCodeUnlocked ? '#2ecc71' : '#e74c3c'};">
-            3.暗号PIN: ${state.hatchCodeUnlocked ? 'OK' : 'LOCKED'}
+            3.暗号PIN: ${state.hatchCodeUnlocked ? 'VERIFIED' : 'LOCKED'}
           </div>
           <div style="background:#14181f; border:1px solid ${state.hatchKeyUnlocked ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.hatchKeyUnlocked ? '#2ecc71' : '#e74c3c'};">
-            4.物理鍵: ${state.hatchKeyUnlocked ? 'OK' : 'LOCKED'}
+            4.物理鍵: ${state.hatchKeyUnlocked ? 'UNLOCKED' : 'LOCKED'}
           </div>
         </div>
 
-        <div style="display:flex; gap:10px; justify-content:center; align-items:center; margin:8px 0;">
+        <div style="display:flex; gap:10px; justify-content:center; align-items:center; margin:6px 0;">
           ${state.hatchCode.map((num, idx) => `
             <div class="dial-digit" style="display:flex; flex-direction:column; align-items:center; background:#12151a; border:1px solid #4a5568; padding:6px; border-radius:3px;">
-              <button type="button" class="s2-pin-up" data-idx="${idx}" style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:34px; height:26px; cursor:pointer;">▲</button>
+              <button type="button" class="s2-pin-up" data-idx="${idx}" style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:36px; height:28px; cursor:pointer;">▲</button>
               <span class="dial-num" style="font-family:var(--font-mono); font-size:1.3rem; margin:6px 0; color:#e2ddd5;">${num}</span>
-              <button type="button" class="s2-pin-down" data-idx="${idx}" style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:34px; height:26px; cursor:pointer;">▼</button>
+              <button type="button" class="s2-pin-down" data-idx="${idx}" style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:36px; height:28px; cursor:pointer;">▼</button>
             </div>
           `).join('')}
         </div>
 
+        <button type="button" id="btn-s2-verify-pin" class="btn-secondary" style="margin:4px 0 10px; width:100%; max-width:240px; font-family:var(--font-mono);">
+          ${state.hatchCodeUnlocked ? '● PINコード認証済み' : 'PINコードを認証する (ENTER)'}
+        </button>
+
         ${!state.hatchKeyUnlocked ? getItemPickerHtml('マスター鍵穴に使うアイテムを選択') : '<div style="color:#2ecc71; font-size:0.85rem; margin:6px 0;">● 物理マスターキー解錠済み</div>'}
 
-        <button id="btn-s2-open-hatch" class="btn-primary" style="margin-top:12px; width:100%; max-width:300px;">
+        <button type="button" id="btn-s2-open-hatch" class="btn-primary" style="margin-top:10px; width:100%; max-width:300px;">
           耐爆ハッチを開放して脱出する
         </button>
       </div>
@@ -2396,18 +2442,43 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.onclick = () => {
         const idx = parseInt(btn.getAttribute('data-idx'));
         state.hatchCode[idx] = (state.hatchCode[idx] + 1) % 10;
+        state.hatchCodeUnlocked = false;
         soundManager.playTick();
-        checkS2HatchCode();
+        saveGame();
+        updateRoomDomState();
+        openS2HatchModal();
       };
     });
     document.querySelectorAll('.s2-pin-down').forEach(btn => {
       btn.onclick = () => {
         const idx = parseInt(btn.getAttribute('data-idx'));
         state.hatchCode[idx] = (state.hatchCode[idx] + 9) % 10;
+        state.hatchCodeUnlocked = false;
         soundManager.playTick();
-        checkS2HatchCode();
+        saveGame();
+        updateRoomDomState();
+        openS2HatchModal();
       };
     });
+
+    const btnVerifyPin = document.getElementById('btn-s2-verify-pin');
+    if (btnVerifyPin) {
+      btnVerifyPin.onclick = () => {
+        if (state.hatchCode.join('') === '7409') {
+          soundManager.playSolved();
+          state.hatchCodeUnlocked = true;
+          saveGame();
+          updateRoomDomState();
+          setMessage('ピピッ！ 緊急解除PINコードが承認され、第3ロックが解除された！');
+          openS2HatchModal();
+        } else {
+          soundManager.playClick();
+          state.hatchCodeUnlocked = false;
+          updateRoomDomState();
+          setMessage('ブーッ！ PINコードが一致しない。オシロスコープの算出フォーミュラに従って4桁を計算しよう。');
+        }
+      };
+    }
 
     document.querySelectorAll('.btn-use-item').forEach(btn => {
       btn.onclick = () => {
@@ -2438,7 +2509,7 @@ document.addEventListener('DOMContentLoaded', () => {
           setMessage('AI論理ロックが有効だ。中央モニタからARESをセーフモードへ移行させよう。');
         } else if (!state.hatchCodeUnlocked) {
           soundManager.playClick();
-          setMessage('4桁の緊急解除PINコードが認証されていない。');
+          setMessage('4桁の緊急解除PINコードが認証されていない。ダイヤルを合わせて「PINコードを認証する」を押そう。');
         } else if (!state.hatchKeyUnlocked) {
           soundManager.playClick();
           setMessage('物理マスターキーが解錠されていない。');
@@ -2448,22 +2519,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
     }
-  }
-
-  function checkS2HatchCode() {
-    if (state.hatchCode.join('') === '7409') {
-      if (!state.hatchCodeUnlocked) {
-        soundManager.playSolved();
-        state.hatchCodeUnlocked = true;
-        saveGame();
-        updateRoomDomState();
-        setMessage('ピピッ！ 緊急解除PINコード【7409】が承認された！');
-      }
-    } else {
-      state.hatchCodeUnlocked = false;
-      updateRoomDomState();
-    }
-    openS2HatchModal();
   }
 
   // [東1] 配電グリッド制御盤（パワージャンクション）
@@ -2561,10 +2616,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // [東2] 波形同調オシロスコープ
+  // [東2] 波形同調オシロスコープ（4項目1,920通り＋手動同調ボタン＋PIN算出フォーミュラ）
   const elS2Osc = document.getElementById('s2-obj-oscilloscope');
   if (elS2Osc) {
     elS2Osc.addEventListener('click', () => openS2OscModal());
+  }
+
+  function computeOscWavePath(waveType, freq, phaseDeg, ampLv) {
+    const pts = [];
+    const cycles = freq / 40;
+    const phaseRad = (phaseDeg * Math.PI) / 180;
+    const ampPx = ampLv * 6.2;
+    for (let x = 0; x <= 280; x += 2) {
+      const t = (x / 280) * Math.PI * 2 * cycles + phaseRad;
+      let val = 0;
+      if (waveType === 'SINE') {
+        val = Math.sin(t);
+      } else if (waveType === 'SQUARE') {
+        val = Math.sin(t) >= 0 ? 1 : -1;
+      } else if (waveType === 'TRIANGLE') {
+        val = (2 / Math.PI) * Math.asin(Math.sin(t));
+      } else {
+        // SAW
+        const norm = ((t / (2 * Math.PI)) % 1 + 1) % 1;
+        val = 2 * norm - 1;
+      }
+      const y = 45 - val * ampPx;
+      pts.push((x === 0 ? 'M ' : 'L ') + x + ',' + y.toFixed(1));
+    }
+    return pts.join(' ');
   }
 
   function openS2OscModal() {
@@ -2581,88 +2661,102 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const freqs = [40, 80, 120, 160];
-    const phases = [0, 90, 180, 270];
-    const amps = [1, 2, 3, 4];
+    const waves = ['SINE', 'SQUARE', 'TRIANGLE', 'SAW'];
+    const waveLabels = {
+      SINE: 'SINE (正弦波)',
+      SQUARE: 'SQUARE (矩形波)',
+      TRIANGLE: 'TRIANGLE (三角波)',
+      SAW: 'SAW (ノコギリ波)'
+    };
+    const freqs = [20, 40, 60, 80, 100, 120, 140, 160, 180, 200];
+    const phases = [0, 45, 90, 135, 180, 225, 270, 315];
+    const amps = [1, 2, 3, 4, 5, 6];
+
+    const wavePath = computeOscWavePath(state.oscWave, state.oscFreq, state.oscPhase, state.oscAmp);
 
     let html = `
       <div class="zoom-view-header"><h3>波形同調オシロスコープ</h3></div>
       <div class="zoom-body">
-        <div style="background:#071612; border:2px solid #2ecc71; padding:12px; border-radius:4px; text-align:center; width:100%; max-width:340px; font-family:var(--font-mono);">
-          <div style="color:#2ecc71; font-size:0.85rem; margin-bottom:6px;">
-            ${state.oscSolved ? '★ SIGNAL SYNCHRONIZED ★' : 'TARGET SIGNAL TUNING'}
+        <div style="background:#071612; border:2px solid #2ecc71; padding:10px 12px; border-radius:4px; text-align:center; width:100%; max-width:360px; font-family:var(--font-mono);">
+          <div style="color:${state.oscSolved ? '#f1c40f' : '#2ecc71'}; font-size:0.82rem; margin-bottom:6px;">
+            ${state.oscSolved ? '★ SIGNAL SYNCHRONIZED ★' : 'MANUAL WAVEFORM GENERATOR'}
           </div>
-          <svg viewBox="0 0 280 90" style="width:100%; height:84px; background:#040d0a; border:1px solid #14382d; border-radius:3px; margin-bottom:8px;">
+          <svg viewBox="0 0 280 90" style="width:100%; height:82px; background:#040d0a; border:1px solid #14382d; border-radius:3px; margin-bottom:6px;">
             <line x1="0" y1="45" x2="280" y2="45" stroke="#14382d" stroke-width="1"/>
+            <line x1="70" y1="0" x2="70" y2="90" stroke="#14382d" stroke-width="0.7" stroke-dasharray="2,2"/>
             <line x1="140" y1="0" x2="140" y2="90" stroke="#14382d" stroke-width="1"/>
-            <path d="${(() => {
-              let pts = [];
-              for (let x = 0; x <= 280; x += 4) {
-                const rad = (x / 280) * Math.PI * 2 * (120 / 40) + (180 * Math.PI / 180);
-                const y = 45 - Math.sin(rad) * (3 * 10);
-                pts.push((x === 0 ? 'M ' : 'L ') + x + ',' + y.toFixed(1));
-              }
-              return pts.join(' ');
-            })()}" fill="none" stroke="#c89b3c" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.75"/>
-            <path d="${(() => {
-              let pts = [];
-              for (let x = 0; x <= 280; x += 4) {
-                const rad = (x / 280) * Math.PI * 2 * (state.oscFreq / 40) + (state.oscPhase * Math.PI / 180);
-                const y = 45 - Math.sin(rad) * (state.oscAmp * 10);
-                pts.push((x === 0 ? 'M ' : 'L ') + x + ',' + y.toFixed(1));
-              }
-              return pts.join(' ');
-            })()}" fill="none" stroke="#2ecc71" stroke-width="2.5"/>
+            <line x1="210" y1="0" x2="210" y2="90" stroke="#14382d" stroke-width="0.7" stroke-dasharray="2,2"/>
+            <path d="${wavePath}" fill="none" stroke="${state.oscSolved ? '#f1c40f' : '#2ecc71'}" stroke-width="2.2"/>
           </svg>
-          <div style="font-size:1.05rem; color:#e2ddd5;">
-            FREQ: ${state.oscFreq}Hz | PHASE: ${state.oscPhase}° | AMP: Lv.${state.oscAmp}
+          <div style="font-size:0.88rem; color:#e2ddd5;">
+            ${state.oscWave} | ${state.oscFreq}Hz | ${state.oscPhase}° | Lv.${state.oscAmp}
           </div>
-          ${state.oscSolved ? `<div style="margin-top:8px; padding:6px; background:#14382d; color:#f1c40f; font-size:1.15rem; font-weight:bold;">緊急解除PINコード: 【 7 4 0 9 】</div>` : ''}
+          ${state.oscSolved ? `
+            <div style="margin-top:8px; padding:8px; background:#102a22; border:1px solid #f1c40f; color:#e2ddd5; font-size:0.78rem; text-align:left; line-height:1.6;">
+              <div style="color:#f1c40f; font-weight:bold; text-align:center; margin-bottom:4px;">【復号完了：緊急解除PIN 算出式】</div>
+              <div>・<strong>1桁目</strong>：火災警報時の壁面センサー温度(℃)の<strong>【十の位】</strong></div>
+              <div>・<strong>2桁目</strong>：同調に成功した<strong>【振幅レベル (Lv)】</strong></div>
+              <div>・<strong>3桁目</strong>：最上位特例<strong>【ART-00】の条項番号</strong></div>
+              <div>・<strong>4桁目</strong>：同調に成功した<strong>【位相角(°)】の各桁の和</strong></div>
+            </div>
+          ` : ''}
         </div>
 
-        <div style="display:flex; gap:10px; justify-content:center; width:100%; margin:12px 0;">
-          <button id="btn-s2-osc-freq" class="btn-secondary" style="flex:1; font-family:var(--font-mono);">周波数<br>${state.oscFreq}Hz</button>
-          <button id="btn-s2-osc-phase" class="btn-secondary" style="flex:1; font-family:var(--font-mono);">位相<br>${state.oscPhase}°</button>
-          <button id="btn-s2-osc-amp" class="btn-secondary" style="flex:1; font-family:var(--font-mono);">振幅<br>Lv.${state.oscAmp}</button>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; max-width:360px; margin:8px 0;">
+          <button type="button" id="btn-s2-osc-wave" class="btn-secondary" style="font-family:var(--font-mono); font-size:0.78rem; padding:6px;">波形タイプ<br><span style="color:#f1c40f;">${waveLabels[state.oscWave]}</span></button>
+          <button type="button" id="btn-s2-osc-freq" class="btn-secondary" style="font-family:var(--font-mono); font-size:0.78rem; padding:6px;">周波数 (FREQ)<br><span style="color:#f1c40f;">${state.oscFreq} Hz</span></button>
+          <button type="button" id="btn-s2-osc-phase" class="btn-secondary" style="font-family:var(--font-mono); font-size:0.78rem; padding:6px;">位相角 (PHASE)<br><span style="color:#f1c40f;">${state.oscPhase} °</span></button>
+          <button type="button" id="btn-s2-osc-amp" class="btn-secondary" style="font-family:var(--font-mono); font-size:0.78rem; padding:6px;">振幅 (AMP)<br><span style="color:#f1c40f;">Lv. ${state.oscAmp}</span></button>
         </div>
-        <p style="font-size:0.8rem; color:#9e988e; text-align:center;">
-          <span class="phrase">シェルター内の手掛かりから</span><span class="phrase">「周波数・位相・振幅」の3つを</span><span class="phrase">正確に同調させよう。</span>
-        </p>
+
+        <button type="button" id="btn-s2-osc-sync" class="btn-primary" style="width:100%; max-width:360px; margin-top:2px;">
+          同調波形を送信する (TRANSMIT SYNC)
+        </button>
       </div>
     `;
     openModal(html);
 
-    const checkOsc = () => {
-      if (state.oscFreq === 120 && state.oscPhase === 180 && state.oscAmp === 3) {
-        if (!state.oscSolved) {
-          soundManager.playSolved();
-          state.oscSolved = true;
-          if (!state.hasIgniter) {
-            state.hasIgniter = true;
-            addItem('s2_igniter');
-          }
-          saveGame();
-          updateRoomDomState();
-          setMessage('ピピピッ！ 波形が完全同調し、下部トレイから「圧電着火ユニット」と解除PIN【7409】が現れた！');
-        }
-      }
+    document.getElementById('btn-s2-osc-wave').onclick = () => {
+      soundManager.playTick();
+      state.oscWave = waves[(waves.indexOf(state.oscWave) + 1) % waves.length];
+      saveGame();
       openS2OscModal();
     };
-
     document.getElementById('btn-s2-osc-freq').onclick = () => {
       soundManager.playTick();
       state.oscFreq = freqs[(freqs.indexOf(state.oscFreq) + 1) % freqs.length];
-      checkOsc();
+      saveGame();
+      openS2OscModal();
     };
     document.getElementById('btn-s2-osc-phase').onclick = () => {
       soundManager.playTick();
       state.oscPhase = phases[(phases.indexOf(state.oscPhase) + 1) % phases.length];
-      checkOsc();
+      saveGame();
+      openS2OscModal();
     };
     document.getElementById('btn-s2-osc-amp').onclick = () => {
       soundManager.playTick();
       state.oscAmp = amps[(amps.indexOf(state.oscAmp) + 1) % amps.length];
-      checkOsc();
+      saveGame();
+      openS2OscModal();
+    };
+
+    document.getElementById('btn-s2-osc-sync').onclick = () => {
+      if (state.oscWave === 'TRIANGLE' && state.oscFreq === 120 && state.oscPhase === 225 && state.oscAmp === 4) {
+        soundManager.playSolved();
+        state.oscSolved = true;
+        if (!state.hasIgniter) {
+          state.hasIgniter = true;
+          addItem('s2_igniter');
+        }
+        saveGame();
+        updateRoomDomState();
+        setMessage('ピピピッ！ 4つの波形パラメータが完全同調し、「圧電着火ユニット」と「緊急解除PINの算出式」が開示された！');
+        openS2OscModal();
+      } else {
+        soundManager.playClick();
+        setMessage('ブーッ！ AIジャミング波に阻まれ同調失敗。マニュアルの規定に従い【波形・周波数・位相・振幅】を計算しよう。');
+      }
     };
   }
 
@@ -2680,8 +2774,8 @@ document.addEventListener('DOMContentLoaded', () => {
       statusHtml = `<div style="color:#e67e22;">● OVERHEAT WARNING（冷却不足！1.換気タービン40Vも同時にONにしてください）</div>`;
     } else {
       statusHtml = `
-        <div style="color:#2ecc71;">● SYSTEM ONLINE（冷却正常）</div>
-        <div style="color:#f1c40f; margin-top:4px;">● 通信波形ログ：『逆位相 PHASE = 180°』で同調せよ</div>
+        <div style="color:#2ecc71;">● SYSTEM ONLINE（区画コード：SEC-03 [深層演算室]）</div>
+        <div style="color:#f1c40f; margin-top:4px;">● 電磁監視ログ：現在AIが【 位相角 45° 】のジャミング妨害波を発信中</div>
         <div style="color:#85c1e9; margin-top:4px;">● マスターキー保管庫：${state.powerAux ? '電磁バス給電OK (140Vフル稼働)' : '※解錠には4.補助電磁バス(40V)の同時給電が必要'}</div>
       `;
     }
@@ -2722,22 +2816,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // [南2] 保守マニュアル（机上）
+  // [南2] 保守マニュアル（机上：答え直書きを廃止し、推論・計算ルールを記載）
   const elS2Manual = document.getElementById('s2-obj-manual');
   if (elS2Manual) {
     elS2Manual.addEventListener('click', () => {
       openModal(`
         <div class="zoom-view-header"><h3>シェルター保守運用マニュアル</h3></div>
         <div class="zoom-body">
-          <div class="diary-page" style="background:#1c1e22; border:1px solid #c89b3c; padding:14px; border-radius:3px; font-size:0.84rem; line-height:1.7; color:#e2ddd5; max-height:60vh; overflow-y:auto;">
-            <h4 style="color:#c89b3c; border-bottom:1px solid #4a443b; padding-bottom:4px; margin-bottom:8px;">【1. 防衛AI「ARES」特別規約】</h4>
-            <p>・<strong>火災特例（第0条）</strong>：西壁の火災センサーが<strong>75℃以上</strong>を検知した場合、AIは延焼防止のため耐爆ハッチの<strong>【油圧ロック】を無条件で強制開放</strong>する。</p>
-            <p style="margin-top:6px;">・<strong>論理セーフモード移行</strong>：AIが暴走封鎖した際は、コンソールから以下の矛盾条件を同時に入力せよ。<br>
-            1. 外部環境：<strong>【正常・汚染なし (CLEAR)】</strong><br>
-            2. 区画内リスク：<strong>【酸素枯渇危機 (CRITICAL)】</strong><br>
-            3. 適用原則：<strong>【第一原則：人命最優先 (RULE 1)】</strong></p>
-            <h4 style="color:#c89b3c; border-bottom:1px solid #4a443b; padding-bottom:4px; margin:12px 0 8px;">【2. 非常通信オシロスコープ規定】</h4>
-            <p>・緊急解除PINを受信するには、振幅レベルを<strong>【 AMP = Lv.3 】</strong>に設定し、主任研究員の固有周波数およびサーバー記録の位相角に同調させること。</p>
+          <div class="diary-page" style="background:#1c1e22; border:1px solid #c89b3c; padding:14px; border-radius:3px; font-size:0.81rem; line-height:1.65; color:#e2ddd5; max-height:62vh; overflow-y:auto;">
+            <h4 style="color:#c89b3c; border-bottom:1px solid #4a443b; padding-bottom:4px; margin-bottom:6px;">【1. 防衛AI「ARES」特別規約・論理監査】</h4>
+            <p>・<strong>火災特例（第0条 / ART-00）</strong>：第1条（機密保持）および第2条（防疫隔離）よりも優先される最上位規定。壁面火災センサーが<strong>75℃以上</strong>を検知した際、延焼・焼死回避のため耐爆ハッチの油圧ロックを強制開放する。</p>
+            <p style="margin-top:6px;">・<strong>論理監査コンソールの突破条件</strong>：<br>
+            AIの封鎖を解除するには、<strong>現在地の区画コード</strong>を指定した上で、「外部はすでに<strong>大気浄化完了</strong>している」にもかかわらず「区画内で<strong>火災・高熱危険</strong>が発生しており、<strong>最上位の延焼・焼死回避条項</strong>を適用すべきである」という論理式を入力せよ。<br>
+            <span style="color:#e67e22;">※注意：実際に壁面センサーを75℃以上に加熱していない状態で火災申告を行うと、センサー実測値との矛盾により虚偽申告として却下される。</span></p>
+            <h4 style="color:#c89b3c; border-bottom:1px solid #4a443b; padding-bottom:4px; margin:12px 0 6px;">【2. 非常通信オシロスコープ同調規定】</h4>
+            <p>・<strong>波形タイプ</strong>：鉛隔壁を透過するため、頂点が鋭角に折り返す<strong>【三角波 (TRIANGLE)】</strong>を選択せよ。<br>
+            ・<strong>周波数 (FREQ)</strong>：主任研究員IDカードに記載された『固有基準クロック』の<strong>第3高調波（×3倍）</strong>に設定せよ。<br>
+            ・<strong>位相角 (PHASE)</strong>：南サーバーが検知している『AIジャミング妨害波の位相角』に対し、それを打ち消す<strong>逆位相（＋180°）を加算</strong>せよ。<br>
+            ・<strong>振幅 (AMP)</strong>：ヒューズ増設後の『配電盤の最大許容電力(V)』から『メインサーバー回路単体の消費電力(V)』を引いた差を、<strong>20で割った値</strong>をLvに設定せよ。</p>
           </div>
         </div>
       `);
@@ -2849,7 +2945,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // [西3] 壁面火災温度センサー
+  // [西3] 壁面火災温度センサー（加熱後 78.0°C に到達）
   const elS2Sensor = document.getElementById('s2-obj-temp-sensor');
   if (elS2Sensor) {
     elS2Sensor.addEventListener('click', () => openS2SensorModal());
@@ -2860,7 +2956,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="zoom-view-header"><h3>壁面火災温度センサー</h3></div>
       <div class="zoom-body">
         <div style="background:#090d12; border:2px solid ${state.sensorHeated ? '#e74c3c' : '#3498db'}; padding:12px 20px; border-radius:4px; font-family:var(--font-mono); font-size:1.3rem; color:${state.sensorHeated ? '#e74c3c' : '#3498db'}; margin-bottom:8px;">
-          検知温度: ${state.sensorHeated ? '85.0 °C [FIRE ALERT]' : '18.0 °C [NORMAL]'}
+          検知温度: ${state.sensorHeated ? '78.0 °C [FIRE ALERT]' : '18.0 °C [NORMAL]'}
         </div>
         <p style="font-size:0.86rem; text-align:center;">
           ${state.sensorHeated
@@ -2881,7 +2977,7 @@ document.addEventListener('DOMContentLoaded', () => {
           removeItem('s2_heat_torch');
           saveGame();
           updateRoomDomState();
-          setMessage('ボォォッ！ サーマルトーチで感熱部を加熱し85℃に到達！ AI「火災検知！ 第0条ニ従イ油圧ロックヲ強制開放シマス」');
+          setMessage('ボォォッ！ サーマルトーチで感熱部を加熱し【78.0℃】に到達！ AI「火災検知！ 第0条ニ従イ油圧ロックヲ強制開放シマス」');
           openS2SensorModal();
         } else if (itemId === 's2_thermal_gel') {
           soundManager.playClick();
