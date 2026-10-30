@@ -75,6 +75,10 @@ c:\Users\xcang\Desktop\Antigravity\escape\
   - Cloudflare Workers Builds のプレビュービルドおよび静的アセット配信に対応するため、成功実績のある構成に合わせて `wrangler.json`（`name: "escape"`, `compatibility_date: "2024-10-22"`, `assets.directory: "."`, `previews: {}`）を配置。`wrangler.toml` との競合エラーを解消。
 
 #### 3. iOS PWA/スタンドアロン全画面時のセーフエリア（Safe Area）最適化
+- **エッジ・トゥ・エッジ（Edge-to-Edge）セーフエリア構造への再刷新**:
+  - `body` 全体にパディングを設定すると画面外枠に不要な隙間が発生し、コンテナ全体が押し出されて上下のバランスが崩れるため、`body` のパディングを `0` にリセット。
+  - 上部ヘッダー（`.menu-header`、`#game-header`）および下部インベントリ（`#inventory-bar`）の内側パディングに `env(safe-area-inset-top)` / `env(safe-area-inset-bottom)` をそれぞれ加算する設計へ移行。
+  - 背景色は画面最上部・最下部（ノッチやホームバー裏）まで綺麗に敷き詰めつつ、タイトルや操作ボタン等の重要UI要素のみがセーフエリア内にジャストフィットするネイティブアプリ仕様に最適化。
 - **ノッチ・ステータスバー・ホームバー食い込みズレの解消**:
   - iPhone等で「ホーム画面に追加」してスタンドアロン起動した際、画面全体が上に引っ張られてステータスバーやノッチに食い込む問題を修正。
   - `index.html` の `viewport-fit=cover` を確認・維持。
