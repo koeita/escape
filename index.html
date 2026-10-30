@@ -71,24 +71,28 @@
           </div>
         </div>
 
-        <!-- Stage 2 (今後の拡張用) -->
-        <div class="stage-card stage-locked">
-          <div class="stage-card-badge">STAGE 2</div>
-          <div class="stage-thumbnail stage-thumb-locked">
-            <svg viewBox="0 0 40 40" class="stage-thumb-svg" aria-hidden="true">
-              <rect x="11" y="17" width="18" height="14" rx="2" stroke="#5a5247" stroke-width="1.4" fill="none"/>
-              <path d="M15 17 v-4 a5 5 0 0 1 10 0 v4" stroke="#5a5247" stroke-width="1.4" fill="none"/>
+        <!-- Stage 2 -->
+        <div class="stage-card active-stage" id="stage-card-2">
+          <div class="stage-card-badge" id="stage-2-badge">STAGE 2</div>
+          <div class="stage-thumbnail stage-thumb-2">
+            <svg viewBox="0 0 60 40" class="stage-thumb-svg" aria-hidden="true">
+              <rect x="10" y="7" width="24" height="26" rx="2" stroke="#7e8c9a" stroke-width="1.5" fill="none"/>
+              <circle cx="22" cy="20" r="6" stroke="#c0392b" stroke-width="1.6" fill="none"/>
+              <circle cx="22" cy="20" r="2.2" fill="#e74c3c"/>
+              <path d="M38 12 h12 v16 h-12 z" stroke="#c89b3c" stroke-width="1.4" fill="none"/>
+              <path d="M41 17 h6 M41 21 h6 M41 25 h4" stroke="#c89b3c" stroke-width="1.3" stroke-linecap="round"/>
             </svg>
           </div>
           <div class="stage-info">
             <h3 class="stage-name"><span class="phrase">暴走AIと</span><span class="phrase">閉鎖シェルター</span></h3>
             <p class="stage-desc">
-              <span class="phrase">緊急遮断された</span><span class="phrase">地下研究施設。</span><span class="phrase">端末のコードを復旧し</span><span class="phrase">ポッドを開放せよ。</span>
+              <span class="phrase">管理AIが封鎖した</span><span class="phrase">地下機密シェルター。</span><span class="phrase">電力を制御し論理矛盾で</span><span class="phrase">隔壁を開放せよ。</span>
             </p>
-            <div class="stage-meta">COMING SOON</div>
+            <div class="stage-meta" id="stage-2-meta">未プレイ</div>
           </div>
           <div class="stage-actions">
-            <button class="btn-secondary btn-stage-action" disabled>準備中</button>
+            <button id="btn-play-stage-2" class="btn-primary btn-stage-action">プレイする</button>
+            <button id="btn-restart-stage-2" class="btn-secondary btn-stage-action" style="display: none;">はじめから</button>
           </div>
         </div>
 
@@ -482,6 +486,252 @@
             <rect id="dark-overlay-west" x="0" y="0" width="800" height="500" fill="#050a14" opacity="0" pointer-events="none"/>
           </svg>
         </div>
+        <!-- =========================================================
+             STAGE 2: 暴走AIと閉鎖シェルター (4方向ビュー)
+             ========================================================= -->
+        <!-- Stage 2 北：耐爆気密ハッチ & 管理AI「ARES」メインモニタ -->
+        <div class="direction-view" id="s2-view-north" style="display: none;">
+          <svg class="scene-bg" viewBox="0 0 800 500" id="s2-svg-north">
+            <!-- コンクリート＆鋼鉄シェルター壁面と床 -->
+            <rect x="0" y="0" width="800" height="380" fill="#1b2028"/>
+            <polygon points="0,380 800,380 800,500 0,500" fill="#12161c"/>
+            <polygon points="0,380 800,380 730,345 70,345" fill="#232a34" opacity="0.5"/>
+            <!-- 壁面の鉄骨リブと配管 -->
+            <line x1="80" y1="0" x2="80" y2="380" stroke="#12161b" stroke-width="10"/>
+            <line x1="720" y1="0" x2="720" y2="380" stroke="#12161b" stroke-width="10"/>
+            <rect x="0" y="22" width="800" height="12" fill="#2c3540" stroke="#111" stroke-width="1.5"/>
+            <rect x="0" y="368" width="800" height="12" fill="#b78727" opacity="0.65"/>
+
+            <!-- 左側：管理AI「ARES」メイン監視モニタ & 論理端末 -->
+            <g id="s2-obj-ai-monitor" class="interactive" tabindex="0">
+              <rect x="105" y="85" width="165" height="135" rx="6" fill="#14181f" stroke="#4a5568" stroke-width="4"/>
+              <rect x="115" y="95" width="145" height="95" rx="3" fill="#090c10" stroke="#2d3748" stroke-width="2"/>
+              <!-- AIの監視眼 -->
+              <circle id="s2-ai-eye-ring" cx="187" cy="142" r="30" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-dasharray="6,3"/>
+              <circle id="s2-ai-eye-glow" cx="187" cy="142" r="18" fill="#781818" stroke="#e74c3c" stroke-width="2"/>
+              <circle id="s2-ai-eye-core" cx="187" cy="142" r="8" fill="#ff4d4d"/>
+              <text id="s2-ai-status-text" x="187" y="208" fill="#e74c3c" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">ARES: LOCKDOWN</text>
+              <!-- 下部コンソール -->
+              <polygon points="115,222 255,222 270,255 100,255" fill="#232a34" stroke="#4a5568" stroke-width="2"/>
+              <rect x="125" y="230" width="120" height="16" fill="#11161d" stroke="#c89b3c" stroke-width="1"/>
+            </g>
+
+            <!-- 中央：耐爆気密ハッチ（脱出大扉） -->
+            <g id="s2-obj-hatch" class="interactive" tabindex="0">
+              <!-- 外枠フレーム -->
+              <rect x="295" y="70" width="210" height="310" rx="14" fill="#28303d" stroke="#0f1318" stroke-width="5"/>
+              <!-- 内扉 -->
+              <rect x="312" y="86" width="176" height="294" rx="8" fill="#323c4a" stroke="#191f26" stroke-width="3"/>
+              <!-- 補強リブ -->
+              <line x1="312" y1="165" x2="488" y2="165" stroke="#202731" stroke-width="6"/>
+              <line x1="312" y1="295" x2="488" y2="295" stroke="#202731" stroke-width="6"/>
+              <!-- 3連ロックステータスLEDパネル -->
+              <rect x="332" y="102" width="136" height="46" rx="3" fill="#0d1117" stroke="#4a5568" stroke-width="2"/>
+              <circle id="s2-led-hydraulic" cx="356" cy="118" r="6" fill="#e74c3c"/>
+              <text x="356" y="138" fill="#9e988e" font-family="monospace" font-size="8" text-anchor="middle">HYDR</text>
+              <circle id="s2-led-ailogic" cx="400" cy="118" r="6" fill="#e74c3c"/>
+              <text x="400" y="138" fill="#9e988e" font-family="monospace" font-size="8" text-anchor="middle">LOGIC</text>
+              <circle id="s2-led-master" cx="444" cy="118" r="6" fill="#e74c3c"/>
+              <text x="444" y="138" fill="#9e988e" font-family="monospace" font-size="8" text-anchor="middle">KEY</text>
+              <!-- 円形ホイールハンドル -->
+              <circle cx="400" cy="230" r="38" fill="#1e242d" stroke="#7f8c8d" stroke-width="5"/>
+              <line x1="362" y1="230" x2="438" y2="230" stroke="#7f8c8d" stroke-width="5"/>
+              <line x1="400" y1="192" x2="400" y2="268" stroke="#7f8c8d" stroke-width="5"/>
+              <circle cx="400" cy="230" r="12" fill="#c89b3c" stroke="#111" stroke-width="2"/>
+              <!-- 暗証キーパッド＆マスター鍵穴 -->
+              <rect x="448" y="205" width="30" height="50" rx="2" fill="#12151a" stroke="#c89b3c" stroke-width="1.5"/>
+              <rect x="454" y="212" width="18" height="10" fill="#1f2937"/>
+              <circle cx="463" cy="240" r="5" fill="#d4af37"/>
+            </g>
+
+            <!-- 右側：シェルター環境ステータスボード -->
+            <g id="s2-obj-status-board" class="interactive" tabindex="0">
+              <rect x="535" y="95" width="160" height="150" rx="4" fill="#12161f" stroke="#4a5568" stroke-width="3"/>
+              <text x="615" y="118" fill="#c89b3c" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">SHELTER STATUS</text>
+              <line x1="548" y1="125" x2="682" y2="125" stroke="#323c4a" stroke-width="1.5"/>
+              <text id="s2-board-power" x="552" y="148" fill="#2ecc71" font-family="monospace" font-size="11">PWR : 80/100V</text>
+              <text id="s2-board-temp" x="552" y="172" fill="#3498db" font-family="monospace" font-size="11">TEMP: 18°C</text>
+              <text id="s2-board-fan" x="552" y="196" fill="#2ecc71" font-family="monospace" font-size="11">VENT: ACTIVE</text>
+              <text id="s2-board-cryo" x="552" y="220" fill="#3498db" font-family="monospace" font-size="11">CRYO: -80°C</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Stage 2 東：配電グリッド制御盤 & 波形同調オシロスコープ -->
+        <div class="direction-view" id="s2-view-east" style="display: none;">
+          <svg class="scene-bg" viewBox="0 0 800 500" id="s2-svg-east">
+            <rect x="0" y="0" width="800" height="380" fill="#1d222b"/>
+            <polygon points="0,380 800,380 800,500 0,500" fill="#12161c"/>
+            <rect x="0" y="368" width="800" height="12" fill="#b78727" opacity="0.65"/>
+            <!-- 配管パイプ -->
+            <path d="M 50,150 L 750,150 M 50,165 L 750,165" stroke="#2d3748" stroke-width="6"/>
+
+            <!-- 左側：配電グリッド制御盤（パワージャンクション） -->
+            <g id="s2-obj-power-panel" class="interactive" tabindex="0">
+              <rect x="115" y="75" width="250" height="260" rx="6" fill="#232a34" stroke="#4a5568" stroke-width="4"/>
+              <rect x="130" y="90" width="220" height="42" rx="3" fill="#0b0f14" stroke="#c89b3c" stroke-width="1.5"/>
+              <text x="240" y="107" fill="#9e988e" font-family="monospace" font-size="10" text-anchor="middle">POWER DISTRIBUTION GRID</text>
+              <text id="s2-svg-power-meter" x="240" y="125" fill="#2ecc71" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle">LOAD: 80V / 100V</text>
+              <!-- 4つのブレーカースロット表示 -->
+              <rect x="135" y="145" width="98" height="55" rx="3" fill="#161b22" stroke="#323c4a" stroke-width="1.5"/>
+              <circle id="s2-brk-led-vent" cx="152" cy="164" r="5" fill="#2ecc71"/>
+              <text x="165" y="168" fill="#e2ddd5" font-family="monospace" font-size="10">1.VENT 40V</text>
+              <rect x="247" y="145" width="98" height="55" rx="3" fill="#161b22" stroke="#323c4a" stroke-width="1.5"/>
+              <circle id="s2-brk-led-cryo" cx="264" cy="164" r="5" fill="#2ecc71"/>
+              <text x="277" y="168" fill="#e2ddd5" font-family="monospace" font-size="10">2.CRYO 40V</text>
+              <rect x="135" y="210" width="98" height="55" rx="3" fill="#161b22" stroke="#323c4a" stroke-width="1.5"/>
+              <circle id="s2-brk-led-srv" cx="152" cy="229" r="5" fill="#e74c3c"/>
+              <text x="165" y="233" fill="#e2ddd5" font-family="monospace" font-size="10">3.SERV 60V</text>
+              <rect x="247" y="210" width="98" height="55" rx="3" fill="#161b22" stroke="#323c4a" stroke-width="1.5"/>
+              <circle id="s2-brk-led-aux" cx="264" cy="229" r="5" fill="#e74c3c"/>
+              <text x="277" y="233" fill="#e2ddd5" font-family="monospace" font-size="10">4.AUX  40V</text>
+              <!-- 増設ヒューズスロット -->
+              <rect x="135" y="278" width="210" height="40" rx="3" fill="#12151b" stroke="#c89b3c" stroke-width="1.5" stroke-dasharray="4,2"/>
+              <text id="s2-svg-fuse-status" x="240" y="302" fill="#e67e22" font-family="monospace" font-size="11" text-anchor="middle">EXPANSION FUSE: [EMPTY]</text>
+            </g>
+
+            <!-- 右側：波形同調オシロスコープ -->
+            <g id="s2-obj-oscilloscope" class="interactive" tabindex="0">
+              <rect x="440" y="95" width="245" height="235" rx="6" fill="#202731" stroke="#4a5568" stroke-width="4"/>
+              <!-- CRT波形スクリーン -->
+              <rect x="460" y="112" width="205" height="115" rx="4" fill="#071612" stroke="#2c3e50" stroke-width="3"/>
+              <!-- グリッド線 -->
+              <line x1="460" y1="170" x2="665" y2="170" stroke="#14382d" stroke-width="1"/>
+              <line x1="562" y1="112" x2="562" y2="227" stroke="#14382d" stroke-width="1"/>
+              <path id="s2-svg-osc-wave" d="M 470,170 Q 515,120 562,170 T 655,170" fill="none" stroke="#2ecc71" stroke-width="2.5" style="display: none;"/>
+              <text id="s2-svg-osc-off" x="562" y="174" fill="#4a5568" font-family="monospace" font-size="12" text-anchor="middle">NO SIGNAL (60V REQ)</text>
+              <!-- 3連ダイヤルつまみ -->
+              <circle cx="495" cy="258" r="16" fill="#12161c" stroke="#c89b3c" stroke-width="2"/>
+              <circle cx="562" cy="258" r="16" fill="#12161c" stroke="#c89b3c" stroke-width="2"/>
+              <circle cx="630" cy="258" r="16" fill="#12161c" stroke="#c89b3c" stroke-width="2"/>
+              <!-- 下部格納トレイ -->
+              <rect x="470" y="290" width="185" height="26" rx="2" fill="#14181f" stroke="#6a6255" stroke-width="1.5"/>
+              <text id="s2-svg-osc-tray" x="562" y="307" fill="#9e988e" font-family="monospace" font-size="10" text-anchor="middle">LOCKED TRAY</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Stage 2 南：メインフレーム・サーバーラック & 保守員デスク -->
+        <div class="direction-view" id="s2-view-south" style="display: none;">
+          <svg class="scene-bg" viewBox="0 0 800 500" id="s2-svg-south">
+            <rect x="0" y="0" width="800" height="380" fill="#1a1f27"/>
+            <polygon points="0,380 800,380 800,500 0,500" fill="#12161c"/>
+            <rect x="0" y="368" width="800" height="12" fill="#b78727" opacity="0.65"/>
+
+            <!-- 左側：メインフレーム・サーバーラック & マスターキー保管庫 -->
+            <g id="s2-obj-server-rack" class="interactive" tabindex="0">
+              <rect x="100" y="55" width="235" height="325" rx="4" fill="#151921" stroke="#3b4454" stroke-width="4"/>
+              <!-- サーバーブレード群 -->
+              <rect x="118" y="72" width="199" height="32" fill="#1f2631" stroke="#2d3748" stroke-width="1.5"/>
+              <circle cx="134" cy="88" r="4" fill="#e74c3c"/>
+              <circle cx="150" cy="88" r="4" fill="#f1c40f"/>
+              <rect x="118" y="112" width="199" height="32" fill="#1f2631" stroke="#2d3748" stroke-width="1.5"/>
+              <circle cx="134" cy="128" r="4" fill="#2ecc71"/>
+              <circle cx="150" cy="128" r="4" fill="#2ecc71"/>
+              <!-- サーバーステータスモニタ -->
+              <rect x="118" y="156" width="199" height="90" rx="3" fill="#090d14" stroke="#4a5568" stroke-width="2"/>
+              <text id="s2-svg-srv-line1" x="217" y="188" fill="#7f8c8d" font-family="monospace" font-size="12" font-weight="bold" text-anchor="middle">MAINFRAME: OFFLINE</text>
+              <text id="s2-svg-srv-line2" x="217" y="212" fill="#5a6270" font-family="monospace" font-size="10" text-anchor="middle">POWER 60V REQUIRED</text>
+              <!-- IDカードリーダー & マスターキーボックス -->
+              <rect x="118" y="260" width="199" height="102" rx="3" fill="#202731" stroke="#c89b3c" stroke-width="2"/>
+              <rect x="132" y="275" width="50" height="70" rx="2" fill="#11151c" stroke="#4a5568" stroke-width="1.5"/>
+              <line x1="145" y1="285" x2="145" y2="335" stroke="#3498db" stroke-width="3"/>
+              <text x="157" y="314" fill="#9e988e" font-family="monospace" font-size="8">ID</text>
+              <rect x="196" y="275" width="106" height="70" rx="3" fill="#14181f" stroke="#6a6255" stroke-width="2"/>
+              <text id="s2-svg-keybox-text" x="249" y="314" fill="#e74c3c" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">KEYBOX: LOCKED</text>
+            </g>
+
+            <!-- 右側：保守員の金属製ワークデスク -->
+            <g id="s2-obj-desk-group">
+              <!-- デスク本体 -->
+              <rect x="415" y="235" width="290" height="18" fill="#323b48" stroke="#151921" stroke-width="2"/>
+              <rect x="430" y="253" width="20" height="127" fill="#232a34"/>
+              <rect x="670" y="253" width="20" height="127" fill="#232a34"/>
+
+              <!-- 机上のAI保守マニュアル（バインダー） -->
+              <g id="s2-obj-manual" class="interactive" tabindex="0">
+                <polygon points="460,235 555,235 540,198 475,198" fill="#c89b3c" stroke="#4a443b" stroke-width="2"/>
+                <polygon points="468,231 548,231 536,203 479,203" fill="#e2ddd5"/>
+                <text x="508" y="222" fill="#1e2024" font-family="monospace" font-size="9" font-weight="bold" text-anchor="middle">ARES MANUAL</text>
+              </g>
+
+              <!-- デスク引き出し（工具入れ） -->
+              <g id="s2-obj-s2-drawer" class="interactive" tabindex="0">
+                <rect x="460" y="258" width="200" height="52" fill="#262e3a" stroke="#4a5568" stroke-width="2"/>
+                <rect x="535" y="278" width="50" height="12" rx="2" fill="#c89b3c" stroke="#1a1d24" stroke-width="1.5"/>
+                <text x="560" y="304" fill="#9e988e" font-family="monospace" font-size="9" text-anchor="middle">TOOL DRAWER</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Stage 2 西：クライオロッカー・換気ダクト・火災温度センサー -->
+        <div class="direction-view" id="s2-view-west" style="display: none;">
+          <svg class="scene-bg" viewBox="0 0 800 500" id="s2-svg-west">
+            <rect x="0" y="0" width="800" height="380" fill="#1c2129"/>
+            <polygon points="0,380 800,380 800,500 0,500" fill="#12161c"/>
+            <rect x="0" y="368" width="800" height="12" fill="#b78727" opacity="0.65"/>
+
+            <!-- 左側：極低温保管庫（クライオロッカー） -->
+            <g id="s2-obj-cryo-locker" class="interactive" tabindex="0">
+              <rect x="90" y="70" width="190" height="310" rx="6" fill="#26313f" stroke="#4a5568" stroke-width="4"/>
+              <rect x="112" y="95" width="146" height="190" rx="4" fill="#0d1b2a" stroke="#3498db" stroke-width="2"/>
+              <!-- カプセル（内部） -->
+              <g id="s2-svg-cryo-capsule">
+                <rect x="165" y="160" width="40" height="75" rx="10" fill="#d4af37" stroke="#f1c40f" stroke-width="2"/>
+                <rect x="162" y="188" width="46" height="16" fill="#2c3e50"/>
+              </g>
+              <!-- 凍結フロストオーバーレイ -->
+              <g id="s2-svg-cryo-frost">
+                <rect x="114" y="97" width="142" height="186" fill="#85c1e9" opacity="0.65"/>
+                <path d="M 130,120 L 230,250 M 230,120 L 130,250 M 185,105 L 185,270" stroke="#ebf5fb" stroke-width="3" opacity="0.8"/>
+                <text x="185" y="195" fill="#1b4f72" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle">FROZEN -80°C</text>
+              </g>
+              <rect x="125" y="305" width="120" height="32" rx="3" fill="#11161d" stroke="#4a5568" stroke-width="1.5"/>
+              <text id="s2-svg-cryo-label" x="185" y="325" fill="#3498db" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">CRYO: LOCKED</text>
+            </g>
+
+            <!-- 中央：大型換気ダクト＆タービンファン -->
+            <g id="s2-obj-vent-duct" class="interactive" tabindex="0">
+              <rect x="330" y="110" width="165" height="165" rx="8" fill="#161a20" stroke="#4a5568" stroke-width="4"/>
+              <circle cx="412" cy="192" r="65" fill="#0b0d11" stroke="#2d3748" stroke-width="3"/>
+              <!-- 奥に見えるIDカード -->
+              <rect id="s2-svg-duct-card" x="398" y="182" width="28" height="20" rx="2" fill="#3498db" stroke="#ffffff" stroke-width="1.5"/>
+              <!-- ファンブレード -->
+              <g id="s2-svg-fan-blades">
+                <circle cx="412" cy="192" r="14" fill="#4a5568"/>
+                <path d="M 412,132 L 426,180 L 398,180 Z" fill="#7f8c8d"/>
+                <path d="M 412,252 L 426,204 L 398,204 Z" fill="#7f8c8d"/>
+                <path d="M 352,192 L 400,178 L 400,206 Z" fill="#7f8c8d"/>
+                <path d="M 472,192 L 424,178 L 424,206 Z" fill="#7f8c8d"/>
+              </g>
+              <!-- ダクトの格子カバー（ネジ留め） -->
+              <g id="s2-svg-duct-grille">
+                <line x1="345" y1="145" x2="480" y2="145" stroke="#95a5a6" stroke-width="4"/>
+                <line x1="345" y1="175" x2="480" y2="175" stroke="#95a5a6" stroke-width="4"/>
+                <line x1="345" y1="205" x2="480" y2="205" stroke="#95a5a6" stroke-width="4"/>
+                <line x1="345" y1="235" x2="480" y2="235" stroke="#95a5a6" stroke-width="4"/>
+                <circle cx="344" cy="124" r="4" fill="#c89b3c"/>
+                <circle cx="480" cy="124" r="4" fill="#c89b3c"/>
+                <circle cx="344" cy="260" r="4" fill="#c89b3c"/>
+                <circle cx="480" cy="260" r="4" fill="#c89b3c"/>
+              </g>
+              <text id="s2-svg-fan-status" x="412" y="296" fill="#2ecc71" font-family="monospace" font-size="11" text-anchor="middle">FAN: HIGH SPEED</text>
+            </g>
+
+            <!-- 右側：壁面火災温度センサー -->
+            <g id="s2-obj-temp-sensor" class="interactive" tabindex="0">
+              <rect x="555" y="120" width="150" height="175" rx="6" fill="#232a34" stroke="#c0392b" stroke-width="3"/>
+              <text x="630" y="144" fill="#e2ddd5" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">FIRE SENSOR (RULE 0)</text>
+              <rect x="575" y="155" width="110" height="42" rx="3" fill="#090d12" stroke="#4a5568" stroke-width="2"/>
+              <text id="s2-svg-temp-readout" x="630" y="182" fill="#3498db" font-family="monospace" font-size="16" font-weight="bold" text-anchor="middle">18.0 °C</text>
+              <!-- 感熱バルブ -->
+              <circle id="s2-svg-sensor-bulb" cx="630" cy="238" r="22" fill="#2c3e50" stroke="#c89b3c" stroke-width="3"/>
+              <circle id="s2-svg-sensor-core" cx="630" cy="238" r="10" fill="#3498db"/>
+              <text x="630" y="280" fill="#9e988e" font-family="monospace" font-size="9" text-anchor="middle">TRIGGERS AT &gt;= 75°C</text>
+            </g>
+          </svg>
+        </div>
       </div>
 
       <!-- メッセージバー -->
@@ -540,8 +790,8 @@
           <path d="M25 24 a6 6 0 1 0 0 12 a6 6 0 0 0 0 -12 m4 6 h14 m-4 0 v4 m4 -4 v4" stroke="#c89b3c" stroke-width="2" fill="none" stroke-linecap="round"/>
         </svg>
       </div>
-      <p><span class="phrase">扉の重い鍵が開き、</span><span class="phrase">冷涼な夜風が吹き込んできた。</span></p>
-      <p class="congrats-text"><span class="phrase">書斎の謎をすべて解き明かし、</span><span class="phrase">脱出に成功しました。</span></p>
+      <p id="clear-lead-text"><span class="phrase">扉の重い鍵が開き、</span><span class="phrase">冷涼な夜風が吹き込んできた。</span></p>
+      <p class="congrats-text" id="clear-sub-text"><span class="phrase">書斎の謎をすべて解き明かし、</span><span class="phrase">脱出に成功しました。</span></p>
       <div class="clear-time" id="clear-time-display">TIME 00:00</div>
       <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
         <button id="btn-play-again" class="btn-primary">もう一度遊ぶ</button>

@@ -4,7 +4,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  const SAVE_KEY = 'escape_game_stage1_save_v2';
+  const SAVE_KEY_1 = 'escape_game_stage1_save_v2';
+  const SAVE_KEY_2 = 'escape_game_stage2_save_v1';
+  let currentStage = 1;
 
   // --- アイテム定義 ---
   const ITEMS = {
@@ -67,6 +69,55 @@ document.addEventListener('DOMContentLoaded', () => {
       name: '賢者の真鍮鍵',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="15" cy="15" r="8" fill="#3498db" stroke="#f1c40f" stroke-width="3.5"/><line x1="21" y1="21" x2="33" y2="33" stroke="#f1c40f" stroke-width="4.5" stroke-linecap="round"/><line x1="29" y1="29" x2="33" y2="25" stroke="#f1c40f" stroke-width="3"/><line x1="25" y1="25" x2="29" y2="21" stroke="#f1c40f" stroke-width="3"/></svg>`,
       desc: '<span class="phrase">鍵身に青玉紋章を結合して</span><span class="phrase">完成した真鍮の大鍵。</span><span class="phrase">大扉の頑丈な鍵穴に適合する！</span>'
+    },
+    // --- Stage 2 Items ---
+    s2_driver: {
+      id: 's2_driver',
+      name: '絶縁ドライバー',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="16" y="4" width="8" height="16" fill="#e67e22" stroke="#d35400" stroke-width="1.5" rx="2"/><line x1="20" y1="20" x2="20" y2="34" stroke="#95a5a6" stroke-width="3" stroke-linecap="round"/><line x1="17" y1="34" x2="23" y2="34" stroke="#bdc3c7" stroke-width="2"/></svg>`,
+      desc: '<span class="phrase">保守員デスクから見つけた</span><span class="phrase">高電圧対応の絶縁ドライバー。</span><span class="phrase">ダクトのネジ外しや</span><span class="phrase">カプセルのこじ開けに使える。</span>'
+    },
+    s2_frozen_pack: {
+      id: 's2_frozen_pack',
+      name: '密閉冷凍カプセル',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="12" y="7" width="16" height="26" rx="5" fill="#d4af37" stroke="#f1c40f" stroke-width="2"/><rect x="10" y="17" width="20" height="6" fill="#2c3e50"/><circle cx="15" cy="20" r="1.5" fill="#bdc3c7"/><circle cx="25" cy="20" r="1.5" fill="#bdc3c7"/></svg>`,
+      desc: '<span class="phrase">解凍された保管庫から取り出した</span><span class="phrase">金属製カプセル。</span><span class="phrase">中央のクランプがネジ留めされている。</span><span class="phrase">【調べる】で工具を使って</span><span class="phrase">分解できそうだ。</span>'
+    },
+    s2_fuse: {
+      id: 's2_fuse',
+      name: '高圧増設ヒューズ(40V)',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="8" y="14" width="24" height="12" rx="2" fill="#1b2631" stroke="#c89b3c" stroke-width="2"/><line x1="12" y1="20" x2="28" y2="20" stroke="#2ecc71" stroke-width="2.5"/><rect x="5" y="16" width="4" height="8" fill="#d4af37"/><rect x="31" y="16" width="4" height="8" fill="#d4af37"/></svg>`,
+      desc: '<span class="phrase">カプセルに入っていた大容量ヒューズ。</span><span class="phrase">配電グリッド盤の増設スロットに</span><span class="phrase">装着すれば、最大電力を</span><span class="phrase">100Vから140Vへ拡張できる。</span>'
+    },
+    s2_thermal_gel: {
+      id: 's2_thermal_gel',
+      name: '高熱反応カートリッジ',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="13" y="10" width="14" height="22" rx="3" fill="#c0392b" stroke="#e74c3c" stroke-width="2"/><path d="M20 14 c3 4 -3 6 0 10" stroke="#f1c40f" stroke-width="2" fill="none"/><rect x="16" y="6" width="8" height="4" fill="#7f8c8d"/></svg>`,
+      desc: '<span class="phrase">カプセルから出てきた</span><span class="phrase">テルミット燃料カートリッジ。</span><span class="phrase">単体では点火できない。</span><span class="phrase">【調べる】で着火ユニットと</span><span class="phrase">結合できそうだ。</span>'
+    },
+    s2_igniter: {
+      id: 's2_igniter',
+      name: '圧電着火ユニット',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><path d="M12 28 L18 12 L28 12 L28 20 L20 20 L18 28 Z" fill="#34495e" stroke="#95a5a6" stroke-width="2"/><line x1="28" y1="15" x2="34" y2="15" stroke="#f1c40f" stroke-width="2.5"/></svg>`,
+      desc: '<span class="phrase">オシロスコープの格納トレイから</span><span class="phrase">現れた高出力着火ノズル。</span><span class="phrase">【調べる】で燃料カートリッジと</span><span class="phrase">結合できる。</span>'
+    },
+    s2_heat_torch: {
+      id: 's2_heat_torch',
+      name: '小型サーマルトーチ',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="12" y="16" width="12" height="18" rx="2" fill="#c0392b" stroke="#e74c3c" stroke-width="1.5"/><path d="M14 16 L18 8 L26 8 L26 14 L20 16 Z" fill="#34495e" stroke="#bdc3c7" stroke-width="1.5"/><path d="M27 11 Q34 8 36 11 Q34 14 27 11" fill="#f39c12"/></svg>`,
+      desc: '<span class="phrase">燃料カートリッジと着火器を結合した</span><span class="phrase">高熱バーナートーチ。</span><span class="phrase">壁面の火災温度センサーを</span><span class="phrase">一気に75℃以上へ加熱できる！</span>'
+    },
+    s2_id_card: {
+      id: 's2_id_card',
+      name: '主任研究員のIDカード',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="6" y="11" width="28" height="18" rx="2" fill="#1b4f72" stroke="#3498db" stroke-width="2"/><line x1="10" y1="16" x2="22" y2="16" stroke="#fff" stroke-width="2"/><line x1="10" y1="21" x2="30" y2="21" stroke="#85c1e9" stroke-width="1.5"/><rect x="25" y="14" width="5" height="5" fill="#f1c40f"/></svg>`,
+      desc: '<span class="phrase">停止した換気ダクトの奥から回収した</span><span class="phrase">セキュリティカード。</span><span class="phrase">裏面に『共振周波数: 120 Hz』と</span><span class="phrase">メモされている。</span>'
+    },
+    s2_override_key: {
+      id: 's2_override_key',
+      name: '物理マスターキー',
+      icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><polygon points="14,8 22,8 25,14 22,20 14,20 11,14" fill="#2c3e50" stroke="#c89b3c" stroke-width="2.5"/><circle cx="18" cy="14" r="3" fill="#3498db"/><line x1="23" y1="18" x2="33" y2="28" stroke="#c89b3c" stroke-width="4" stroke-linecap="round"/><line x1="28" y1="28" x2="32" y2="24" stroke="#c89b3c" stroke-width="3"/></svg>`,
+      desc: '<span class="phrase">サーバーラックの保管庫から入手した</span><span class="phrase">対シェルター隔壁用の物理鍵。</span><span class="phrase">耐爆ハッチの最終マスター鍵穴に</span><span class="phrase">適合する！</span>'
     }
   };
 
@@ -119,6 +170,52 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  function createStage2InitialState() {
+    return {
+      stage: 2,
+      currentDirection: 0,
+      directions: [
+        { name: '正面 (北)', id: 's2-view-north' },
+        { name: '右側 (東)', id: 's2-view-east' },
+        { name: '後方 (南)', id: 's2-view-south' },
+        { name: '左側 (西)', id: 's2-view-west' }
+      ],
+      inventory: [],
+      selectedItem: null,
+
+      hasS2Driver: false,
+      fuseInserted: false,
+      powerVent: true,
+      powerCryo: true,
+      powerServer: false,
+      powerAux: false,
+      hasFrozenPack: false,
+      packDisassembled: false,
+      ductGrilleRemoved: false,
+      hasIdCard: false,
+      oscFreq: 40,
+      oscPhase: 0,
+      oscAmp: 1,
+      oscSolved: false,
+      hasIgniter: false,
+      torchAssembled: false,
+      sensorHeated: false,
+      keyboxUnlocked: false,
+      hasOverrideKey: false,
+      aiCondExt: 0,
+      aiCondInt: 0,
+      aiDirective: 0,
+      aiSafeMode: false,
+      hatchCode: [0, 0, 0, 0],
+      hatchCodeUnlocked: false,
+      hatchKeyUnlocked: false,
+      gameCleared: false,
+
+      startTime: Date.now(),
+      elapsedBeforeSave: 0
+    };
+  }
+
   let state = createInitialState();
 
   // --- DOM要素 ---
@@ -128,6 +225,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const elBtnRestartStage1 = document.getElementById('btn-restart-stage-1');
   const elStage1Badge = document.getElementById('stage-1-badge');
   const elStage1Meta = document.getElementById('stage-1-meta');
+  const elBtnPlayStage2 = document.getElementById('btn-play-stage-2');
+  const elBtnRestartStage2 = document.getElementById('btn-restart-stage-2');
+  const elStage2Badge = document.getElementById('stage-2-badge');
+  const elStage2Meta = document.getElementById('stage-2-meta');
+  const elGameStageTitle = document.getElementById('game-stage-title');
   const elBtnClearToMenu = document.getElementById('btn-clear-to-menu');
 
   // 設定関連DOM要素
@@ -164,6 +266,48 @@ document.addEventListener('DOMContentLoaded', () => {
       const now = Date.now();
       const currentSessionTime = state.startTime ? (now - state.startTime) : 0;
       const totalElapsed = (state.elapsedBeforeSave || 0) + currentSessionTime;
+
+      if (currentStage === 2) {
+        const saveData2 = {
+          version: 1,
+          savedAt: now,
+          elapsedMs: totalElapsed,
+          state: {
+            currentDirection: state.currentDirection,
+            inventoryIds: state.inventory.map(i => i.id),
+            selectedItem: state.selectedItem,
+            hasS2Driver: state.hasS2Driver,
+            fuseInserted: state.fuseInserted,
+            powerVent: state.powerVent,
+            powerCryo: state.powerCryo,
+            powerServer: state.powerServer,
+            powerAux: state.powerAux,
+            hasFrozenPack: state.hasFrozenPack,
+            packDisassembled: state.packDisassembled,
+            ductGrilleRemoved: state.ductGrilleRemoved,
+            hasIdCard: state.hasIdCard,
+            oscFreq: state.oscFreq,
+            oscPhase: state.oscPhase,
+            oscAmp: state.oscAmp,
+            oscSolved: state.oscSolved,
+            hasIgniter: state.hasIgniter,
+            torchAssembled: state.torchAssembled,
+            sensorHeated: state.sensorHeated,
+            keyboxUnlocked: state.keyboxUnlocked,
+            hasOverrideKey: state.hasOverrideKey,
+            aiCondExt: state.aiCondExt,
+            aiCondInt: state.aiCondInt,
+            aiDirective: state.aiDirective,
+            aiSafeMode: state.aiSafeMode,
+            hatchCode: state.hatchCode,
+            hatchCodeUnlocked: state.hatchCodeUnlocked,
+            hatchKeyUnlocked: state.hatchKeyUnlocked,
+            gameCleared: state.gameCleared
+          }
+        };
+        localStorage.setItem(SAVE_KEY_2, JSON.stringify(saveData2));
+        return;
+      }
 
       const saveData = {
         version: 2,
@@ -205,15 +349,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
 
-      localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+      localStorage.setItem(SAVE_KEY_1, JSON.stringify(saveData));
     } catch (e) {
       console.warn('Failed to save game:', e);
     }
   }
 
-  function getSavedData() {
+  function getSavedData(stageNum = currentStage) {
     try {
-      const raw = localStorage.getItem(SAVE_KEY);
+      const key = stageNum === 2 ? SAVE_KEY_2 : SAVE_KEY_1;
+      const raw = localStorage.getItem(key);
       if (!raw) return null;
       return JSON.parse(raw);
     } catch (e) {
@@ -263,7 +408,203 @@ document.addEventListener('DOMContentLoaded', () => {
     updateRoomDomState();
   }
 
+  function applyStage2SavedState(savedData) {
+    state = createStage2InitialState();
+    if (!savedData || !savedData.state) return;
+    const s = savedData.state;
+    state.currentDirection = s.currentDirection || 0;
+    state.inventory = (s.inventoryIds || []).map(id => ITEMS[id]).filter(Boolean);
+    state.selectedItem = s.selectedItem || null;
+    state.hasS2Driver = !!s.hasS2Driver;
+    state.fuseInserted = !!s.fuseInserted;
+    state.powerVent = s.powerVent !== false;
+    state.powerCryo = s.powerCryo !== false;
+    state.powerServer = !!s.powerServer;
+    state.powerAux = !!s.powerAux;
+    state.hasFrozenPack = !!s.hasFrozenPack;
+    state.packDisassembled = !!s.packDisassembled;
+    state.ductGrilleRemoved = !!s.ductGrilleRemoved;
+    state.hasIdCard = !!s.hasIdCard;
+    state.oscFreq = s.oscFreq || 40;
+    state.oscPhase = s.oscPhase || 0;
+    state.oscAmp = s.oscAmp || 1;
+    state.oscSolved = !!s.oscSolved;
+    state.hasIgniter = !!s.hasIgniter;
+    state.torchAssembled = !!s.torchAssembled;
+    state.sensorHeated = !!s.sensorHeated;
+    state.keyboxUnlocked = !!s.keyboxUnlocked;
+    state.hasOverrideKey = !!s.hasOverrideKey;
+    state.aiCondExt = s.aiCondExt || 0;
+    state.aiCondInt = s.aiCondInt || 0;
+    state.aiDirective = s.aiDirective || 0;
+    state.aiSafeMode = !!s.aiSafeMode;
+    state.hatchCode = s.hatchCode || [0, 0, 0, 0];
+    state.hatchCodeUnlocked = !!s.hatchCodeUnlocked;
+    state.hatchKeyUnlocked = !!s.hatchKeyUnlocked;
+    state.gameCleared = !!s.gameCleared;
+    state.elapsedBeforeSave = savedData.elapsedMs || 0;
+    state.startTime = Date.now();
+    updateRoomDomState();
+  }
+
+  function getStage2UsedPower() {
+    let used = 0;
+    if (state.powerVent) used += 40;
+    if (state.powerCryo) used += 40;
+    if (state.powerServer) used += 60;
+    if (state.powerAux) used += 40;
+    return used;
+  }
+
+  function getStage2MaxPower() {
+    return state.fuseInserted ? 140 : 100;
+  }
+
+  function updateStage2DomState() {
+    document.body.classList.remove('dark-mode');
+    const usedPwr = getStage2UsedPower();
+    const maxPwr = getStage2MaxPower();
+
+    // 北：AIモニタ・ハッチLED・環境ステータスボード
+    const eyeRing = document.getElementById('s2-ai-eye-ring');
+    const eyeGlow = document.getElementById('s2-ai-eye-glow');
+    const eyeCore = document.getElementById('s2-ai-eye-core');
+    const aiText = document.getElementById('s2-ai-status-text');
+    if (eyeRing && eyeGlow && eyeCore && aiText) {
+      if (state.aiSafeMode) {
+        eyeRing.setAttribute('stroke', '#3498db');
+        eyeGlow.setAttribute('fill', '#1b4f72');
+        eyeGlow.setAttribute('stroke', '#5dade2');
+        eyeCore.setAttribute('fill', '#85c1e9');
+        aiText.textContent = 'ARES: SAFE MODE';
+        aiText.setAttribute('fill', '#3498db');
+      } else {
+        eyeRing.setAttribute('stroke', '#c0392b');
+        eyeGlow.setAttribute('fill', '#781818');
+        eyeGlow.setAttribute('stroke', '#e74c3c');
+        eyeCore.setAttribute('fill', '#ff4d4d');
+        aiText.textContent = 'ARES: LOCKDOWN';
+        aiText.setAttribute('fill', '#e74c3c');
+      }
+    }
+
+    const ledHydr = document.getElementById('s2-led-hydraulic');
+    const ledLogic = document.getElementById('s2-led-ailogic');
+    const ledMaster = document.getElementById('s2-led-master');
+    if (ledHydr) ledHydr.setAttribute('fill', state.sensorHeated ? '#2ecc71' : '#e74c3c');
+    if (ledLogic) ledLogic.setAttribute('fill', state.aiSafeMode ? '#2ecc71' : '#e74c3c');
+    if (ledMaster) ledMaster.setAttribute('fill', (state.hatchCodeUnlocked && state.hatchKeyUnlocked) ? '#2ecc71' : '#e74c3c');
+
+    const brdPwr = document.getElementById('s2-board-power');
+    const brdTmp = document.getElementById('s2-board-temp');
+    const brdFan = document.getElementById('s2-board-fan');
+    const brdCryo = document.getElementById('s2-board-cryo');
+    if (brdPwr) brdPwr.textContent = `PWR : ${usedPwr}/${maxPwr}V`;
+    if (brdTmp) {
+      brdTmp.textContent = state.sensorHeated ? 'TEMP: 85°C (FIRE)' : 'TEMP: 18°C';
+      brdTmp.setAttribute('fill', state.sensorHeated ? '#e74c3c' : '#3498db');
+    }
+    if (brdFan) {
+      brdFan.textContent = state.powerVent ? 'VENT: ACTIVE' : 'VENT: STOPPED';
+      brdFan.setAttribute('fill', state.powerVent ? '#2ecc71' : '#e67e22');
+    }
+    if (brdCryo) {
+      brdCryo.textContent = state.powerCryo ? 'CRYO: -80°C' : 'CRYO: THAWED';
+      brdCryo.setAttribute('fill', state.powerCryo ? '#3498db' : '#2ecc71');
+    }
+
+    // 東：配電盤＆オシロスコープ
+    const pwrMeter = document.getElementById('s2-svg-power-meter');
+    if (pwrMeter) pwrMeter.textContent = `LOAD: ${usedPwr}V / ${maxPwr}V`;
+    const ledVent = document.getElementById('s2-brk-led-vent');
+    const ledCryo = document.getElementById('s2-brk-led-cryo');
+    const ledSrv = document.getElementById('s2-brk-led-srv');
+    const ledAux = document.getElementById('s2-brk-led-aux');
+    if (ledVent) ledVent.setAttribute('fill', state.powerVent ? '#2ecc71' : '#e74c3c');
+    if (ledCryo) ledCryo.setAttribute('fill', state.powerCryo ? '#2ecc71' : '#e74c3c');
+    if (ledSrv) ledSrv.setAttribute('fill', state.powerServer ? '#2ecc71' : '#e74c3c');
+    if (ledAux) ledAux.setAttribute('fill', state.powerAux ? '#2ecc71' : '#e74c3c');
+
+    const fuseTxt = document.getElementById('s2-svg-fuse-status');
+    if (fuseTxt) {
+      fuseTxt.textContent = state.fuseInserted ? 'EXPANSION FUSE: [+40V ACTIVE]' : 'EXPANSION FUSE: [EMPTY]';
+      fuseTxt.setAttribute('fill', state.fuseInserted ? '#2ecc71' : '#e67e22');
+    }
+
+    const oscWave = document.getElementById('s2-svg-osc-wave');
+    const oscOff = document.getElementById('s2-svg-osc-off');
+    const oscTray = document.getElementById('s2-svg-osc-tray');
+    if (oscWave && oscOff) {
+      oscWave.style.display = state.powerServer ? 'block' : 'none';
+      oscOff.style.display = state.powerServer ? 'none' : 'block';
+    }
+    if (oscTray) {
+      oscTray.textContent = state.oscSolved ? 'PIN: 7409 [OPEN]' : 'LOCKED TRAY';
+      oscTray.setAttribute('fill', state.oscSolved ? '#2ecc71' : '#9e988e');
+    }
+
+    // 南：サーバーラック
+    const srvL1 = document.getElementById('s2-svg-srv-line1');
+    const srvL2 = document.getElementById('s2-svg-srv-line2');
+    const keyboxTxt = document.getElementById('s2-svg-keybox-text');
+    if (srvL1 && srvL2) {
+      if (!state.powerServer) {
+        srvL1.textContent = 'MAINFRAME: OFFLINE';
+        srvL1.setAttribute('fill', '#7f8c8d');
+        srvL2.textContent = 'POWER 60V REQUIRED';
+      } else if (!state.powerVent) {
+        srvL1.textContent = 'WARNING: OVERHEAT';
+        srvL1.setAttribute('fill', '#e67e22');
+        srvL2.textContent = 'VENT FAN (40V) REQ';
+      } else {
+        srvL1.textContent = 'ONLINE / PHASE: 180°';
+        srvL1.setAttribute('fill', '#2ecc71');
+        srvL2.textContent = state.powerAux ? 'FULL 140V: READY' : 'AUX 40V REQ FOR KEY';
+      }
+    }
+    if (keyboxTxt) {
+      keyboxTxt.textContent = state.keyboxUnlocked ? 'KEYBOX: OPEN' : 'KEYBOX: LOCKED';
+      keyboxTxt.setAttribute('fill', state.keyboxUnlocked ? '#2ecc71' : '#e74c3c');
+    }
+
+    // 西：クライオロッカー・換気ダクト・温度センサー
+    const cryoFrost = document.getElementById('s2-svg-cryo-frost');
+    const cryoCap = document.getElementById('s2-svg-cryo-capsule');
+    const cryoLbl = document.getElementById('s2-svg-cryo-label');
+    if (cryoFrost) cryoFrost.style.display = state.powerCryo ? 'block' : 'none';
+    if (cryoCap) cryoCap.style.display = state.hasFrozenPack ? 'none' : 'block';
+    if (cryoLbl) {
+      cryoLbl.textContent = state.powerCryo ? 'CRYO: -80°C' : (state.hasFrozenPack ? 'CRYO: EMPTY' : 'CRYO: UNLOCKED');
+      cryoLbl.setAttribute('fill', state.powerCryo ? '#3498db' : '#2ecc71');
+    }
+
+    const ductGrille = document.getElementById('s2-svg-duct-grille');
+    const ductCard = document.getElementById('s2-svg-duct-card');
+    const fanStat = document.getElementById('s2-svg-fan-status');
+    if (ductGrille) ductGrille.style.display = state.ductGrilleRemoved ? 'none' : 'block';
+    if (ductCard) ductCard.style.display = state.hasIdCard ? 'none' : 'block';
+    if (fanStat) {
+      fanStat.textContent = state.powerVent ? 'FAN: HIGH SPEED' : 'FAN: STOPPED';
+      fanStat.setAttribute('fill', state.powerVent ? '#2ecc71' : '#e67e22');
+    }
+
+    const tmpRead = document.getElementById('s2-svg-temp-readout');
+    const tmpCore = document.getElementById('s2-svg-sensor-core');
+    if (tmpRead) {
+      tmpRead.textContent = state.sensorHeated ? '85.0 °C' : '18.0 °C';
+      tmpRead.setAttribute('fill', state.sensorHeated ? '#e74c3c' : '#3498db');
+    }
+    if (tmpCore) tmpCore.setAttribute('fill', state.sensorHeated ? '#e74c3c' : '#3498db');
+
+    updateViewDirection();
+    renderInventory();
+  }
+
   function updateRoomDomState() {
+    if (currentStage === 2) {
+      updateStage2DomState();
+      return;
+    }
     // 照明モードのクラス
     if (state.isLightOn) {
       document.body.classList.remove('dark-mode');
@@ -375,43 +716,74 @@ document.addEventListener('DOMContentLoaded', () => {
     updateMenuScreenInfo();
   }
 
-  function updateMenuScreenInfo() {
-    const saved = getSavedData();
+  function updateCardUI(stageNum, elBadge, elMeta, elBtnPlay, elBtnRestart) {
+    if (!elBadge || !elMeta || !elBtnPlay || !elBtnRestart) return;
+    const saved = getSavedData(stageNum);
     if (!saved) {
-      elStage1Badge.textContent = 'STAGE 1';
-      elStage1Badge.className = 'stage-card-badge';
-      elStage1Meta.textContent = '未プレイ';
-      elBtnPlayStage1.textContent = 'プレイする';
-      elBtnRestartStage1.style.display = 'none';
+      elBadge.textContent = `STAGE ${stageNum}`;
+      elBadge.className = 'stage-card-badge';
+      elMeta.textContent = '未プレイ';
+      elBtnPlay.textContent = 'プレイする';
+      elBtnRestart.style.display = 'none';
     } else if (saved.state.gameCleared) {
-      elStage1Badge.textContent = 'CLEARED ⭐';
-      elStage1Badge.className = 'stage-card-badge cleared';
+      elBadge.textContent = 'CLEARED';
+      elBadge.className = 'stage-card-badge cleared';
       const mins = Math.floor(saved.elapsedMs / 60000);
       const secs = Math.floor((saved.elapsedMs % 60000) / 1000);
-      elStage1Meta.textContent = `クリア済み (タイム: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')})`;
-      elBtnPlayStage1.textContent = 'もう一度プレイ';
-      elBtnRestartStage1.style.display = 'none';
+      elMeta.textContent = `クリア済み (タイム: ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')})`;
+      elBtnPlay.textContent = 'もう一度プレイ';
+      elBtnRestart.style.display = 'none';
     } else {
-      elStage1Badge.textContent = '進行中';
-      elStage1Badge.className = 'stage-card-badge saved';
+      elBadge.textContent = '進行中';
+      elBadge.className = 'stage-card-badge saved';
       const itemsCount = (saved.state.inventoryIds || []).length;
-      elStage1Meta.textContent = `セーブデータあり（アイテム: ${itemsCount}個）`;
-      elBtnPlayStage1.textContent = 'つづきから';
-      elBtnRestartStage1.style.display = 'block';
+      elMeta.textContent = `セーブデータあり（アイテム: ${itemsCount}個）`;
+      elBtnPlay.textContent = 'つづきから';
+      elBtnRestart.style.display = 'block';
     }
   }
 
-  function launchStage(isNewGame) {
+  function updateMenuScreenInfo() {
+    updateCardUI(1, elStage1Badge, elStage1Meta, elBtnPlayStage1, elBtnRestartStage1);
+    updateCardUI(2, elStage2Badge, elStage2Meta, elBtnPlayStage2, elBtnRestartStage2);
+  }
+
+  function launchStage(isNewGame, stageNum = currentStage) {
+    currentStage = stageNum;
     soundManager.playClick();
+
+    if (stageNum === 2) {
+      if (elGameStageTitle) elGameStageTitle.textContent = '暴走AIと閉鎖シェルター';
+      if (isNewGame) {
+        state = createStage2InitialState();
+        try { localStorage.removeItem(SAVE_KEY_2); } catch (e) {}
+        updateRoomDomState();
+      } else {
+        const saved2 = getSavedData(2);
+        if (saved2) {
+          applyStage2SavedState(saved2);
+        } else {
+          state = createStage2InitialState();
+          updateRoomDomState();
+        }
+      }
+      elMenuScreen.style.display = 'none';
+      elGameContainer.style.display = 'flex';
+      setMessage('管理AI「ARES」により地下シェルターが完全封鎖された。/電力を制御し、論理ロックを破って脱出しよう。');
+      return;
+    }
+
+    if (elGameStageTitle) elGameStageTitle.textContent = '古びた書斎と賢者の鍵';
     if (isNewGame) {
       state = createInitialState();
       try {
-        localStorage.removeItem(SAVE_KEY);
+        localStorage.removeItem(SAVE_KEY_1);
       } catch (e) {}
       updateRoomDomState();
     } else {
-      const saved = getSavedData();
+      const saved = getSavedData(1);
       if (saved) {
+        state = createInitialState();
         applySavedState(saved);
       } else {
         state = createInitialState();
@@ -447,12 +819,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateViewDirection() {
+    const allViewIds = [
+      'view-north', 'view-east', 'view-south', 'view-west',
+      's2-view-north', 's2-view-east', 's2-view-south', 's2-view-west'
+    ];
+    allViewIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
     state.directions.forEach((dir, idx) => {
       const el = document.getElementById(dir.id);
-      if (idx === state.currentDirection) {
+      if (el && idx === state.currentDirection) {
         el.style.display = 'block';
-      } else {
-        el.style.display = 'none';
       }
     });
     elDirectionText.textContent = state.directions[state.currentDirection].name;
@@ -542,6 +920,14 @@ document.addEventListener('DOMContentLoaded', () => {
       elItemDetailActionArea.style.display = 'block';
       elBtnItemAction.textContent = '紋章をはめ込んで結合する';
       elBtnItemAction.onclick = handleAssembleKey;
+    } else if (itemId === 's2_frozen_pack') {
+      elItemDetailActionArea.style.display = 'block';
+      elBtnItemAction.textContent = '工具で密閉クランプを外す';
+      elBtnItemAction.onclick = handleDisassembleFrozenPack;
+    } else if (itemId === 's2_thermal_gel' || itemId === 's2_igniter') {
+      elItemDetailActionArea.style.display = 'block';
+      elBtnItemAction.textContent = 'カートリッジと着火器を結合する';
+      elBtnItemAction.onclick = handleAssembleTorch;
     } else {
       elItemDetailActionArea.style.display = 'none';
     }
@@ -586,6 +972,44 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       soundManager.playClick();
       alert('鍵の頭部に適合する円形パーツ（紋章）が必要だ。');
+    }
+  }
+
+  function handleDisassembleFrozenPack() {
+    if (state.inventory.some(i => i.id === 's2_driver')) {
+      soundManager.playScrewdriver();
+      removeItem('s2_frozen_pack');
+      state.packDisassembled = true;
+      elItemDetailModal.classList.add('modal-hidden');
+      setTimeout(() => {
+        addItem('s2_fuse');
+        setTimeout(() => {
+          addItem('s2_thermal_gel');
+          setMessage('絶縁ドライバーでカプセルを分解し、「高圧増設ヒューズ(40V)」と「高熱反応カートリッジ」を取り出した！');
+        }, 450);
+      }, 250);
+    } else {
+      soundManager.playClick();
+      alert('カプセルの固定クランプが固く締まっている。ドライバーが必要だ。');
+    }
+  }
+
+  function handleAssembleTorch() {
+    const hasGel = state.inventory.some(i => i.id === 's2_thermal_gel');
+    const hasIgn = state.inventory.some(i => i.id === 's2_igniter');
+    if (hasGel && hasIgn) {
+      soundManager.playSolved();
+      removeItem('s2_thermal_gel');
+      removeItem('s2_igniter');
+      state.torchAssembled = true;
+      elItemDetailModal.classList.add('modal-hidden');
+      setTimeout(() => {
+        addItem('s2_heat_torch');
+        setMessage('カチリ！ 燃料カートリッジに圧電着火器を装着し、「小型サーマルトーチ」が完成した！');
+      }, 350);
+    } else {
+      soundManager.playClick();
+      alert('「高熱反応カートリッジ」と「圧電着火ユニット」の両方が必要だ。');
     }
   }
 
@@ -1788,6 +2212,18 @@ document.addEventListener('DOMContentLoaded', () => {
     state.gameCleared = true;
     soundManager.playDoorOpen();
 
+    const elLead = document.getElementById('clear-lead-text');
+    const elSub = document.getElementById('clear-sub-text');
+    if (elLead && elSub) {
+      if (currentStage === 2) {
+        elLead.innerHTML = '<span class="phrase">重厚な耐爆ハッチが轟音とともに開き、</span><span class="phrase">地上へと続く非常階段が現れた。</span>';
+        elSub.innerHTML = '<span class="phrase">暴走AIの論理ロックをすべて攻略し、</span><span class="phrase">閉鎖シェルターからの脱出に成功しました！</span>';
+      } else {
+        elLead.innerHTML = '<span class="phrase">扉の重い鍵が開き、</span><span class="phrase">冷涼な夜風が吹き込んできた。</span>';
+        elSub.innerHTML = '<span class="phrase">書斎の謎をすべて解き明かし、</span><span class="phrase">脱出に成功しました。</span>';
+      }
+    }
+
     const now = Date.now();
     const currentSessionTime = state.startTime ? (now - state.startTime) : 0;
     const totalElapsed = (state.elapsedBeforeSave || 0) + currentSessionTime;
@@ -1800,6 +2236,640 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       elGameClearModal.classList.remove('modal-hidden');
     }, 700);
+  }
+
+  // =========================================================
+  // STAGE 2: 暴走AIと閉鎖シェルター 各ギミック実装
+  // =========================================================
+
+  // [北1] シェルター環境ステータスボード
+  const elS2StatusBoard = document.getElementById('s2-obj-status-board');
+  if (elS2StatusBoard) {
+    elS2StatusBoard.addEventListener('click', () => {
+      const usedPwr = getStage2UsedPower();
+      const maxPwr = getStage2MaxPower();
+      openModal(`
+        <div class="zoom-view-header"><h3>シェルター環境監視ボード</h3></div>
+        <div class="zoom-body">
+          <div style="background:#0d1117; border:2px solid #4a5568; padding:16px; border-radius:4px; font-family:var(--font-mono); width:100%; max-width:360px; line-height:1.9;">
+            <div style="color:#c89b3c; border-bottom:1px solid #323c4a; margin-bottom:8px; padding-bottom:4px;">SYSTEM DIAGNOSTICS</div>
+            <div style="color:#2ecc71;">● 消費電力 : ${usedPwr}V / 最大 ${maxPwr}V</div>
+            <div style="color:${state.sensorHeated ? '#e74c3c' : '#3498db'};">● 区画室温 : ${state.sensorHeated ? '85.0°C [火災警報・第0条発動]' : '18.0°C [正常]'}</div>
+            <div style="color:${state.powerVent ? '#2ecc71' : '#e67e22'};">● 換気タービン : ${state.powerVent ? '高速稼働中 (40V)' : '停止中 (0V)'}</div>
+            <div style="color:${state.powerCryo ? '#3498db' : '#2ecc71'};">● 冷凍保管庫 : ${state.powerCryo ? '極低温ロック中 (-80°C)' : '解凍完了・開放可能'}</div>
+            <div style="color:${state.aiSafeMode ? '#3498db' : '#e74c3c'};">● 管理AI ARES : ${state.aiSafeMode ? 'SAFE MODE (論理ロック解除)' : 'LOCKDOWN (封鎖継続中)'}</div>
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  // [北2] 管理AI「ARES」メイン監視モニタ（論理パラドックス入力）
+  const elS2AiMonitor = document.getElementById('s2-obj-ai-monitor');
+  if (elS2AiMonitor) {
+    elS2AiMonitor.addEventListener('click', () => openS2AiModal());
+  }
+
+  function openS2AiModal() {
+    const extOptions = ['汚染あり (CONTAMINATED)', '正常・汚染なし (CLEAR)'];
+    const intOptions = ['酸素正常 (94% SAFE)', '酸素枯渇危機 (0% CRITICAL)'];
+    const dirOptions = ['第二原則：封鎖維持 (RULE 2)', '第一原則：人命最優先 (RULE 1)'];
+
+    let html = `
+      <div class="zoom-view-header"><h3>管理AI「ARES」論理コンソール</h3></div>
+      <div class="zoom-body">
+    `;
+
+    if (state.aiSafeMode) {
+      html += `
+        <div style="background:#0d1b2a; border:2px solid #3498db; padding:16px; border-radius:4px; text-align:center; width:100%;">
+          <div style="font-family:var(--font-mono); font-size:1.2rem; color:#3498db; margin-bottom:8px;">● ARES: SAFE MODE ACTIVE</div>
+          <p style="font-size:0.9rem; color:#e2ddd5;">
+            <span class="phrase">論理パラドックスにより</span><span class="phrase">防衛AIはセーフモードへ移行した。</span><br>
+            <span class="phrase">耐爆ハッチの【AI論理ロック】は</span><span class="phrase">解除されている。</span>
+          </p>
+        </div>
+      `;
+    } else {
+      html += `
+        <p style="font-size:0.86rem; color:#e2ddd5; text-align:center;">
+          <span class="phrase">AI「外部ハ有毒ガス汚染中。</span><span class="phrase">退室要求ハ却下サレマシタ」</span><br>
+          <span class="phrase" style="color:#c89b3c;">※環境パラメータと適用原則を書き換え、</span><span class="phrase" style="color:#c89b3c;">AIに論理矛盾を起こさせよ</span>
+        </p>
+        <div style="display:flex; flex-direction:column; gap:10px; width:100%; max-width:360px; margin:10px 0;">
+          <div style="background:#14181f; border:1px solid #4a5568; padding:10px; border-radius:3px;">
+            <div style="font-size:0.75rem; color:#9e988e;">1. 外部環境センサー定義:</div>
+            <button id="btn-s2-ai-ext" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${extOptions[state.aiCondExt]}</button>
+          </div>
+          <div style="background:#14181f; border:1px solid #4a5568; padding:10px; border-radius:3px;">
+            <div style="font-size:0.75rem; color:#9e988e;">2. 区画内生存リスク定義:</div>
+            <button id="btn-s2-ai-int" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${intOptions[state.aiCondInt]}</button>
+          </div>
+          <div style="background:#14181f; border:1px solid #4a5568; padding:10px; border-radius:3px;">
+            <div style="font-size:0.75rem; color:#9e988e;">3. 最優先行動原則の強制適用:</div>
+            <button id="btn-s2-ai-dir" class="btn-secondary" style="width:100%; margin-top:4px; font-family:var(--font-mono); color:#f1c40f;">${dirOptions[state.aiDirective]}</button>
+          </div>
+          <button id="btn-s2-ai-exec" class="btn-primary" style="margin-top:6px;">論理監査コマンドを実行する</button>
+        </div>
+      `;
+    }
+    html += `</div>`;
+    openModal(html);
+
+    if (!state.aiSafeMode) {
+      document.getElementById('btn-s2-ai-ext').onclick = () => {
+        soundManager.playClick();
+        state.aiCondExt = (state.aiCondExt + 1) % 2;
+        openS2AiModal();
+      };
+      document.getElementById('btn-s2-ai-int').onclick = () => {
+        soundManager.playClick();
+        state.aiCondInt = (state.aiCondInt + 1) % 2;
+        openS2AiModal();
+      };
+      document.getElementById('btn-s2-ai-dir').onclick = () => {
+        soundManager.playClick();
+        state.aiDirective = (state.aiDirective + 1) % 2;
+        openS2AiModal();
+      };
+      document.getElementById('btn-s2-ai-exec').onclick = () => {
+        if (state.aiCondExt === 1 && state.aiCondInt === 1 && state.aiDirective === 1) {
+          soundManager.playSolved();
+          state.aiSafeMode = true;
+          saveGame();
+          updateRoomDomState();
+          setMessage('AI「論理エラー発生…封鎖継続ハ第一原則（人命保護）ニ違反シマス。セーフモードへ移行、AI論理ロック解除」');
+          openS2AiModal();
+        } else {
+          soundManager.playClick();
+          setMessage('AI「論理整合性確認。現在ノ封鎖プロトコルヲ維持シマス」…条件の組み合わせが違うようだ。');
+        }
+      };
+    }
+  }
+
+  // [北3] 耐爆気密ハッチ（最終脱出扉）
+  const elS2Hatch = document.getElementById('s2-obj-hatch');
+  if (elS2Hatch) {
+    elS2Hatch.addEventListener('click', () => openS2HatchModal());
+  }
+
+  function openS2HatchModal() {
+    let html = `
+      <div class="zoom-view-header"><h3>耐爆気密ハッチ（最終隔壁）</h3></div>
+      <div class="zoom-body">
+        <div class="door-locks-status" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; width:100%; margin-bottom:10px;">
+          <div style="background:#14181f; border:1px solid ${state.sensorHeated ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.sensorHeated ? '#2ecc71' : '#e74c3c'};">
+            1.油圧: ${state.sensorHeated ? 'UNLOCKED' : 'LOCKED'}
+          </div>
+          <div style="background:#14181f; border:1px solid ${state.aiSafeMode ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.aiSafeMode ? '#2ecc71' : '#e74c3c'};">
+            2.AI論理: ${state.aiSafeMode ? 'UNLOCKED' : 'LOCKED'}
+          </div>
+          <div style="background:#14181f; border:1px solid ${state.hatchCodeUnlocked ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.hatchCodeUnlocked ? '#2ecc71' : '#e74c3c'};">
+            3.暗号PIN: ${state.hatchCodeUnlocked ? 'OK' : 'LOCKED'}
+          </div>
+          <div style="background:#14181f; border:1px solid ${state.hatchKeyUnlocked ? '#2ecc71' : '#e74c3c'}; padding:6px 10px; border-radius:3px; font-family:var(--font-mono); font-size:0.78rem; color:${state.hatchKeyUnlocked ? '#2ecc71' : '#e74c3c'};">
+            4.物理鍵: ${state.hatchKeyUnlocked ? 'OK' : 'LOCKED'}
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:center; align-items:center; margin:8px 0;">
+          ${state.hatchCode.map((num, idx) => `
+            <div class="dial-digit" style="display:flex; flex-direction:column; align-items:center; background:#12151a; border:1px solid #4a5568; padding:6px; border-radius:3px;">
+              <button type="button" class="s2-pin-up" data-idx="${idx}" style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:34px; height:26px; cursor:pointer;">▲</button>
+              <span class="dial-num" style="font-family:var(--font-mono); font-size:1.3rem; margin:6px 0; color:#e2ddd5;">${num}</span>
+              <button type="button" class="s2-pin-down" data-idx="${idx}" style="background:#232a34; color:#c89b3c; border:1px solid #4a443b; width:34px; height:26px; cursor:pointer;">▼</button>
+            </div>
+          `).join('')}
+        </div>
+
+        ${!state.hatchKeyUnlocked ? getItemPickerHtml('マスター鍵穴に使うアイテムを選択') : '<div style="color:#2ecc71; font-size:0.85rem; margin:6px 0;">● 物理マスターキー解錠済み</div>'}
+
+        <button id="btn-s2-open-hatch" class="btn-primary" style="margin-top:12px; width:100%; max-width:300px;">
+          耐爆ハッチを開放して脱出する
+        </button>
+      </div>
+    `;
+    openModal(html);
+
+    document.querySelectorAll('.s2-pin-up').forEach(btn => {
+      btn.onclick = () => {
+        const idx = parseInt(btn.getAttribute('data-idx'));
+        state.hatchCode[idx] = (state.hatchCode[idx] + 1) % 10;
+        soundManager.playDial();
+        checkS2HatchCode();
+      };
+    });
+    document.querySelectorAll('.s2-pin-down').forEach(btn => {
+      btn.onclick = () => {
+        const idx = parseInt(btn.getAttribute('data-idx'));
+        state.hatchCode[idx] = (state.hatchCode[idx] + 9) % 10;
+        soundManager.playDial();
+        checkS2HatchCode();
+      };
+    });
+
+    document.querySelectorAll('.btn-use-item').forEach(btn => {
+      btn.onclick = () => {
+        const itemId = btn.getAttribute('data-item-id');
+        if (itemId === 's2_override_key') {
+          soundManager.playUnlock();
+          state.hatchKeyUnlocked = true;
+          removeItem('s2_override_key');
+          saveGame();
+          updateRoomDomState();
+          setMessage('ガチャン！ 物理マスターキーを回し、最終デッドボルトを解錠した！');
+          openS2HatchModal();
+        } else {
+          soundManager.playClick();
+          setMessage('このアイテムはマスター鍵穴には使えない。');
+        }
+      };
+    });
+
+    const btnOpen = document.getElementById('btn-s2-open-hatch');
+    if (btnOpen) {
+      btnOpen.onclick = () => {
+        if (!state.sensorHeated) {
+          soundManager.playClick();
+          setMessage('油圧ロックが閉ざされている。火災防衛プロトコル（第0条）を作動させる必要がある。');
+        } else if (!state.aiSafeMode) {
+          soundManager.playClick();
+          setMessage('AI論理ロックが有効だ。中央モニタからARESをセーフモードへ移行させよう。');
+        } else if (!state.hatchCodeUnlocked) {
+          soundManager.playClick();
+          setMessage('4桁の緊急解除PINコードが認証されていない。');
+        } else if (!state.hatchKeyUnlocked) {
+          soundManager.playClick();
+          setMessage('物理マスターキーが解錠されていない。');
+        } else {
+          closeModal();
+          triggerGameClear();
+        }
+      };
+    }
+  }
+
+  function checkS2HatchCode() {
+    if (state.hatchCode.join('') === '7409') {
+      if (!state.hatchCodeUnlocked) {
+        soundManager.playSolved();
+        state.hatchCodeUnlocked = true;
+        saveGame();
+        updateRoomDomState();
+        setMessage('ピピッ！ 緊急解除PINコード【7409】が承認された！');
+      }
+    } else {
+      state.hatchCodeUnlocked = false;
+      updateRoomDomState();
+    }
+    openS2HatchModal();
+  }
+
+  // [東1] 配電グリッド制御盤（パワージャンクション）
+  const elS2PowerPanel = document.getElementById('s2-obj-power-panel');
+  if (elS2PowerPanel) {
+    elS2PowerPanel.addEventListener('click', () => openS2PowerModal());
+  }
+
+  function openS2PowerModal() {
+    const usedPwr = getStage2UsedPower();
+    const maxPwr = getStage2MaxPower();
+
+    const breakers = [
+      { key: 'powerVent', name: '1. 換気タービンファン', cost: 40, desc: '西ダクトの送風・サーバー冷却' },
+      { key: 'powerCryo', name: '2. 極低温クライオ保管庫', cost: 40, desc: '西ロッカーの冷凍維持(-80°C)' },
+      { key: 'powerServer', name: '3. メインサーバー＆波形機', cost: 60, desc: '南サーバー・東オシロスコープ起動' },
+      { key: 'powerAux', name: '4. 補助電磁バスライン', cost: 40, desc: 'サーバー保管庫の電磁ロック給電' }
+    ];
+
+    let html = `
+      <div class="zoom-view-header"><h3>配電グリッド制御盤</h3></div>
+      <div class="zoom-body">
+        <div style="background:#0b0f14; border:2px solid #c89b3c; padding:10px 16px; border-radius:4px; text-align:center; width:100%; max-width:360px;">
+          <div style="font-family:var(--font-mono); font-size:1.25rem; color:${usedPwr === maxPwr ? '#f1c40f' : '#2ecc71'};">
+            使用電力: ${usedPwr}V / 最大容量: ${maxPwr}V
+          </div>
+          <div style="font-size:0.78rem; color:#9e988e; margin-top:2px;">
+            ${state.fuseInserted ? '★高圧増設ヒューズ(+40V) 装着済み' : '※増設スロットが空です（基本容量 100V）'}
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px; width:100%; max-width:360px; margin:10px 0;">
+          ${breakers.map(b => {
+            const isOn = state[b.key];
+            return `
+              <div style="display:flex; justify-content:space-between; align-items:center; background:#161b22; border:1px solid ${isOn ? '#2ecc71' : '#323c4a'}; padding:8px 12px; border-radius:3px;">
+                <div>
+                  <div style="font-family:var(--font-mono); font-size:0.9rem; color:#e2ddd5;">${b.name} (${b.cost}V)</div>
+                  <div style="font-size:0.74rem; color:#9e988e;">${b.desc}</div>
+                </div>
+                <button type="button" class="btn-s2-breaker" data-key="${b.key}" data-cost="${b.cost}" style="background:${isOn ? '#1e4620' : '#2c1818'}; color:${isOn ? '#2ecc71' : '#e74c3c'}; border:1px solid ${isOn ? '#2ecc71' : '#e74c3c'}; padding:6px 14px; font-family:var(--font-mono); font-weight:bold; border-radius:2px; cursor:pointer;">
+                  ${isOn ? 'ON' : 'OFF'}
+                </button>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        ${!state.fuseInserted ? getItemPickerHtml('増設ヒューズスロットに使うアイテムを選択') : ''}
+      </div>
+    `;
+    openModal(html);
+
+    document.querySelectorAll('.btn-s2-breaker').forEach(btn => {
+      btn.onclick = () => {
+        const key = btn.getAttribute('data-key');
+        const cost = parseInt(btn.getAttribute('data-cost'));
+        if (state[key]) {
+          state[key] = false;
+          soundManager.playSwitch();
+          saveGame();
+          updateRoomDomState();
+          openS2PowerModal();
+        } else {
+          if (getStage2UsedPower() + cost > getStage2MaxPower()) {
+            soundManager.playClick();
+            setMessage(`容量オーバー！ 最大容量(${getStage2MaxPower()}V)を超えるためONにできない。他の回路を切るかヒューズを増設しよう。`);
+          } else {
+            state[key] = true;
+            soundManager.playSwitch();
+            saveGame();
+            updateRoomDomState();
+            openS2PowerModal();
+          }
+        }
+      };
+    });
+
+    document.querySelectorAll('.btn-use-item').forEach(btn => {
+      btn.onclick = () => {
+        const itemId = btn.getAttribute('data-item-id');
+        if (itemId === 's2_fuse') {
+          soundManager.playSolved();
+          state.fuseInserted = true;
+          removeItem('s2_fuse');
+          saveGame();
+          updateRoomDomState();
+          setMessage('バチン！ 高圧増設ヒューズを装着し、配電盤の最大容量が【140V】に拡張された！');
+          openS2PowerModal();
+        } else {
+          soundManager.playClick();
+          setMessage('増設スロットには適合しない。');
+        }
+      };
+    });
+  }
+
+  // [東2] 波形同調オシロスコープ
+  const elS2Osc = document.getElementById('s2-obj-oscilloscope');
+  if (elS2Osc) {
+    elS2Osc.addEventListener('click', () => openS2OscModal());
+  }
+
+  function openS2OscModal() {
+    if (!state.powerServer) {
+      openModal(`
+        <div class="zoom-view-header"><h3>波形同調オシロスコープ</h3></div>
+        <div class="zoom-body">
+          <p style="color:#9e988e; text-align:center;">
+            <span class="phrase">電源が入っていない。</span><br>
+            <span class="phrase">配電盤で「3. メインサーバー＆波形機 (60V)」を</span><span class="phrase">ONにする必要がある。</span>
+          </p>
+        </div>
+      `);
+      return;
+    }
+
+    const freqs = [40, 80, 120, 160];
+    const phases = [0, 90, 180, 270];
+    const amps = [1, 2, 3, 4];
+
+    let html = `
+      <div class="zoom-view-header"><h3>波形同調オシロスコープ</h3></div>
+      <div class="zoom-body">
+        <div style="background:#071612; border:2px solid #2ecc71; padding:12px; border-radius:4px; text-align:center; width:100%; max-width:340px; font-family:var(--font-mono);">
+          <div style="color:#2ecc71; font-size:0.85rem; margin-bottom:6px;">
+            ${state.oscSolved ? '★ SIGNAL SYNCHRONIZED ★' : 'TARGET SIGNAL TUNING'}
+          </div>
+          <div style="font-size:1.1rem; color:#e2ddd5;">
+            FREQ: ${state.oscFreq}Hz | PHASE: ${state.oscPhase}° | AMP: Lv.${state.oscAmp}
+          </div>
+          ${state.oscSolved ? `<div style="margin-top:8px; padding:6px; background:#14382d; color:#f1c40f; font-size:1.15rem; font-weight:bold;">緊急解除PINコード: 【 7 4 0 9 】</div>` : ''}
+        </div>
+
+        <div style="display:flex; gap:10px; justify-content:center; width:100%; margin:12px 0;">
+          <button id="btn-s2-osc-freq" class="btn-secondary" style="flex:1; font-family:var(--font-mono);">周波数<br>${state.oscFreq}Hz</button>
+          <button id="btn-s2-osc-phase" class="btn-secondary" style="flex:1; font-family:var(--font-mono);">位相<br>${state.oscPhase}°</button>
+          <button id="btn-s2-osc-amp" class="btn-secondary" style="flex:1; font-family:var(--font-mono);">振幅<br>Lv.${state.oscAmp}</button>
+        </div>
+        <p style="font-size:0.8rem; color:#9e988e; text-align:center;">
+          <span class="phrase">シェルター内の手掛かりから</span><span class="phrase">「周波数・位相・振幅」の3つを</span><span class="phrase">正確に同調させよう。</span>
+        </p>
+      </div>
+    `;
+    openModal(html);
+
+    const checkOsc = () => {
+      if (state.oscFreq === 120 && state.oscPhase === 180 && state.oscAmp === 3) {
+        if (!state.oscSolved) {
+          soundManager.playSolved();
+          state.oscSolved = true;
+          if (!state.hasIgniter) {
+            state.hasIgniter = true;
+            addItem('s2_igniter');
+          }
+          saveGame();
+          updateRoomDomState();
+          setMessage('ピピピッ！ 波形が完全同調し、下部トレイから「圧電着火ユニット」と解除PIN【7409】が現れた！');
+        }
+      }
+      openS2OscModal();
+    };
+
+    document.getElementById('btn-s2-osc-freq').onclick = () => {
+      soundManager.playDial();
+      state.oscFreq = freqs[(freqs.indexOf(state.oscFreq) + 1) % freqs.length];
+      checkOsc();
+    };
+    document.getElementById('btn-s2-osc-phase').onclick = () => {
+      soundManager.playDial();
+      state.oscPhase = phases[(phases.indexOf(state.oscPhase) + 1) % phases.length];
+      checkOsc();
+    };
+    document.getElementById('btn-s2-osc-amp').onclick = () => {
+      soundManager.playDial();
+      state.oscAmp = amps[(amps.indexOf(state.oscAmp) + 1) % amps.length];
+      checkOsc();
+    };
+  }
+
+  // [南1] メインフレーム・サーバーラック
+  const elS2Server = document.getElementById('s2-obj-server-rack');
+  if (elS2Server) {
+    elS2Server.addEventListener('click', () => openS2ServerModal());
+  }
+
+  function openS2ServerModal() {
+    let statusHtml = '';
+    if (!state.powerServer) {
+      statusHtml = `<div style="color:#e74c3c;">● MAINFRAME OFFLINE（配電盤で3.メインサーバー60VをONにしてください）</div>`;
+    } else if (!state.powerVent) {
+      statusHtml = `<div style="color:#e67e22;">● OVERHEAT WARNING（冷却不足！1.換気タービン40Vも同時にONにしてください）</div>`;
+    } else {
+      statusHtml = `
+        <div style="color:#2ecc71;">● SYSTEM ONLINE（冷却正常）</div>
+        <div style="color:#f1c40f; margin-top:4px;">● 通信波形ログ：『逆位相 PHASE = 180°』で同調せよ</div>
+        <div style="color:#85c1e9; margin-top:4px;">● マスターキー保管庫：${state.powerAux ? '電磁バス給電OK (140Vフル稼働)' : '※解錠には4.補助電磁バス(40V)の同時給電が必要'}</div>
+      `;
+    }
+
+    let html = `
+      <div class="zoom-view-header"><h3>メインフレーム＆マスターキー保管庫</h3></div>
+      <div class="zoom-body">
+        <div style="background:#090d14; border:2px solid #4a5568; padding:14px; border-radius:4px; font-family:var(--font-mono); font-size:0.86rem; width:100%; max-width:360px; line-height:1.6;">
+          ${statusHtml}
+        </div>
+        ${!state.keyboxUnlocked ? getItemPickerHtml('IDカードリーダーに使うアイテムを選択') : '<div style="color:#2ecc71; margin-top:10px;">● マスターキー保管庫は解錠済みです</div>'}
+      </div>
+    `;
+    openModal(html);
+
+    document.querySelectorAll('.btn-use-item').forEach(btn => {
+      btn.onclick = () => {
+        const itemId = btn.getAttribute('data-item-id');
+        if (itemId === 's2_id_card') {
+          if (state.powerServer && state.powerVent && state.powerAux) {
+            soundManager.playUnlock();
+            state.keyboxUnlocked = true;
+            state.hasOverrideKey = true;
+            addItem('s2_override_key');
+            saveGame();
+            updateRoomDomState();
+            setMessage('ピピッ！ 140Vフル給電状態でIDカードが承認され、保管庫から「物理マスターキー」を入手した！');
+            openS2ServerModal();
+          } else {
+            soundManager.playClick();
+            setMessage('IDカードを読み取ったが電力不足だ。サーバー(60V)・換気ファン(40V)・補助電磁バス(40V)の計140Vを同時給電しよう。');
+          }
+        } else {
+          soundManager.playClick();
+          setMessage('カードリーダーには使えない。');
+        }
+      };
+    });
+  }
+
+  // [南2] 保守マニュアル（机上）
+  const elS2Manual = document.getElementById('s2-obj-manual');
+  if (elS2Manual) {
+    elS2Manual.addEventListener('click', () => {
+      openModal(`
+        <div class="zoom-view-header"><h3>シェルター保守運用マニュアル</h3></div>
+        <div class="zoom-body">
+          <div class="diary-page" style="background:#1c1e22; border:1px solid #c89b3c; padding:14px; border-radius:3px; font-size:0.84rem; line-height:1.7; color:#e2ddd5; max-height:60vh; overflow-y:auto;">
+            <h4 style="color:#c89b3c; border-bottom:1px solid #4a443b; padding-bottom:4px; margin-bottom:8px;">【1. 防衛AI「ARES」特別規約】</h4>
+            <p>・<strong>火災特例（第0条）</strong>：西壁の火災センサーが<strong>75℃以上</strong>を検知した場合、AIは延焼防止のため耐爆ハッチの<strong>【油圧ロック】を無条件で強制開放</strong>する。</p>
+            <p style="margin-top:6px;">・<strong>論理セーフモード移行</strong>：AIが暴走封鎖した際は、コンソールから以下の矛盾条件を同時に入力せよ。<br>
+            1. 外部環境：<strong>【正常・汚染なし (CLEAR)】</strong><br>
+            2. 区画内リスク：<strong>【酸素枯渇危機 (CRITICAL)】</strong><br>
+            3. 適用原則：<strong>【第一原則：人命最優先 (RULE 1)】</strong></p>
+            <h4 style="color:#c89b3c; border-bottom:1px solid #4a443b; padding-bottom:4px; margin:12px 0 8px;">【2. 非常通信オシロスコープ規定】</h4>
+            <p>・緊急解除PINを受信するには、振幅レベルを<strong>【 AMP = Lv.3 】</strong>に設定し、主任研究員の固有周波数およびサーバー記録の位相角に同調させること。</p>
+          </div>
+        </div>
+      `);
+    });
+  }
+
+  // [南3] デスクの工具引き出し
+  const elS2Drawer = document.getElementById('s2-obj-s2-drawer');
+  if (elS2Drawer) {
+    elS2Drawer.addEventListener('click', () => {
+      if (!state.hasS2Driver) {
+        state.hasS2Driver = true;
+        addItem('s2_driver');
+        saveGame();
+        updateRoomDomState();
+      } else {
+        soundManager.playClick();
+        setMessage('工具引き出しの中はもう空だ。');
+      }
+    });
+  }
+
+  // [西1] 極低温クライオロッカー
+  const elS2Cryo = document.getElementById('s2-obj-cryo-locker');
+  if (elS2Cryo) {
+    elS2Cryo.addEventListener('click', () => {
+      if (state.powerCryo) {
+        soundManager.playClick();
+        setMessage('マイナス80℃で分厚い氷に閉ざされている。東の配電盤で「2. クライオ保管庫(40V)」の電源を切れば解凍できそうだ。');
+      } else if (!state.hasFrozenPack) {
+        state.hasFrozenPack = true;
+        addItem('s2_frozen_pack');
+        saveGame();
+        updateRoomDomState();
+        setMessage('氷が溶けた保管庫から「密閉冷凍カプセル」を取り出した！ アイテム欄で【調べる】と分解できそうだ。');
+      } else {
+        soundManager.playClick();
+        setMessage('解凍されたクライオロッカーの中は空だ。');
+      }
+    });
+  }
+
+  // [西2] 換気ダクト＆タービンファン
+  const elS2Duct = document.getElementById('s2-obj-vent-duct');
+  if (elS2Duct) {
+    elS2Duct.addEventListener('click', () => openS2DuctModal());
+  }
+
+  function openS2DuctModal() {
+    let html = `
+      <div class="zoom-view-header"><h3>大型換気ダクト</h3></div>
+      <div class="zoom-body">
+    `;
+    if (!state.ductGrilleRemoved) {
+      html += `
+        <p style="font-size:0.88rem; text-align:center;">
+          <span class="phrase">ダクトの保護グリルが</span><span class="phrase">4隅のネジで固定されている。</span><br>
+          <span class="phrase">奥に青いカードのような物が見える。</span>
+        </p>
+        ${getItemPickerHtml('保護グリルのネジを外す工具を選択')}
+      `;
+    } else if (state.powerVent) {
+      html += `
+        <p style="font-size:0.88rem; color:#e67e22; text-align:center;">
+          <span class="phrase">保護グリルは外れたが、</span><span class="phrase">タービンファンが猛烈な速度で回転している！</span><br>
+          <span class="phrase">手を入れるには配電盤で</span><span class="phrase">「1. 換気タービン(40V)」をOFFにする必要がある。</span>
+        </p>
+      `;
+    } else if (!state.hasIdCard) {
+      html += `
+        <p style="font-size:0.88rem; color:#2ecc71; text-align:center;">
+          <span class="phrase">タービンファンが完全に停止している。</span><br>
+          <span class="phrase">今なら奥のカードを安全に回収できる！</span>
+        </p>
+        <button id="btn-s2-take-card" class="btn-primary" style="margin-top:10px;">奥のIDカードを取り出す</button>
+      `;
+    } else {
+      html += `<p style="color:#9e988e; text-align:center;">ダクトの奥にはもう何もない。</p>`;
+    }
+    html += `</div>`;
+    openModal(html);
+
+    document.querySelectorAll('.btn-use-item').forEach(btn => {
+      btn.onclick = () => {
+        const itemId = btn.getAttribute('data-item-id');
+        if (itemId === 's2_driver') {
+          soundManager.playScrewdriver();
+          state.ductGrilleRemoved = true;
+          saveGame();
+          updateRoomDomState();
+          setMessage('絶縁ドライバーで4隅のネジを外し、保護グリルを取り外した！');
+          openS2DuctModal();
+        } else {
+          soundManager.playClick();
+          setMessage('ネジを外すにはドライバーが必要だ。');
+        }
+      };
+    });
+
+    const btnCard = document.getElementById('btn-s2-take-card');
+    if (btnCard) {
+      btnCard.onclick = () => {
+        state.hasIdCard = true;
+        addItem('s2_id_card');
+        saveGame();
+        updateRoomDomState();
+        closeModal();
+      };
+    }
+  }
+
+  // [西3] 壁面火災温度センサー
+  const elS2Sensor = document.getElementById('s2-obj-temp-sensor');
+  if (elS2Sensor) {
+    elS2Sensor.addEventListener('click', () => openS2SensorModal());
+  }
+
+  function openS2SensorModal() {
+    let html = `
+      <div class="zoom-view-header"><h3>壁面火災温度センサー</h3></div>
+      <div class="zoom-body">
+        <div style="background:#090d12; border:2px solid ${state.sensorHeated ? '#e74c3c' : '#3498db'}; padding:12px 20px; border-radius:4px; font-family:var(--font-mono); font-size:1.3rem; color:${state.sensorHeated ? '#e74c3c' : '#3498db'}; margin-bottom:8px;">
+          検知温度: ${state.sensorHeated ? '85.0 °C [FIRE ALERT]' : '18.0 °C [NORMAL]'}
+        </div>
+        <p style="font-size:0.86rem; text-align:center;">
+          ${state.sensorHeated
+            ? '<span class="phrase">火災防衛プロトコル（第0条）が作動中！</span><br><span class="phrase">耐爆ハッチの【油圧ロック】が開放されている。</span>'
+            : '<span class="phrase">75℃以上の高熱を検知すると、</span><span class="phrase">第0条により耐爆ハッチの油圧ロックが</span><span class="phrase">強制開放される仕組みだ。</span>'}
+        </p>
+        ${!state.sensorHeated ? getItemPickerHtml('感熱バルブを加熱するアイテムを選択') : ''}
+      </div>
+    `;
+    openModal(html);
+
+    document.querySelectorAll('.btn-use-item').forEach(btn => {
+      btn.onclick = () => {
+        const itemId = btn.getAttribute('data-item-id');
+        if (itemId === 's2_heat_torch') {
+          soundManager.playSolved();
+          state.sensorHeated = true;
+          removeItem('s2_heat_torch');
+          saveGame();
+          updateRoomDomState();
+          setMessage('ボォォッ！ サーマルトーチで感熱部を加熱し85℃に到達！ AI「火災検知！ 第0条ニ従イ油圧ロックヲ強制開放シマス」');
+          openS2SensorModal();
+        } else if (itemId === 's2_thermal_gel') {
+          soundManager.playClick();
+          setMessage('燃料カートリッジ単体では火がつかない。着火ユニットと結合させよう。');
+        } else {
+          soundManager.playClick();
+          setMessage('これでは75℃以上に加熱できない。');
+        }
+      };
+    });
   }
 
   // --- ナビゲーション & スワイプ ---
@@ -1901,9 +2971,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 設定から最初からやり直す
   elBtnSettingRestart.addEventListener('click', () => {
-    if (confirm('書斎を最初からやり直しますか？（セーブデータはリセットされます）')) {
+    if (confirm('このステージを最初からやり直しますか？（セーブデータはリセットされます）')) {
       closeSettingsModal();
-      launchStage(true);
+      launchStage(true, currentStage);
     }
   });
 
@@ -1916,24 +2986,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
   elBtnPlayAgain.addEventListener('click', () => {
     elGameClearModal.classList.add('modal-hidden');
-    launchStage(true);
+    launchStage(true, currentStage);
   });
 
-  // ステージ選択ボタン
+  // ステージ1選択ボタン
   elBtnPlayStage1.addEventListener('click', () => {
-    const saved = getSavedData();
+    const saved = getSavedData(1);
     if (saved && !saved.state.gameCleared) {
-      launchStage(false);
+      launchStage(false, 1);
     } else {
-      launchStage(true);
+      launchStage(true, 1);
     }
   });
 
   elBtnRestartStage1.addEventListener('click', () => {
-    if (confirm('現在の進行データを破棄して、はじめから遊びますか？')) {
-      launchStage(true);
+    if (confirm('STAGE 1の進行データを破棄して、はじめから遊びますか？')) {
+      launchStage(true, 1);
     }
   });
+
+  // ステージ2選択ボタン
+  if (elBtnPlayStage2) {
+    elBtnPlayStage2.addEventListener('click', () => {
+      const saved2 = getSavedData(2);
+      if (saved2 && !saved2.state.gameCleared) {
+        launchStage(false, 2);
+      } else {
+        launchStage(true, 2);
+      }
+    });
+  }
+
+  if (elBtnRestartStage2) {
+    elBtnRestartStage2.addEventListener('click', () => {
+      if (confirm('STAGE 2の進行データを破棄して、はじめから遊びますか？')) {
+        launchStage(true, 2);
+      }
+    });
+  }
 
   // キーボード
   window.addEventListener('keydown', (e) => {
