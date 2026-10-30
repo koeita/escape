@@ -85,6 +85,13 @@ c:\Users\xcang\Desktop\Antigravity\escape\
   - `body` およびモバイルメディアクエリ（`max-width: 600px`）に対して、セーフエリア（`env(safe-area-inset-top)`, `env(safe-area-inset-bottom)`, `env(safe-area-inset-left)`, `env(safe-area-inset-right)`）を正確に適用。
   - `#game-container` と `#menu-screen` の高さを `height: 100%; max-height: 100%; box-sizing: border-box;` に調整し、親コンテナのセーフエリア内コンテンツ領域にジャストフィットするレイアウトへ改善。
 
+#### 4. スタンドアロンモード専用の強制セーフエリア余白（上ズレ対策の決定版）
+- **ステータスバー表示方式の変更**: `apple-mobile-web-app-status-bar-style` を `black-translucent` から `black` に変更し、ステータスバー領域へのコンテンツ食い込みを根本的に防止。
+- **`@media all and (display-mode: standalone)` の追加**: ホーム画面起動時のみ、最上位の `body` に `padding-top: max(env(safe-area-inset-top, 0px), 48px)` / `padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px)` を `!important` で強制付与。`env()` が 0px と判定される環境でも最低限の余白を保証。
+- **はみ出し原因の除去**: モバイル時の `#game-container` / `#menu-screen` に残っていた `min-height: 100dvh` が `body` の余白と合算されて画面外へはみ出していたため、`height: 100%; min-height: 0; max-height: 100%` に修正。
+- **二重余白の防止**: スタンドアロン時はヘッダー／インベントリ側の `env()` 加算を打ち消し、余白を `body` に一元化。
+- `position: fixed` 要素は存在せず、`position: absolute; top: 0` のモーダル類はすべて `#game-container`（`position: relative`）基準のため、`body` の余白内に正しく収まることを確認。
+
 ### 2026-10-29 (木)
 
 #### 1. クラシック密室ミステリー調UIへの全面刷新 (14:30〜)
