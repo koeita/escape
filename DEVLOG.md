@@ -74,6 +74,13 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 - **`wrangler.json`（Static Assets & Worker Previews設定）の構成**:
   - Cloudflare Workers Builds のプレビュービルドおよび静的アセット配信に対応するため、成功実績のある構成に合わせて `wrangler.json`（`name: "escape"`, `compatibility_date: "2024-10-22"`, `assets.directory: "."`, `previews: {}`）を配置。`wrangler.toml` との競合エラーを解消。
 
+#### 3. iOS PWA/スタンドアロン全画面時のセーフエリア（Safe Area）最適化
+- **ノッチ・ステータスバー・ホームバー食い込みズレの解消**:
+  - iPhone等で「ホーム画面に追加」してスタンドアロン起動した際、画面全体が上に引っ張られてステータスバーやノッチに食い込む問題を修正。
+  - `index.html` の `viewport-fit=cover` を確認・維持。
+  - `body` およびモバイルメディアクエリ（`max-width: 600px`）に対して、セーフエリア（`env(safe-area-inset-top)`, `env(safe-area-inset-bottom)`, `env(safe-area-inset-left)`, `env(safe-area-inset-right)`）を正確に適用。
+  - `#game-container` と `#menu-screen` の高さを `height: 100%; max-height: 100%; box-sizing: border-box;` に調整し、親コンテナのセーフエリア内コンテンツ領域にジャストフィットするレイアウトへ改善。
+
 ### 2026-10-29 (木)
 
 #### 1. クラシック密室ミステリー調UIへの全面刷新 (14:30〜)
