@@ -2396,7 +2396,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.onclick = () => {
         const idx = parseInt(btn.getAttribute('data-idx'));
         state.hatchCode[idx] = (state.hatchCode[idx] + 1) % 10;
-        soundManager.playDial();
+        soundManager.playTick();
         checkS2HatchCode();
       };
     });
@@ -2404,7 +2404,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.onclick = () => {
         const idx = parseInt(btn.getAttribute('data-idx'));
         state.hatchCode[idx] = (state.hatchCode[idx] + 9) % 10;
-        soundManager.playDial();
+        soundManager.playTick();
         checkS2HatchCode();
       };
     });
@@ -2592,7 +2592,29 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="color:#2ecc71; font-size:0.85rem; margin-bottom:6px;">
             ${state.oscSolved ? '★ SIGNAL SYNCHRONIZED ★' : 'TARGET SIGNAL TUNING'}
           </div>
-          <div style="font-size:1.1rem; color:#e2ddd5;">
+          <svg viewBox="0 0 280 90" style="width:100%; height:84px; background:#040d0a; border:1px solid #14382d; border-radius:3px; margin-bottom:8px;">
+            <line x1="0" y1="45" x2="280" y2="45" stroke="#14382d" stroke-width="1"/>
+            <line x1="140" y1="0" x2="140" y2="90" stroke="#14382d" stroke-width="1"/>
+            <path d="${(() => {
+              let pts = [];
+              for (let x = 0; x <= 280; x += 4) {
+                const rad = (x / 280) * Math.PI * 2 * (120 / 40) + (180 * Math.PI / 180);
+                const y = 45 - Math.sin(rad) * (3 * 10);
+                pts.push((x === 0 ? 'M ' : 'L ') + x + ',' + y.toFixed(1));
+              }
+              return pts.join(' ');
+            })()}" fill="none" stroke="#c89b3c" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.75"/>
+            <path d="${(() => {
+              let pts = [];
+              for (let x = 0; x <= 280; x += 4) {
+                const rad = (x / 280) * Math.PI * 2 * (state.oscFreq / 40) + (state.oscPhase * Math.PI / 180);
+                const y = 45 - Math.sin(rad) * (state.oscAmp * 10);
+                pts.push((x === 0 ? 'M ' : 'L ') + x + ',' + y.toFixed(1));
+              }
+              return pts.join(' ');
+            })()}" fill="none" stroke="#2ecc71" stroke-width="2.5"/>
+          </svg>
+          <div style="font-size:1.05rem; color:#e2ddd5;">
             FREQ: ${state.oscFreq}Hz | PHASE: ${state.oscPhase}° | AMP: Lv.${state.oscAmp}
           </div>
           ${state.oscSolved ? `<div style="margin-top:8px; padding:6px; background:#14382d; color:#f1c40f; font-size:1.15rem; font-weight:bold;">緊急解除PINコード: 【 7 4 0 9 】</div>` : ''}
@@ -2628,17 +2650,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     document.getElementById('btn-s2-osc-freq').onclick = () => {
-      soundManager.playDial();
+      soundManager.playTick();
       state.oscFreq = freqs[(freqs.indexOf(state.oscFreq) + 1) % freqs.length];
       checkOsc();
     };
     document.getElementById('btn-s2-osc-phase').onclick = () => {
-      soundManager.playDial();
+      soundManager.playTick();
       state.oscPhase = phases[(phases.indexOf(state.oscPhase) + 1) % phases.length];
       checkOsc();
     };
     document.getElementById('btn-s2-osc-amp').onclick = () => {
-      soundManager.playDial();
+      soundManager.playTick();
       state.oscAmp = amps[(amps.indexOf(state.oscAmp) + 1) % amps.length];
       checkOsc();
     };
