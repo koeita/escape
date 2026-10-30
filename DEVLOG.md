@@ -90,6 +90,7 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 - **`@media all and (display-mode: standalone)` の追加**: ホーム画面起動時のみ、最上位の `body` に `padding-top: max(env(safe-area-inset-top, 0px), 48px)` / `padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px)` を `!important` で強制付与。`env()` が 0px と判定される環境でも最低限の余白を保証。
 - **はみ出し原因の除去**: モバイル時の `#game-container` / `#menu-screen` に残っていた `min-height: 100dvh` が `body` の余白と合算されて画面外へはみ出していたため、`height: 100%; min-height: 0; max-height: 100%` に修正。
 - **二重余白の防止**: スタンドアロン時はヘッダー／インベントリ側の `env()` 加算を打ち消し、余白を `body` に一元化。
+- **上部余白の撤去**: ステータスバーを `black` にしたことでコンテンツは自動的にステータスバー直下から始まるため、強制していた最低 48px の上余白を撤去し `padding-top: env(safe-area-inset-top, 0px)` のみに変更。ヘッダーがステータスバー直下に密着する表示へ改善。
 - `position: fixed` 要素は存在せず、`position: absolute; top: 0` のモーダル類はすべて `#game-container`（`position: relative`）基準のため、`body` の余白内に正しく収まることを確認。
 
 ### 2026-10-29 (木)
