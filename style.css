@@ -786,7 +786,7 @@ h1#game-stage-title {
   position: relative;
   flex-shrink: 0;
   text-align: center;
-  padding: 12px 42px 10px 42px;
+  padding: 10px 40px 10px 40px;
   border-bottom: 1px solid var(--border-brass-dim);
   background: var(--panel-bg);
   z-index: 10;
@@ -796,13 +796,14 @@ h1#game-stage-title {
 
 .zoom-view-header h3 {
   color: var(--accent-gold);
-  font-size: 1.15rem;
-  letter-spacing: 0.1em;
+  font-size: clamp(0.95rem, 3.5vw, 1.15rem);
+  letter-spacing: 0.06em;
   font-weight: 600;
   margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.35;
+  word-break: auto-phrase;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 .zoom-body {
