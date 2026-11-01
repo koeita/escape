@@ -737,20 +737,32 @@ h1#game-stage-title {
   background: var(--panel-bg);
   border: 1px solid var(--border-brass);
   border-radius: 3px;
-  padding: 20px 16px;
+  padding: 0;
   max-width: 480px;
   width: 100%;
   max-height: 88dvh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   position: relative;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+}
+
+#modal-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 88dvh;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
 }
 
 .modal-close-btn {
   position: absolute;
-  top: 8px;
-  right: 12px;
+  top: 6px;
+  right: 10px;
+  z-index: 30;
   background: transparent;
   border: none;
   color: var(--text-sub);
@@ -771,24 +783,60 @@ h1#game-stage-title {
 }
 
 .zoom-view-header {
+  position: relative;
+  flex-shrink: 0;
   text-align: center;
-  margin-bottom: 14px;
+  padding: 10px 40px 10px 40px;
   border-bottom: 1px solid var(--border-brass-dim);
-  padding-bottom: 8px;
+  background: var(--panel-bg);
+  z-index: 10;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .zoom-view-header h3 {
   color: var(--accent-gold);
-  font-size: 1.15rem;
-  letter-spacing: 0.1em;
+  font-size: clamp(0.95rem, 3.5vw, 1.15rem);
+  letter-spacing: 0.06em;
   font-weight: 600;
+  margin: 0;
+  line-height: 1.35;
+  word-break: auto-phrase;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 
 .zoom-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 14px;
+  padding: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-brass-dim) transparent;
+}
+
+.zoom-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.zoom-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.zoom-body::-webkit-scrollbar-thumb {
+  background-color: var(--border-brass-dim);
+  border-radius: 3px;
+}
+
+.zoom-body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-brass);
 }
 
 /* ==========================================================================

@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'silver_key',
       name: '小さな銀の鍵',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="15" cy="15" r="7" fill="none" stroke="#bdc3c7" stroke-width="3"/><line x1="20" y1="20" x2="30" y2="30" stroke="#bdc3c7" stroke-width="4" stroke-linecap="round"/><line x1="26" y1="26" x2="29" y2="23" stroke="#bdc3c7" stroke-width="3"/></svg>`,
-      desc: '<span class="phrase">小箱の中から出てきた</span><span class="phrase">銀色の鍵。</span><span class="phrase">机の引き出しに合いそうだ。</span>'
+      desc: '<span class="phrase">小箱の中から出てきた</span><span class="phrase">精巧な銀色の鍵。</span><span class="phrase">どこかの小さな鍵穴に</span><span class="phrase">適合しそうだ。</span>'
     },
     star_disc: {
       id: 'star_disc',
@@ -38,13 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 'armillary_pin',
       name: '星型の真鍮ピン',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><polygon points="20,6 23,15 32,15 25,20 27,29 20,24 13,29 15,20 8,15 17,15" fill="#f1c40f" stroke="#b78727" stroke-width="1.5"/><line x1="20" y1="24" x2="20" y2="34" stroke="#d4af37" stroke-width="3" stroke-linecap="round"/></svg>`,
-      desc: '<span class="phrase">壁金庫の中に納められていた</span><span class="phrase">小さな真鍮ピン。</span><span class="phrase">天球儀のロック穴に</span><span class="phrase">ぴったり合いそうだ。</span>'
+      desc: '<span class="phrase">壁金庫の中に納められていた</span><span class="phrase">小さな真鍮ピン。</span><span class="phrase">頭部に星の意匠が施されている。</span>'
     },
     switch_key: {
       id: 'switch_key',
       name: '端子盤の鍵',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><circle cx="14" cy="14" r="6" fill="none" stroke="#e67e22" stroke-width="3"/><line x1="18" y1="18" x2="28" y2="28" stroke="#e67e22" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="24" x2="27" y2="21" stroke="#e67e22" stroke-width="2.5"/></svg>`,
-      desc: '<span class="phrase">机の引き出しに入っていた</span><span class="phrase">小さな真鍮鍵。</span><span class="phrase">扉の横の照明盤カバーを</span><span class="phrase">開けられそうだ。</span>'
+      desc: '<span class="phrase">机の引き出しに入っていた</span><span class="phrase">小さな真鍮鍵。</span><span class="phrase">配電盤や端子ボックス向けの</span><span class="phrase">形状をしている。</span>'
     },
     poker: {
       id: 'poker',
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 's2_driver',
       name: '絶縁ドライバー',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="16" y="4" width="8" height="16" fill="#e67e22" stroke="#d35400" stroke-width="1.5" rx="2"/><line x1="20" y1="20" x2="20" y2="34" stroke="#95a5a6" stroke-width="3" stroke-linecap="round"/><line x1="17" y1="34" x2="23" y2="34" stroke="#bdc3c7" stroke-width="2"/></svg>`,
-      desc: '<span class="phrase">保守員デスクから見つけた</span><span class="phrase">高電圧対応の絶縁ドライバー。</span><span class="phrase">ダクトのネジ外しや</span><span class="phrase">カプセルのこじ開けに使える。</span>'
+      desc: '<span class="phrase">保守員デスクから見つけた</span><span class="phrase">高電圧対応の絶縁ドライバー。</span><span class="phrase">精密なネジ回しや</span><span class="phrase">分解作業に使えそうだ。</span>'
     },
     s2_frozen_pack: {
       id: 's2_frozen_pack',
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
       id: 's2_heat_torch',
       name: '小型サーマルトーチ',
       icon: `<svg viewBox="0 0 40 40" class="item-icon-svg"><rect x="12" y="16" width="12" height="18" rx="2" fill="#c0392b" stroke="#e74c3c" stroke-width="1.5"/><path d="M14 16 L18 8 L26 8 L26 14 L20 16 Z" fill="#34495e" stroke="#bdc3c7" stroke-width="1.5"/><path d="M27 11 Q34 8 36 11 Q34 14 27 11" fill="#f39c12"/></svg>`,
-      desc: '<span class="phrase">燃料カートリッジと着火器を結合した</span><span class="phrase">高熱バーナートーチ。</span><span class="phrase">壁面の火災温度センサーを</span><span class="phrase">一気に75℃以上へ加熱できる！</span>'
+      desc: '<span class="phrase">燃料カートリッジと着火器を結合した</span><span class="phrase">高熱バーナートーチ。</span><span class="phrase">局所的に急激な</span><span class="phrase">高温を生み出せる。</span>'
     },
     s2_id_card: {
       id: 's2_id_card',
@@ -1102,7 +1102,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </button>
         </div>
         <p style="font-size:0.85rem; color:#a8947d; text-align:center;">
-          <span class="phrase">暗闇にすることで、</span><span class="phrase">普段見えないものが</span><span class="phrase">見えるかもしれない…</span>
+          <span class="phrase">レバーを操作して</span><span class="phrase">書斎の照明を切り替えられる。</span>
         </p>
       `;
     }
@@ -1156,7 +1156,7 @@ document.addEventListener('DOMContentLoaded', () => {
           saveGame();
           updateRoomDomState();
           if (!state.isLightOn) {
-            setMessage('カチッ…部屋の明かりが消え、暗闇に包まれた。どこかが青白く発光している…？');
+            setMessage('カチッ…部屋の明かりが消え、静寂な暗闇に包まれた。');
           } else {
             setMessage('カチッ…部屋の明かりが点灯した。');
           }
@@ -1244,7 +1244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (!state.armillaryOpened) {
       content += `
         <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
-          <span class="phrase">星型ピンで</span><span class="phrase">ロックが解除された！</span><span class="phrase">リングをタップして回転させ、</span><span class="phrase">天頂（0度）に合わせよう。</span>
+          <span class="phrase">星型ピンで</span><span class="phrase">ロックが解除された！</span><span class="phrase">リングをタップして回転させることができる。</span>
         </p>
         <div class="armillary-stage">
           <svg class="armillary-sphere-svg" id="btn-rotate-armillary" viewBox="0 0 100 100" style="cursor:pointer; transform: rotate(${state.armillaryAngle}deg); transition: transform 0.25s ease;">
@@ -1256,7 +1256,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <circle cx="50" cy="50" r="6" fill="#f39c12"/>
           </svg>
         </div>
-        <p style="font-size:0.8rem; color:#f39c12;">現在角度: ${state.armillaryAngle}度（0度で真上）</p>
+        <p style="font-size:0.8rem; color:#f39c12;">現在角度: ${state.armillaryAngle}度</p>
         <button id="btn-open-armillary" class="btn-primary" style="margin-top:4px;">天球儀を開く</button>
       `;
     } else {
@@ -1329,7 +1329,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 400);
           } else {
             soundManager.playClick();
-            setMessage('カチャ…まだ球体が固定されている。天頂の角度（0度）に合わせよう。');
+            setMessage('カチャ…まだ球体が固定されて開かない。角度が合っていないようだ。');
           }
         };
       }
@@ -1490,11 +1490,11 @@ document.addEventListener('DOMContentLoaded', () => {
           <p style="color:#d5cac0; font-size:0.85rem; text-align:center; margin-bottom:2px;">
             <span class="phrase">背表紙に天体シンボルが</span><span class="phrase">刻印された</span><span class="phrase">7冊の書物が並んでいる。</span>
           </p>
-          <p style="font-size:0.82rem; text-align:center; color:${!state.isLightOn ? '#5dade2' : '#a8947d'}; font-weight:${!state.isLightOn ? 'bold' : 'normal'};">
-            ${!state.isLightOn
-              ? '<span class="phrase">★ 暗闇の中で</span><span class="phrase">シンボルが青白く発光している！</span>'
-              : '<span class="phrase">（部屋の明かりを消すと、</span><span class="phrase">夜空の絵画と共鳴するかもしれない）</span>'}
-          </p>
+          ${!state.isLightOn ? `
+            <p style="font-size:0.82rem; text-align:center; color:#5dade2; font-weight:bold;">
+              <span class="phrase">★ 暗闇の中で</span><span class="phrase">シンボルが青白く発光している！</span>
+            </p>
+          ` : ''}
     `;
 
     if (!state.booksPuzzleSolved) {
@@ -1672,7 +1672,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <circle cx="20" cy="20" r="3" fill="#1b2631"/>
           </svg>
         </div>
-        <p style="font-size:0.8rem; color:#f39c12;">現在角度: ${state.safeAngle}度（0度で真上）</p>
+        <p style="font-size:0.8rem; color:#f39c12;">現在角度: ${state.safeAngle}度</p>
         <button id="btn-unlock-safe" class="btn-primary" style="margin-top:6px;">解錠レバーを引く</button>
       `;
     } else {
@@ -1831,7 +1831,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <p style="font-size:0.88rem; text-align:center; color:${!state.isLightOn ? '#5dade2' : '#d5cac0'};">
             ${!state.isLightOn
               ? '<span class="phrase">暗闇の中で4つの星辰が</span><span class="phrase">青白く発光した！</span><span class="phrase">左から右へと結ばれる</span><span class="phrase">光の軌跡が現れている。</span>'
-              : '<span class="phrase">月夜の古塔が描かれた</span><span class="phrase">油絵《星辰の夜》だ。</span><span class="phrase">（暗闇の中で何かが</span><span class="phrase">浮かび上がるかもしれない…）</span>'}
+              : '<span class="phrase">月夜の古塔が描かれた</span><span class="phrase">静謐な油絵《星辰の夜》だ。</span>'}
           </p>
         </div>
       </div>
@@ -1975,8 +1975,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <button id="btn-clock-hour">+1 時間</button>
           <button id="btn-clock-min">+15 分</button>
         </div>
-        <p style="color:#d5cac0; font-size:0.85rem; text-align:center;">
-          <span class="phrase">天体日誌に記された</span><span class="phrase">【西】と【東】の方位にならい、</span><span class="phrase">針を合わせよう。</span>
+        <p style="color:#a8947d; font-size:0.85rem; text-align:center;">
+          <span class="phrase">文字盤の針は</span><span class="phrase">手動で動かせそうだ。</span>
         </p>
       `;
     } else {
@@ -2060,7 +2060,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="zoom-body">
         <div class="door-puzzle-container">
           <p style="color:#d5cac0; font-size:0.88rem; text-align:center;">
-            <span class="phrase">頑丈な二重施錠が施されている。</span><span class="phrase">【完成した賢者の鍵】と</span><span class="phrase">【金庫の暗号コード】が必要だ。</span>
+            <span class="phrase">頑丈な二重施錠が施されている。</span><span class="phrase">重厚な鍵穴と4桁の電子ダイヤルが</span><span class="phrase">組み合わされているようだ。</span>
           </p>
 
           <div class="door-locks-status">
@@ -2384,7 +2384,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         } else {
           soundManager.playClick();
-          setMessage('AI「論理整合性確認。現在ノ封鎖プロトコルヲ維持シマス」…4項目の組み合わせが誤っているようだ。マニュアルの条文と現在区画を確認しよう。');
+          setMessage('AI「論理整合性確認。現在ノ封鎖プロトコルヲ維持シマス」…入力条件の組み合わせに矛盾がないようだ。');
         }
       };
     }
@@ -2475,7 +2475,7 @@ document.addEventListener('DOMContentLoaded', () => {
           soundManager.playClick();
           state.hatchCodeUnlocked = false;
           updateRoomDomState();
-          setMessage('ブーッ！ PINコードが一致しない。オシロスコープの算出フォーミュラに従って4桁を計算しよう。');
+          setMessage('ブーッ！ PINコードが一致しない。認証に失敗した。');
         }
       };
     }
@@ -2503,13 +2503,13 @@ document.addEventListener('DOMContentLoaded', () => {
       btnOpen.onclick = () => {
         if (!state.sensorHeated) {
           soundManager.playClick();
-          setMessage('油圧ロックが閉ざされている。火災防衛プロトコル（第0条）を作動させる必要がある。');
+          setMessage('油圧ロックが閉ざされている。ロック機構を開放する手掛かりを探そう。');
         } else if (!state.aiSafeMode) {
           soundManager.playClick();
-          setMessage('AI論理ロックが有効だ。中央モニタからARESをセーフモードへ移行させよう。');
+          setMessage('AI論理ロックが有効だ。ARESの封鎖プロトコルを解除する必要がある。');
         } else if (!state.hatchCodeUnlocked) {
           soundManager.playClick();
-          setMessage('4桁の緊急解除PINコードが認証されていない。ダイヤルを合わせて「PINコードを認証する」を押そう。');
+          setMessage('4桁の緊急解除PINコードが認証されていない。');
         } else if (!state.hatchKeyUnlocked) {
           soundManager.playClick();
           setMessage('物理マスターキーが解錠されていない。');
@@ -2585,7 +2585,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           if (getStage2UsedPower() + cost > getStage2MaxPower()) {
             soundManager.playClick();
-            setMessage(`容量オーバー！ 最大容量(${getStage2MaxPower()}V)を超えるためONにできない。他の回路を切るかヒューズを増設しよう。`);
+            setMessage(`容量オーバー！ 最大容量(${getStage2MaxPower()}V)を超過するためブレーカーを投入できない。`);
           } else {
             state[key] = true;
             soundManager.playSwitch();
@@ -2654,7 +2654,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="zoom-body">
           <p style="color:#9e988e; text-align:center;">
             <span class="phrase">電源が入っていない。</span><br>
-            <span class="phrase">配電盤で「3. メインサーバー＆波形機 (60V)」を</span><span class="phrase">ONにする必要がある。</span>
+            <span class="phrase">通電していなければ</span><span class="phrase">波形を観測することはできない。</span>
           </p>
         </div>
       `);
@@ -2778,7 +2778,7 @@ document.addEventListener('DOMContentLoaded', () => {
             openS2OscModal();
           } else {
             soundManager.playClick();
-            setMessage('ブーッ！ AIジャミング波に阻まれ同調失敗。マニュアルの規定に従い【波形・周波数・位相・振幅】を計算しよう。');
+            setMessage('ブーッ！ AIジャミング波に阻まれ同調失敗。波形パラメータが合致していないようだ。');
           }
         };
       }
@@ -2794,14 +2794,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function openS2ServerModal() {
     let statusHtml = '';
     if (!state.powerServer) {
-      statusHtml = `<div style="color:#e74c3c;">● MAINFRAME OFFLINE（配電盤で3.メインサーバー60VをONにしてください）</div>`;
+      statusHtml = `<div style="color:#e74c3c;">● MAINFRAME OFFLINE（電源未投入 / 60V）</div>`;
     } else if (!state.powerVent) {
-      statusHtml = `<div style="color:#e67e22;">● OVERHEAT WARNING（冷却不足！1.換気タービン40Vも同時にONにしてください）</div>`;
+      statusHtml = `<div style="color:#e67e22;">● OVERHEAT WARNING（冷却停止・排熱異常）</div>`;
     } else {
       statusHtml = `
         <div style="color:#2ecc71;">● SYSTEM ONLINE（区画コード：SEC-03 [深層演算室]）</div>
         <div style="color:#f1c40f; margin-top:4px;">● 電磁監視ログ：現在AIが【 位相角 45° 】のジャミング妨害波を発信中</div>
-        <div style="color:#85c1e9; margin-top:4px;">● マスターキー保管庫：${state.powerAux ? '電磁バス給電OK (140Vフル稼働)' : '※解錠には4.補助電磁バス(40V)の同時給電が必要'}</div>
+        <div style="color:#85c1e9; margin-top:4px;">● マスターキー保管庫：${state.powerAux ? '電磁バス通電OK' : '※電磁ロック未給電 (補助系統40Vが必要)'}</div>
       `;
     }
 
@@ -2831,7 +2831,7 @@ document.addEventListener('DOMContentLoaded', () => {
             openS2ServerModal();
           } else {
             soundManager.playClick();
-            setMessage('IDカードを読み取ったが電力不足だ。サーバー(60V)・換気ファン(40V)・補助電磁バス(40V)の計140Vを同時給電しよう。');
+            setMessage('IDカードを認証したが電磁ロックの解除電力が足りない。必要な系統すべてに通電させよう。');
           }
         } else {
           soundManager.playClick();
@@ -2848,7 +2848,7 @@ document.addEventListener('DOMContentLoaded', () => {
       openModal(`
         <div class="zoom-view-header"><h3>シェルター保守運用マニュアル</h3></div>
         <div class="zoom-body">
-          <div class="diary-page" style="background:#1c1e22; border:1px solid #c89b3c; padding:14px; border-radius:3px; font-size:0.81rem; line-height:1.65; color:#e2ddd5; max-height:62vh; overflow-y:auto;">
+          <div class="diary-page" style="background:#1c1e22; border:1px solid #c89b3c; padding:14px; border-radius:3px; font-size:0.81rem; line-height:1.65; color:#e2ddd5; width:100%; box-sizing:border-box;">
             <h4 style="color:#c89b3c; border-bottom:1px solid #4a443b; padding-bottom:4px; margin-bottom:6px;">【1. 防衛AI「ARES」特別規約・論理監査】</h4>
             <p>・<strong>火災特例（第0条 / ART-00）</strong>：第1条（機密保持）および第2条（防疫隔離）よりも優先される最上位規定。壁面火災センサーが<strong>75℃以上</strong>を検知した際、延焼・焼死回避のため耐爆ハッチの油圧ロックを強制開放する。</p>
             <p style="margin-top:6px;">・<strong>論理監査コンソールの突破条件</strong>：<br>
@@ -2887,13 +2887,13 @@ document.addEventListener('DOMContentLoaded', () => {
     elS2Cryo.addEventListener('click', () => {
       if (state.powerCryo) {
         soundManager.playClick();
-        setMessage('マイナス80℃で分厚い氷に閉ざされている。東の配電盤で「2. クライオ保管庫(40V)」の電源を切れば解凍できそうだ。');
+        setMessage('マイナス80℃の極低温で分厚い氷に閉ざされている。冷却電源を遮断して解凍すれば開きそうだ。');
       } else if (!state.hasFrozenPack) {
         state.hasFrozenPack = true;
         addItem('s2_frozen_pack');
         saveGame();
         updateRoomDomState();
-        setMessage('氷が溶けた保管庫から「密閉冷凍カプセル」を取り出した！ アイテム欄で【調べる】と分解できそうだ。');
+        setMessage('氷が溶けた保管庫から「密閉冷凍カプセル」を取り出した！');
       } else {
         soundManager.playClick();
         setMessage('解凍されたクライオロッカーの中は空だ。');
@@ -2924,7 +2924,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html += `
         <p style="font-size:0.88rem; color:#e67e22; text-align:center;">
           <span class="phrase">保護グリルは外れたが、</span><span class="phrase">タービンファンが猛烈な速度で回転している！</span><br>
-          <span class="phrase">手を入れるには配電盤で</span><span class="phrase">「1. 換気タービン(40V)」をOFFにする必要がある。</span>
+          <span class="phrase">ファンを停止させなければ</span><span class="phrase">奥に手を入れることはできない。</span>
         </p>
       `;
     } else if (!state.hasIdCard) {
@@ -3006,7 +3006,7 @@ document.addEventListener('DOMContentLoaded', () => {
           openS2SensorModal();
         } else if (itemId === 's2_thermal_gel') {
           soundManager.playClick();
-          setMessage('燃料カートリッジ単体では火がつかない。着火ユニットと結合させよう。');
+          setMessage('燃料カートリッジ単体では火がつかない。点火する手段が必要だ。');
         } else {
           soundManager.playClick();
           setMessage('これでは75℃以上に加熱できない。');
