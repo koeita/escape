@@ -2848,7 +2848,7 @@ document.addEventListener('DOMContentLoaded', () => {
       openModal(`
         <div class="zoom-view-header"><h3>シェルター保守運用マニュアル</h3></div>
         <div class="zoom-body">
-          <div class="diary-page" style="background:#1c1e22; border:1px solid #c89b3c; padding:14px; border-radius:3px; font-size:0.81rem; line-height:1.65; color:#e2ddd5; max-height:62vh; overflow-y:auto;">
+          <div class="diary-page" style="background:#1c1e22; border:1px solid #c89b3c; padding:14px; border-radius:3px; font-size:0.81rem; line-height:1.65; color:#e2ddd5; width:100%; box-sizing:border-box;">
             <h4 style="color:#c89b3c; border-bottom:1px solid #4a443b; padding-bottom:4px; margin-bottom:6px;">【1. 防衛AI「ARES」特別規約・論理監査】</h4>
             <p>・<strong>火災特例（第0条 / ART-00）</strong>：第1条（機密保持）および第2条（防疫隔離）よりも優先される最上位規定。壁面火災センサーが<strong>75℃以上</strong>を検知した際、延焼・焼死回避のため耐爆ハッチの油圧ロックを強制開放する。</p>
             <p style="margin-top:6px;">・<strong>論理監査コンソールの突破条件</strong>：<br>

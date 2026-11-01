@@ -46,6 +46,17 @@ c:\Users\xcang\Desktop\Antigravity\escape\
 
 ### 2026-11-01 (日)
 
+#### 2. 調査モーダルにおける固定ヘッダー＆常時押下可能な×ボタンの実装
+- **改修背景**:
+  - モーダル内のコンテンツ（マニュアルや縦長パズル等）がスクロール可能な場合、従来はコンテナ全体がスクロールしていたため、下へスクロールするとヘッダーや右上の「×（閉じる）」ボタンが画面外へ流れてしまい、即座にモーダルを閉じられない操作性の課題があった。
+- **Flexboxによる固定ヘッダー ＋ 可変スクロールボディ構造への刷新**:
+  - `#modal-container` を `display: flex; flex-direction: column; overflow: hidden;` に変更し、外枠と角丸を維持。
+  - タイトルヘッダー（`.zoom-view-header`）を `flex-shrink: 0; background: var(--panel-bg); z-index: 10;` で上部に完全固定。
+  - 「×（閉じる）」ボタン（`.modal-close-btn`）を `position: absolute; top: 6px; right: 10px; z-index: 30;` で最前面に固定配置。ヘッダーの左右パディング（`42px`）によりタイトル文字と被らない安全マージンを確保。
+  - コンテンツ領域（`.zoom-body`）のみを `flex: 1 1 auto; min-height: 0; overflow-y: auto;` でスクロール可能に分離。
+  - スクロールバーはボディ領域のみに表示されるため、ヘッダーに重ならずクリーンな外観を実現。スリムな真鍮調スクロールバースタイル（`scrollbar-width: thin`）を追加。
+  - Stage 2 保守マニュアル内に残っていた内側スクロール（`max-height: 62vh; overflow-y: auto;`）を撤去し、モーダル全体での単一でスムーズなスクロールへ統合。
+
 #### 1. 探索・謎解きの面白さを高める直接的ヒント表現の徹底排除
 - **ブランチ作成**: `refactor/clean-puzzle-hints` 作業用ブランチを作成して改修を実施。
 - **改修背景**:
